@@ -1,23 +1,23 @@
-name:                SFMLHelloWorld
+name:                AHaskellGame
 version:             0.1.0.0
-github:              "githubuser/SFMLHelloWorld"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2017 Author name here"
+github:              "lhcopetti/AHaskellGame"
+license:             MIT
+author:              "Luís Copetti"
+maintainer:          "lhcopetti@gmail.com"
+copyright:           "2017 Luís Copetti"
 
 extra-source-files:
 - README.md
 - ChangeLog.md
 
 # Metadata used when publishing your package
-synopsis:            Short description of your package
+synopsis:            An exploration of the Haskell capabilities when it comes to game programming
 # category:            Web
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on Github at <https://github.com/githubuser/SFMLHelloWorld#readme>
+description:         Please see the README on Github at <https://github.com/lhcopetti/AHaskellGame#readme>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -27,7 +27,7 @@ library:
   source-dirs: src
 
 executables:
-  SFMLHelloWorld-exe:
+  AHaskellGame-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -35,10 +35,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - SFMLHelloWorld
+    - AHaskellGame
 
 tests:
-  SFMLHelloWorld-test:
+  AHaskellGame-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -46,4 +46,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - SFMLHelloWorld
+    - AHaskellGame
