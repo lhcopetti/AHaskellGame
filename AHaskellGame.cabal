@@ -31,7 +31,9 @@ library
       base >= 4.7 && < 5
     , SFML
   exposed-modules:
+      Ball
       Lib
+      Vec2.Vec2Math
   default-language: Haskell2010
 
 executable AHaskellGame-exe

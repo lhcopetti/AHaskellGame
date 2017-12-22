@@ -7,19 +7,21 @@ import Data.Maybe (isNothing)
 import SFML.Utils
 import SFML.Graphics.CircleShape
 import SFML.Graphics.Color
-import SFML.Graphics.SFDrawable (draw)
 import SFML.Graphics.SFRenderTarget
 import SFML.Graphics.RenderWindow
 import SFML.Graphics.Types
 import Control.Concurrent
 import Foreign.Marshal.Utils
+import Ball
 
-data GameWorld = GameWorld { window :: RenderWindow
-                           , circle :: CircleShape
-                           , direction :: Int
-                           }
+data GameWorld = GameWorld  { window :: RenderWindow
+                            , circle :: CircleShape
+                            , customBall :: Ball
+                            , direction :: Int
+                            }
 
 main = do
+    printSFML
     desktopMode <- getDesktopMode
     fsModes <- getFullscreenModes
 
@@ -40,18 +42,22 @@ main = do
             setFillColor circle green
             setRadius circle 25
 
-            let world = GameWorld wnd circle 1
+            customBall <- createBall (Vec2f 25 25) (Vec2f 4 4)
 
-            loop world
-            destroy wnd
-            putStrLn "This is the End!"
+            case customBall of 
+                Nothing -> putStrLn "Error creating custom ball."
+                Just b  -> do
+                    let world = GameWorld wnd circle b 1
+                    loop world
+                    destroy wnd
+                    putStrLn "This is the End!"
 
 
 shouldCloseWindow :: SFEvent -> Bool
 shouldCloseWindow evt = (evt == SFEvtClosed) || (evt == SFEvtMouseButtonPressed {})
 
-updateBall :: CircleShape -> Vec2f -> Int -> IO Int
-updateBall circle (Vec2f width height) direction = do 
+updateCircle :: CircleShape -> Vec2f -> Int -> IO Int
+updateCircle circle (Vec2f width height) direction = do 
     let speed = 1
     (Vec2f x y) <- getPosition circle
 
@@ -66,19 +72,25 @@ updateBall circle (Vec2f width height) direction = do
     else 
         return direction
 
+draw :: GameWorld -> IO ()
+draw (GameWorld wnd circle ball dir) = do 
+    drawCircle wnd circle Nothing
+    drawBall wnd ball
+
 loop :: GameWorld -> IO ()
-loop all@(GameWorld wnd circle dir) = do 
+loop all@(GameWorld wnd circle ball dir) = do 
 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
-    drawCircle wnd circle Nothing
+    draw all
     display wnd
 
-    (Vec2u uWidth uHeight) <- getWindowSize wnd
+    dimensions@(Vec2u uWidth uHeight) <- getWindowSize wnd
 
-    directionn <- updateBall circle (Vec2f (fromIntegral uWidth) (fromIntegral uHeight)) dir
+    directionn <- updateCircle circle (Vec2f (fromIntegral uWidth) (fromIntegral uHeight)) dir
+    newCustomBall <- updateBall dimensions ball
 
     evt <- pollEvent wnd
     case evt of 
-        Nothing -> loop (GameWorld wnd circle directionn)
-        (Just event) -> Control.Monad.unless (shouldCloseWindow event) $ loop (GameWorld wnd circle directionn)
+        Nothing -> loop (GameWorld wnd circle newCustomBall directionn)
+        (Just event) -> Control.Monad.unless (shouldCloseWindow event) $ loop (GameWorld wnd circle newCustomBall directionn)
