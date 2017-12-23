@@ -2,7 +2,7 @@ module Main where
 
 import Lib
 import SFML.Window
-import Control.Monad (when, unless)
+import Control.Monad (when, unless, forM_, forM)
 import Data.Maybe (isNothing)
 import SFML.Utils
 import SFML.Graphics.CircleShape
@@ -15,7 +15,7 @@ import Foreign.Marshal.Utils
 import Ball
 
 data GameWorld = GameWorld  { window :: RenderWindow
-                            , customBall :: Ball
+                            , balls :: [Ball]
                             }
 
 main = do
@@ -38,7 +38,7 @@ main = do
     case customBall of 
         Nothing -> putStrLn "Error creating custom ball."
         Just ball  -> do
-            let world = GameWorld wnd ball
+            let world = GameWorld wnd [ball]
             loop world
             destroy wnd
             putStrLn "This is the End!"
@@ -48,10 +48,10 @@ shouldCloseWindow :: SFEvent -> Bool
 shouldCloseWindow evt = (evt == SFEvtClosed) || (evt == SFEvtMouseButtonPressed {})
 
 draw :: GameWorld -> IO ()
-draw (GameWorld wnd ball) = drawBall wnd ball
+draw (GameWorld wnd balls) = forM_ balls (drawBall wnd)
 
 loop :: GameWorld -> IO ()
-loop all@(GameWorld wnd ball) = do 
+loop all@(GameWorld wnd balls) = do 
 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
@@ -59,7 +59,7 @@ loop all@(GameWorld wnd ball) = do
     display wnd
 
     dimensions@(Vec2u uWidth uHeight) <- getWindowSize wnd
-    newCustomBall <- updateBall dimensions ball
+    newCustomBall <- forM balls (updateBall dimensions)
 
     evt <- pollEvent wnd
     case evt of 
