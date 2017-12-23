@@ -4,3 +4,9 @@
 	OK! Add project name, e-mail and etc to stack.
 	OK! Push project to GitHub
 	OK! Add Velocity to the ball
+
+22/12/2017
+	TODO: Improve main ball creation. Stop using those triangle patterns, maybe 
+		it is time to fire up monad transformers?
+	TODO: Join the two different balls and keep the funcionality (bounded)
+	TODO: Add support for at least 5 simultaneous different balls (speed, color and size).
