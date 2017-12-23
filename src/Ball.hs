@@ -14,6 +14,9 @@ import SFML.Graphics.Types
 import SFML.Graphics.RenderWindow (drawCircle)
 import SFML.Graphics.SFShape (setFillColor)
 import SFML.Graphics.SFTransformable (setPosition)
+import Control.Monad.Trans.Maybe (MaybeT)
+import Control.Monad.IO.Class (liftIO)
+import Control.Monad (mzero)
 
 data Ball = Ball { circle   :: CircleShape
                  , position :: Vec2f
@@ -22,19 +25,19 @@ data Ball = Ball { circle   :: CircleShape
                  }
 
 
-createBall :: Vec2f -> Vec2f -> IO (Maybe Ball)
+createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 
-    putStrLn $ "Creating ball at " ++ show pos
-    myCircle <- createCircleShape
+    liftIO $ putStrLn $ "Creating ball at " ++ show pos
+    myCircle <- liftIO createCircleShape
     case myCircle of
         Left e -> do 
-            putStrLn $ "Error while trying to create a circle shape. " ++ show e
-            return Nothing
+            liftIO (putStrLn $ "Error while trying to create a circle shape. " ++ show e)
+            mzero
         Right r -> do
             let color = blue
-            setFillColor r color
-            setRadius r 25
-            return $ Just (Ball r pos vel color)
+            liftIO $ setFillColor r color
+            liftIO $ setRadius r 25
+            return (Ball r pos vel color)
 
 drawBall :: RenderWindow -> Ball -> IO ()
 drawBall wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing

@@ -2,7 +2,7 @@ module Main where
 
 import Lib
 import SFML.Window
-import Control.Monad (when, unless, forM_, forM)
+import Control.Monad (when, unless, forM_, forM, guard)
 import Data.Maybe (isNothing)
 import SFML.Utils
 import SFML.Graphics.CircleShape
@@ -13,6 +13,9 @@ import SFML.Graphics.Types
 import Control.Concurrent
 import Foreign.Marshal.Utils
 import Ball
+import Control.Monad.Trans.Maybe
+import Control.Monad.Trans.Class
+import Control.Monad.IO.Class
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , balls :: [Ball]
@@ -33,15 +36,21 @@ main = do
     let ctxSettings = Just $ ContextSettings 24 8 0 1 2 [ContextDefault]
     wnd <- createRenderWindow (VideoMode 640 480 32) "SFML Haskell Demo" [SFDefaultStyle] ctxSettings
 
-    customBall <- createBall (Vec2f 25 25) (Vec2f 4 4)
-
-    case customBall of 
-        Nothing -> putStrLn "Error creating custom ball."
-        Just ball  -> do
-            let world = GameWorld wnd [ball]
+    createdBalls <- runMaybeT createGameBalls
+    case createdBalls of 
+        Nothing -> putStrLn "Error creating custom balls"
+        Just balls -> do
+            let world = GameWorld wnd balls
             loop world
             destroy wnd
             putStrLn "This is the End!"
+
+createGameBalls :: MaybeT IO [Ball]
+createGameBalls = do
+    ball <- createBall (Vec2f 25 25) (Vec2f 4 4)
+    ball2 <- createBall (Vec2f 15 15) (Vec2f 2 0)
+    ball3 <- createBall (Vec2f 150 150) (Vec2f 1 3)
+    return [ball, ball2, ball3]
 
 
 shouldCloseWindow :: SFEvent -> Bool
