@@ -4,6 +4,7 @@ module Ball
     , createBall
     , drawBall
     , updateBall
+    , updateWithEnv
     ) where
     
 import SFML.Graphics.Color
@@ -14,15 +15,21 @@ import SFML.Graphics.Types
 import SFML.Graphics.RenderWindow (drawCircle)
 import SFML.Graphics.SFShape (setFillColor)
 import SFML.Graphics.SFTransformable (setPosition)
-import Control.Monad.Trans.Maybe (MaybeT)
+import Control.Monad.Trans.Maybe (MaybeT, runMaybeT)
+import Control.Monad.Trans.Reader (ReaderT)
 import Control.Monad.IO.Class (liftIO)
+import Control.Monad.Reader.Class (asks)
 import Control.Monad (mzero)
+import GameEnv
 
 data Ball = Ball { circle   :: CircleShape
                  , position :: Vec2f
                  , velocity :: Vec2f
                  , color    :: Color
                  }
+
+instance Show Ball where
+    show (Ball c pos vel col) = "This is a ball of [" ++ show col ++ "] color"
 
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
@@ -53,6 +60,16 @@ updateBall (Vec2u width height) (Ball c pos vel@(Vec2f velX velY) color) = do
     setPosition c newPos
     return (Ball c newPos (Vec2f newVelX newVelY) color)
 
+updateWithEnv :: Ball -> ReaderT GameEnvironment IO Ball
+updateWithEnv b@(Ball c pos vel@(Vec2f velX velY) color) = do
+    (Vec2u width height) <- asks gameArea
+    let newPos@(Vec2f x y) = addVec2f pos vel
+
+    let newVelX = if x > fromIntegral width || x < 0 then (-velX) else velX
+    let newVelY = if y > fromIntegral height || y < 0 then (-velY) else velY
+
+    liftIO (setPosition c newPos)
+    return (Ball c newPos (Vec2f newVelX newVelY) color)
 
 printSFML :: IO ()
 printSFML = putStrLn "Teste123"

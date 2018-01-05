@@ -13,8 +13,10 @@ import SFML.Graphics.Types
 import Control.Concurrent
 import Foreign.Marshal.Utils
 import Ball
+import GameEnv (GameEnvironment(..))
 import Control.Monad.Trans.Maybe
 import Control.Monad.Trans.Class
+import Control.Monad.Trans.Reader (runReaderT)
 import Control.Monad.IO.Class
 
 data GameWorld = GameWorld  { window :: RenderWindow
@@ -35,13 +37,18 @@ main = do
 
     let ctxSettings = Just $ ContextSettings 24 8 0 1 2 [ContextDefault]
     wnd <- createRenderWindow (VideoMode 640 480 32) "SFML Haskell Demo" [SFDefaultStyle] ctxSettings
+    
+    -- Game Environment initialization
+    dimensions <- getWindowSize wnd
+    let gameEnv = GameEnvironment dimensions 0
+
 
     createdBalls <- runMaybeT createGameBalls
     case createdBalls of 
         Nothing -> putStrLn "Error creating custom balls"
         Just balls -> do
             let world = GameWorld wnd balls
-            loop world
+            loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
 
@@ -59,18 +66,17 @@ shouldCloseWindow evt = (evt == SFEvtClosed) || (evt == SFEvtMouseButtonPressed 
 draw :: GameWorld -> IO ()
 draw (GameWorld wnd balls) = forM_ balls (drawBall wnd)
 
-loop :: GameWorld -> IO ()
-loop all@(GameWorld wnd balls) = do 
+loop :: GameWorld -> GameEnvironment -> IO ()
+loop all@(GameWorld wnd balls) env = do 
 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
     draw all
     display wnd
 
-    dimensions@(Vec2u uWidth uHeight) <- getWindowSize wnd
-    newCustomBall <- forM balls (updateBall dimensions)
+    newBalls <- runReaderT (forM balls updateWithEnv) env
 
     evt <- pollEvent wnd
     case evt of 
-        Nothing -> loop (GameWorld wnd newCustomBall)
-        (Just event) -> Control.Monad.unless (shouldCloseWindow event) $ loop (GameWorld wnd newCustomBall)
+        Nothing -> loop (GameWorld wnd newBalls) env
+        (Just event) -> Control.Monad.unless (shouldCloseWindow event) $ loop (GameWorld wnd newBalls) env

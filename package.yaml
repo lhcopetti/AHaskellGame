@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - SFML
 - transformers
+- mtl
 
 library:
   source-dirs: src
