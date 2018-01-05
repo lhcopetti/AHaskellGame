@@ -3,7 +3,7 @@
 module Ball 
     ( Ball (..)
     , createBall
-    , drawBall
+    , draw
     , update
     ) where
     
@@ -22,6 +22,7 @@ import Control.Monad.Reader.Class (asks)
 import Control.Monad (mzero)
 import GameEnv
 import Updatable
+import Drawable
 
 data Ball = Ball { circle   :: CircleShape
                  , position :: Vec2f
@@ -46,6 +47,11 @@ instance Updatable Ball where
         return (Ball c newPos (Vec2f newVelX newVelY) color)
 
 
+instance Drawable Ball where 
+
+    draw :: RenderWindow -> Ball -> IO ()
+    draw wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing
+
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 
     liftIO $ putStrLn $ "Creating ball at " ++ show pos
@@ -59,6 +65,3 @@ createBall pos@(Vec2f x y) vel = do
             liftIO $ setFillColor r color
             liftIO $ setRadius r 25
             return (Ball r pos vel color)
-
-drawBall :: RenderWindow -> Ball -> IO ()
-drawBall wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing

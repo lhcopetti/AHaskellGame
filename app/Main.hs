@@ -77,17 +77,17 @@ createGameBalls = do
 shouldCloseWindow :: SFEvent -> Bool
 shouldCloseWindow evt = (evt == SFEvtClosed) || (evt == SFEvtMouseButtonPressed {})
 
-draw :: GameWorld -> IO ()
-draw (GameWorld wnd balls squares) = do 
-    forM_ balls (drawBall wnd)
-    forM_ squares (drawSquare wnd)
+drawObjects :: GameWorld -> IO ()
+drawObjects (GameWorld wnd balls squares) = do 
+    forM_ balls (draw wnd)
+    forM_ squares (draw wnd)
 
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop all@(GameWorld wnd balls squares) env = do 
 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
-    draw all
+    drawObjects all
     display wnd
 
     newBalls <- runReaderT (forM balls update) env

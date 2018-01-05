@@ -4,7 +4,7 @@ module Square
     ( Square(..)
     , createSquare
     , update
-    , drawSquare
+    , draw
     ) where
 
 import SFML.Graphics.Color
@@ -20,6 +20,7 @@ import Control.Monad (mzero)
 
 import Vec2.Vec2Math (zero, addVec2f)
 import Updatable
+import Drawable
 import GameEnv
 
 data Square = Square { circle   :: RectangleShape
@@ -42,6 +43,12 @@ instance Updatable Square where
         return (Square c newPos (Vec2f newVelX newVelY) color)
 
 
+instance Drawable Square where 
+
+    draw :: RenderWindow -> Square -> IO ()
+    draw wnd (Square rect pos vel color) = drawRectangle wnd rect Nothing 
+
+
 createSquare :: Vec2f -> Vec2f -> MaybeT IO Square
 createSquare pos@(Vec2f x y) vel = do 
     liftIO $ putStrLn $ "Creating square at " ++ show pos
@@ -55,6 +62,3 @@ createSquare pos@(Vec2f x y) vel = do
             liftIO $ setFillColor r color
             liftIO $ setSize r (Vec2f 25 25)
             return (Square r pos vel color)
-
-drawSquare :: RenderWindow -> Square -> IO ()
-drawSquare wnd (Square rect pos vel color) = drawRectangle wnd rect Nothing
