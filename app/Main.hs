@@ -73,7 +73,7 @@ loop all@(GameWorld wnd balls) env = do
     draw all
     display wnd
 
-    newBalls <- runReaderT (forM balls updateBall) env
+    newBalls <- runReaderT (forM balls update) env
 
     evt <- pollEvent wnd
     case evt of 

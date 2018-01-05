@@ -1,8 +1,10 @@
+{-# LANGUAGE InstanceSigs #-}
+
 module Ball 
     ( Ball (..)
     , createBall
     , drawBall
-    , updateBall
+    , update
     ) where
     
 import SFML.Graphics.Color
@@ -19,6 +21,7 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Reader.Class (asks)
 import Control.Monad (mzero)
 import GameEnv
+import Updatable
 
 data Ball = Ball { circle   :: CircleShape
                  , position :: Vec2f
@@ -28,6 +31,19 @@ data Ball = Ball { circle   :: CircleShape
 
 instance Show Ball where
     show (Ball c pos vel col) = "This is a ball of [" ++ show col ++ "] color"
+
+instance Updatable Ball where
+
+    update :: Ball -> ReaderT GameEnvironment IO Ball
+    update b@(Ball c pos vel@(Vec2f velX velY) color) = do
+        (Vec2u width height) <- asks gameArea
+        let newPos@(Vec2f x y) = addVec2f pos vel
+    
+        let newVelX = if x > fromIntegral width || x < 0 then (-velX) else velX
+        let newVelY = if y > fromIntegral height || y < 0 then (-velY) else velY
+    
+        liftIO (setPosition c newPos)
+        return (Ball c newPos (Vec2f newVelX newVelY) color)
 
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
@@ -46,14 +62,3 @@ createBall pos@(Vec2f x y) vel = do
 
 drawBall :: RenderWindow -> Ball -> IO ()
 drawBall wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing
-
-updateBall :: Ball -> ReaderT GameEnvironment IO Ball
-updateBall b@(Ball c pos vel@(Vec2f velX velY) color) = do
-    (Vec2u width height) <- asks gameArea
-    let newPos@(Vec2f x y) = addVec2f pos vel
-
-    let newVelX = if x > fromIntegral width || x < 0 then (-velX) else velX
-    let newVelY = if y > fromIntegral height || y < 0 then (-velY) else velY
-
-    liftIO (setPosition c newPos)
-    return (Ball c newPos (Vec2f newVelX newVelY) color)
