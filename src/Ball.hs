@@ -1,10 +1,8 @@
 module Ball 
     ( Ball (..)
-    , printSFML
     , createBall
     , drawBall
     , updateBall
-    , updateWithEnv
     ) where
     
 import SFML.Graphics.Color
@@ -49,19 +47,8 @@ createBall pos@(Vec2f x y) vel = do
 drawBall :: RenderWindow -> Ball -> IO ()
 drawBall wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing
 
-
-updateBall :: Vec2u -> Ball -> IO Ball
-updateBall (Vec2u width height) (Ball c pos vel@(Vec2f velX velY) color) = do
-    let newPos@(Vec2f x y) = addVec2f pos vel
-
-    let newVelX = if x > fromIntegral width || x < 0 then (-velX) else velX
-    let newVelY = if y > fromIntegral height || y < 0 then (-velY) else velY
-
-    setPosition c newPos
-    return (Ball c newPos (Vec2f newVelX newVelY) color)
-
-updateWithEnv :: Ball -> ReaderT GameEnvironment IO Ball
-updateWithEnv b@(Ball c pos vel@(Vec2f velX velY) color) = do
+updateBall :: Ball -> ReaderT GameEnvironment IO Ball
+updateBall b@(Ball c pos vel@(Vec2f velX velY) color) = do
     (Vec2u width height) <- asks gameArea
     let newPos@(Vec2f x y) = addVec2f pos vel
 
@@ -70,6 +57,3 @@ updateWithEnv b@(Ball c pos vel@(Vec2f velX velY) color) = do
 
     liftIO (setPosition c newPos)
     return (Ball c newPos (Vec2f newVelX newVelY) color)
-
-printSFML :: IO ()
-printSFML = putStrLn "Teste123"

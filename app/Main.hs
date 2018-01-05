@@ -24,7 +24,6 @@ data GameWorld = GameWorld  { window :: RenderWindow
                             }
 
 main = do
-    printSFML
     desktopMode <- getDesktopMode
     fsModes <- getFullscreenModes
 
@@ -74,7 +73,7 @@ loop all@(GameWorld wnd balls) env = do
     draw all
     display wnd
 
-    newBalls <- runReaderT (forM balls updateWithEnv) env
+    newBalls <- runReaderT (forM balls updateBall) env
 
     evt <- pollEvent wnd
     case evt of 
