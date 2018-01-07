@@ -19,6 +19,7 @@ import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad (mzero)
 
 import Drawable
+import qualified Component.Position as Comp
 
 data Dot = Dot { circle   :: CircleShape
                , position :: Vec2f
@@ -30,6 +31,13 @@ dotColor = white
 instance Drawable Dot where 
     draw :: RenderWindow -> Dot -> IO ()
     draw wnd (Dot circle pos) = drawCircle wnd circle Nothing
+
+instance Comp.Position Dot where
+    getPosition :: Dot -> Vec2f
+    getPosition = position
+
+    setPosition :: Dot -> Vec2f -> Dot
+    setPosition (Dot c _) = Dot c
 
 createDot :: Vec2f -> MaybeT IO Dot
 createDot pos@(Vec2f x y) = do 

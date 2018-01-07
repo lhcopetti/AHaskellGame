@@ -23,6 +23,7 @@ import Control.Monad (mzero)
 import GameEnv
 import Updatable
 import Drawable
+import qualified Component.Position as Pos
 
 data Ball = Ball { circle   :: CircleShape
                  , position :: Vec2f
@@ -51,6 +52,13 @@ instance Drawable Ball where
 
     draw :: RenderWindow -> Ball -> IO ()
     draw wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing
+
+instance Pos.Position Ball where
+    getPosition :: Ball -> Vec2f
+    getPosition = position
+
+    setPosition :: Ball -> Vec2f -> Ball
+    setPosition ball newPosition = ball { position = newPosition } 
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 
