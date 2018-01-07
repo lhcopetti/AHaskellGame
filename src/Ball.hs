@@ -20,10 +20,13 @@ import Control.Monad.Trans.Reader (ReaderT)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Reader.Class (asks)
 import Control.Monad (mzero)
+
 import GameEnv
 import Updatable
 import Drawable
 import qualified Component.Position as Pos
+import qualified Component.Physics as Phy
+import Behavior.BoxedBehavior (boundToDimension)
 
 data Ball = Ball { circle   :: CircleShape
                  , position :: Vec2f
@@ -38,14 +41,18 @@ instance Updatable Ball where
 
     update :: Ball -> ReaderT GameEnvironment IO Ball
     update b@(Ball c pos vel@(Vec2f velX velY) color) = do
-        (Vec2u width height) <- asks gameArea
-        let newPos@(Vec2f x y) = addVec2f pos vel
-    
-        let newVelX = if x > fromIntegral width || x < 0 then (-velX) else velX
-        let newVelY = if y > fromIntegral height || y < 0 then (-velY) else velY
-    
-        liftIO (setPosition c newPos)
-        return (Ball c newPos (Vec2f newVelX newVelY) color)
+        -- Physics update
+        let newB = Pos.setPosition b (addVec2f pos vel)
+
+        -- Behavior update
+        dimension <- asks gameArea
+        let newBall = boundToDimension newB dimension
+
+        -- Pointer update
+        liftIO (setPosition c (Pos.getPosition newBall))
+
+        -- Return the new object
+        return newBall
 
 
 instance Drawable Ball where 
@@ -54,11 +61,12 @@ instance Drawable Ball where
     draw wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing
 
 instance Pos.Position Ball where
-    getPosition :: Ball -> Vec2f
     getPosition = position
-
-    setPosition :: Ball -> Vec2f -> Ball
     setPosition ball newPosition = ball { position = newPosition } 
+
+instance Phy.Physics Ball where
+    getVelocity = velocity
+    setVelocity ball newVel = ball { velocity = newVel }
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 
