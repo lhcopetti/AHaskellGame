@@ -12,17 +12,20 @@ import SFML.Graphics.RenderWindow
 import SFML.Graphics.Types
 import Control.Concurrent
 import Foreign.Marshal.Utils
-import Ball
-import Square
-import GameEnv (GameEnvironment(..))
 import Control.Monad.Trans.Maybe
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Reader (runReaderT)
 import Control.Monad.IO.Class
 
+import GameEnv (GameEnvironment(..))
+import Ball
+import Square
+import Dot
+
 data GameWorld = GameWorld  { window :: RenderWindow
                             , balls :: [Ball]
                             , squares :: [Square]
+                            , dots :: [Dot]
                             }
 
 main = do
@@ -47,17 +50,18 @@ main = do
     createdBalls <- runMaybeT createObjects
     case createdBalls of 
         Nothing -> putStrLn "Error creating game objects"
-        Just (balls, squares) -> do
-            let world = GameWorld wnd balls squares
+        Just (balls, squares, dots) -> do
+            let world = GameWorld wnd balls squares dots
             loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
 
-createObjects :: MaybeT IO ([Ball], [Square])
+createObjects :: MaybeT IO ([Ball], [Square], [Dot])
 createObjects = do 
     balls <- createGameBalls
     squares <- createGameSquares
-    return (balls, squares)
+    dots <- createDots
+    return (balls, squares, dots)
 
 createGameSquares :: MaybeT IO [Square]
 createGameSquares = do
@@ -73,17 +77,25 @@ createGameBalls = do
     ball3 <- createBall (Vec2f 150 150) (Vec2f 1 3)
     return [ball, ball2, ball3]
 
+createDots :: MaybeT IO [Dot]
+createDots = do
+    dot     <- createDot (Vec2f 50 50)
+    dot'    <- createDot (Vec2f 150 150)
+    dot''   <- createDot (Vec2f 250 250)
+    dot3    <- createDot (Vec2f 350 350)
+    return [dot, dot', dot'', dot3]
 
 shouldCloseWindow :: SFEvent -> Bool
 shouldCloseWindow evt = (evt == SFEvtClosed) || (evt == SFEvtMouseButtonPressed {})
 
 drawObjects :: GameWorld -> IO ()
-drawObjects (GameWorld wnd balls squares) = do 
+drawObjects (GameWorld wnd balls squares dots) = do 
     forM_ balls (draw wnd)
     forM_ squares (draw wnd)
+    forM_ dots (draw wnd)
 
 loop :: GameWorld -> GameEnvironment -> IO ()
-loop all@(GameWorld wnd balls squares) env = do 
+loop all@(GameWorld wnd balls squares dots) env = do 
 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
@@ -95,5 +107,5 @@ loop all@(GameWorld wnd balls squares) env = do
 
     evt <- pollEvent wnd
     case evt of 
-        Nothing -> loop (GameWorld wnd newBalls newSquares) env
-        (Just event) -> Control.Monad.unless (shouldCloseWindow event) $ loop (GameWorld wnd newBalls newSquares) env
+        Nothing -> loop (GameWorld wnd newBalls newSquares dots) env
+        (Just event) -> Control.Monad.unless (shouldCloseWindow event) $ loop (GameWorld wnd newBalls newSquares dots) env
