@@ -22,6 +22,9 @@ import Vec2.Vec2Math (zero, addVec2f)
 import Updatable
 import Drawable
 import GameEnv
+import Behavior.BoxedBehavior (wrapAround)
+import qualified Component.Position as Pos
+import qualified Component.Physics  as Phy
 
 data Square = Square { circle   :: RectangleShape
                      , position :: Vec2f
@@ -33,20 +36,26 @@ instance Updatable Square where
 
     update :: Square -> ReaderT GameEnvironment IO Square
     update s@(Square c pos vel@(Vec2f velX velY) color) = do
-        (Vec2u width height) <- asks gameArea
-        let newPos@(Vec2f x y) = addVec2f pos vel
+        let newS = Pos.setPosition s (addVec2f pos vel)
+        
+        dimension <- asks gameArea
+        let newSquare = wrapAround newS dimension
     
-        let newVelX = if x > fromIntegral width || x < 0 then (-velX) else velX
-        let newVelY = if y > fromIntegral height || y < 0 then (-velY) else velY
-    
-        liftIO (setPosition c newPos)
-        return (Square c newPos (Vec2f newVelX newVelY) color)
-
+        liftIO (setPosition c (Pos.getPosition newSquare))
+        return newSquare
 
 instance Drawable Square where 
 
     draw :: RenderWindow -> Square -> IO ()
     draw wnd (Square rect pos vel color) = drawRectangle wnd rect Nothing 
+
+instance Pos.Position Square where
+    getPosition = position
+    setPosition square newPos = square { position = newPos }
+
+instance Phy.Physics Square where
+    getVelocity = velocity
+    setVelocity square newVel = square { velocity = newVel }
 
 
 createSquare :: Vec2f -> Vec2f -> MaybeT IO Square
