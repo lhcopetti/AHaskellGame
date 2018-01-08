@@ -22,7 +22,7 @@
 	OK! Implement those type classes as instances for the Ball and Square data type
 	OK! Simplify their update methods (duplicated logic)
 	OK! Fix duplication on main loop function
-	TODO: Fix "Missing field in record construction button"
+	OK! Fix "Missing field in record construction button"
 
 	TODO: Add acceleration to the PhysicsBehavior
 	TODO: Create a new set of objects (Triangles, maybe?)

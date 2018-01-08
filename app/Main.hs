@@ -86,7 +86,9 @@ createDots = do
     return [dot, dot', dot'', dot3]
 
 shouldCloseWindow :: SFEvent -> Bool
-shouldCloseWindow evt = (evt == SFEvtClosed) || (evt == SFEvtMouseButtonPressed {})
+shouldCloseWindow SFEvtClosed                   = True
+shouldCloseWindow SFEvtMouseButtonPressed {}    = True
+shouldCloseWindow _                             = False
 
 drawObjects :: GameWorld -> IO ()
 drawObjects (GameWorld wnd balls squares dots) = do 
