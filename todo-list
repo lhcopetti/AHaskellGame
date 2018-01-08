@@ -6,7 +6,27 @@
 	OK! Add Velocity to the ball
 
 22/12/2017
-	TODO: Improve main ball creation. Stop using those triangle patterns, maybe 
+	OK! Improve main ball creation. Stop using those triangle patterns, maybe 
 		it is time to fire up monad transformers?
-	TODO: Join the two different balls and keep the funcionality (bounded)
-	TODO: Add support for at least 5 simultaneous different balls (speed, color and size).
+	OK! Join the two different balls and keep the funcionality (bounded)
+
+04/01/2018
+	OK! Add a square that has the same behavior as the ball (collision).
+	OK! Add another class (Squares?) that will have the same behavior (bounded and velocity), see what 
+	holds still and what needs refactoring.
+
+07/01/2018
+	OK! Create type class for Position
+	OK! Create type class for PhysicsBehavior
+	OK! Create a method that bounds the object to a certain "box" using those type classes
+	OK! Implement those type classes as instances for the Ball and Square data type
+	OK! Simplify their update methods (duplicated logic)
+	OK! Fix duplication on main loop function
+	TODO: Fix "Missing field in record construction button"
+
+	TODO: Add acceleration to the PhysicsBehavior
+	TODO: Create a new set of objects (Triangles, maybe?)
+	TODO: Add acceleration behavior for the triangles 
+
+	TODO: Create another type of object  that will "die" after 'n' collisions.
+		Like a time bomb (Maybe use a sprite for this one?)

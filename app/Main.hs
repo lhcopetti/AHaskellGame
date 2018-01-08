@@ -2,7 +2,7 @@ module Main where
 
 import Lib
 import SFML.Window
-import Control.Monad (when, unless, forM_, forM, guard)
+import Control.Monad (when, unless, forM_, forM, guard, mzero)
 import Data.Maybe (isNothing)
 import SFML.Utils
 import SFML.Graphics.CircleShape
@@ -97,15 +97,31 @@ drawObjects (GameWorld wnd balls squares dots) = do
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop all@(GameWorld wnd balls squares dots) env = do 
 
+    updatedWorld <- gameLoop all env
+
+    evt <- runMaybeT (eventLoop wnd)
+    case evt of 
+        Nothing -> loop updatedWorld env
+        (Just event) -> putStrLn ("Closing event: " ++ show event)
+
+
+gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
+gameLoop all@(GameWorld wnd balls squares dots) env = do 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
-    drawObjects all
-    display wnd
 
     newBalls <- runReaderT (forM balls update) env
     newSquares <- runReaderT (forM squares update) env
 
-    evt <- pollEvent wnd
-    case evt of 
-        Nothing -> loop (GameWorld wnd newBalls newSquares dots) env
-        (Just event) -> Control.Monad.unless (shouldCloseWindow event) $ loop (GameWorld wnd newBalls newSquares dots) env
+    drawObjects all
+    display wnd
+
+    return (GameWorld wnd newBalls newSquares dots)
+
+eventLoop :: RenderWindow -> MaybeT IO SFEvent
+eventLoop window = do 
+    evt <- pollEventT window
+    if shouldCloseWindow evt then return evt else mzero
+
+pollEventT :: RenderWindow -> MaybeT IO SFEvent
+pollEventT = MaybeT . pollEvent
