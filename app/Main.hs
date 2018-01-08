@@ -23,10 +23,7 @@ import Square
 import Dot
 
 data GameWorld = GameWorld  { window :: RenderWindow
-                            , balls :: [Ball]
-                            , squares :: [Square]
-                            , dots :: [Dot]
-                            , object :: AnyGameObject
+                            , gameObjects :: [AnyGameObject]
                             }
 
 main = do
@@ -52,7 +49,10 @@ main = do
     case createdBalls of 
         Nothing -> putStrLn "Error creating game objects"
         Just (balls, squares, dots) -> do
-            let world = GameWorld wnd balls squares dots (AGO . head $ balls)
+            let anyBalls = map AGO balls
+            let anySquares = map AGO squares
+            let anyDots = map AGO dots
+            let world = GameWorld wnd (anyBalls ++ anySquares ++ anyDots)
             loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
@@ -92,14 +92,10 @@ shouldCloseWindow SFEvtMouseButtonPressed {}    = True
 shouldCloseWindow _                             = False
 
 drawObjects :: GameWorld -> IO ()
-drawObjects (GameWorld wnd balls squares dots objs) = do 
-    forM_ balls (draw wnd)
-    forM_ squares (draw wnd)
-    forM_ dots (draw wnd)
-    drawAnyGameObject wnd objs
+drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
 
 loop :: GameWorld -> GameEnvironment -> IO ()
-loop all@(GameWorld wnd balls squares dots _) env = do 
+loop all@(GameWorld wnd objs) env = do 
 
     updatedWorld <- gameLoop all env
 
@@ -110,18 +106,16 @@ loop all@(GameWorld wnd balls squares dots _) env = do
 
 
 gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop all@(GameWorld wnd balls squares dots objs) env = do 
+gameLoop all@(GameWorld wnd objs) env = do 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
 
-    newBalls <- runReaderT (forM balls update) env
-    newSquares <- runReaderT (forM squares update) env
-    newObj <- runReaderT (updateAnyGameObject objs) env
+    newObjs <- runReaderT (forM objs updateAnyGameObject) env
 
     drawObjects all
     display wnd
 
-    return (GameWorld wnd newBalls newSquares dots newObj)
+    return (GameWorld wnd newObjs)
 
 eventLoop :: RenderWindow -> MaybeT IO SFEvent
 eventLoop window = do 
