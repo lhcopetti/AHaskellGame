@@ -1,6 +1,6 @@
 {-# LANGUAGE InstanceSigs #-}
 module Dot
-    ( Dot
+    ( Dot (..)
     , createDot
     , draw
     ) where
@@ -19,6 +19,7 @@ import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad (mzero)
 
 import Drawable
+import Updatable
 import qualified Component.Position as Comp
 
 data Dot = Dot { circle   :: CircleShape
@@ -31,6 +32,9 @@ dotColor = white
 instance Drawable Dot where 
     draw :: RenderWindow -> Dot -> IO ()
     draw wnd (Dot circle pos) = drawCircle wnd circle Nothing
+
+instance Updatable Dot where 
+    update = return
 
 instance Comp.Position Dot where
     getPosition :: Dot -> Vec2f
