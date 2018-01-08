@@ -1,3 +1,4 @@
+{-# LANGUAGE ExistentialQuantification #-}
 module Main where
 
 import Lib
@@ -14,8 +15,11 @@ import Control.Concurrent
 import Foreign.Marshal.Utils
 import Control.Monad.Trans.Maybe
 import Control.Monad.Trans.Class
-import Control.Monad.Trans.Reader (runReaderT)
+import Control.Monad.Trans.Reader (ReaderT, runReaderT)
 import Control.Monad.IO.Class
+
+import Updatable
+import Drawable
 
 import GameEnv (GameEnvironment(..))
 import Ball
@@ -26,6 +30,7 @@ data GameWorld = GameWorld  { window :: RenderWindow
                             , balls :: [Ball]
                             , squares :: [Square]
                             , dots :: [Dot]
+                            , object :: AnyGameObject
                             }
 
 main = do
@@ -51,7 +56,7 @@ main = do
     case createdBalls of 
         Nothing -> putStrLn "Error creating game objects"
         Just (balls, squares, dots) -> do
-            let world = GameWorld wnd balls squares dots
+            let world = GameWorld wnd balls squares dots (AGO . head $ balls)
             loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
@@ -91,13 +96,14 @@ shouldCloseWindow SFEvtMouseButtonPressed {}    = True
 shouldCloseWindow _                             = False
 
 drawObjects :: GameWorld -> IO ()
-drawObjects (GameWorld wnd balls squares dots) = do 
+drawObjects (GameWorld wnd balls squares dots objs) = do 
     forM_ balls (draw wnd)
     forM_ squares (draw wnd)
     forM_ dots (draw wnd)
+    drawAnyGameObject wnd objs
 
 loop :: GameWorld -> GameEnvironment -> IO ()
-loop all@(GameWorld wnd balls squares dots) env = do 
+loop all@(GameWorld wnd balls squares dots _) env = do 
 
     updatedWorld <- gameLoop all env
 
@@ -108,17 +114,18 @@ loop all@(GameWorld wnd balls squares dots) env = do
 
 
 gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop all@(GameWorld wnd balls squares dots) env = do 
+gameLoop all@(GameWorld wnd balls squares dots objs) env = do 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
 
     newBalls <- runReaderT (forM balls update) env
     newSquares <- runReaderT (forM squares update) env
+    newObj <- runReaderT (updateAnyGameObject objs) env
 
     drawObjects all
     display wnd
 
-    return (GameWorld wnd newBalls newSquares dots)
+    return (GameWorld wnd newBalls newSquares dots newObj)
 
 eventLoop :: RenderWindow -> MaybeT IO SFEvent
 eventLoop window = do 
@@ -127,3 +134,15 @@ eventLoop window = do
 
 pollEventT :: RenderWindow -> MaybeT IO SFEvent
 pollEventT = MaybeT . pollEvent
+
+
+updateAnyGameObject :: AnyGameObject -> ReaderT GameEnvironment IO AnyGameObject
+updateAnyGameObject (AGO obj) = do 
+    newObj <- update obj
+    return (AGO newObj)
+
+drawAnyGameObject :: RenderWindow -> AnyGameObject -> IO ()
+drawAnyGameObject window (AGO obj) = draw window obj
+
+
+data AnyGameObject = forall a. (Updatable a, Drawable a) => AGO a
