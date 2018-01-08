@@ -1,5 +1,3 @@
-{-# LANGUAGE InstanceSigs #-}
-
 module Square
     ( Square(..)
     , createSquare
@@ -33,8 +31,6 @@ data Square = Square { circle   :: RectangleShape
                      }
 
 instance Updatable Square where
-
-    update :: Square -> ReaderT GameEnvironment IO Square
     update s@(Square c pos vel@(Vec2f velX velY) color) = do
         let newS = Pos.setPosition s (addVec2f pos vel)
         
@@ -45,8 +41,6 @@ instance Updatable Square where
         return newSquare
 
 instance Drawable Square where 
-
-    draw :: RenderWindow -> Square -> IO ()
     draw wnd (Square rect pos vel color) = drawRectangle wnd rect Nothing 
 
 instance Pos.Position Square where

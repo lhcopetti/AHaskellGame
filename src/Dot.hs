@@ -1,4 +1,3 @@
-{-# LANGUAGE InstanceSigs #-}
 module Dot
     ( Dot (..)
     , createDot
@@ -30,17 +29,13 @@ dotColor :: Color
 dotColor = white
 
 instance Drawable Dot where 
-    draw :: RenderWindow -> Dot -> IO ()
     draw wnd (Dot circle pos) = drawCircle wnd circle Nothing
 
 instance Updatable Dot where 
     update = return
 
 instance Comp.Position Dot where
-    getPosition :: Dot -> Vec2f
     getPosition = position
-
-    setPosition :: Dot -> Vec2f -> Dot
     setPosition (Dot c _) = Dot c
 
 createDot :: Vec2f -> MaybeT IO Dot

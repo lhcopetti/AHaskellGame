@@ -1,6 +1,12 @@
-module Drawable where
+module Drawable
+    ( DrawType
+    , Drawable
+    , draw
+    ) where
 
 import SFML.Graphics.Types (RenderWindow)
 
+type DrawType a = RenderWindow -> a -> IO ()
+
 class Drawable a where
-    draw :: RenderWindow -> a -> IO ()
+    draw :: DrawType a

@@ -2,8 +2,7 @@ module Main where
 
 import Lib
 import SFML.Window
-import Control.Monad (when, unless, forM_, forM, guard, mzero)
-import Data.Maybe (isNothing)
+import Control.Monad (forM_, forM, mzero)
 import SFML.Utils
 import SFML.Graphics.CircleShape
 import SFML.Graphics.Color
@@ -14,7 +13,7 @@ import Control.Concurrent
 import Foreign.Marshal.Utils
 import Control.Monad.Trans.Maybe
 import Control.Monad.Trans.Class
-import Control.Monad.Trans.Reader (ReaderT, runReaderT)
+import Control.Monad.Trans.Reader (runReaderT)
 import Control.Monad.IO.Class
 
 import GameObject.AnyGameObject

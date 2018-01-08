@@ -15,8 +15,7 @@ import SFML.Graphics.Types
 import SFML.Graphics.RenderWindow (drawCircle)
 import SFML.Graphics.SFShape (setFillColor)
 import SFML.Graphics.SFTransformable (setPosition)
-import Control.Monad.Trans.Maybe (MaybeT, runMaybeT)
-import Control.Monad.Trans.Reader (ReaderT)
+import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Reader.Class (asks)
 import Control.Monad (mzero)
@@ -38,8 +37,6 @@ instance Show Ball where
     show (Ball c pos vel col) = "This is a ball of [" ++ show col ++ "] color"
 
 instance Updatable Ball where
-
-    update :: Ball -> ReaderT GameEnvironment IO Ball
     update b@(Ball c pos vel@(Vec2f velX velY) color) = do
         -- Physics update
         let newB = Pos.setPosition b (addVec2f pos vel)
