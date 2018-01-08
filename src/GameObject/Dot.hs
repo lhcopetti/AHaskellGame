@@ -1,4 +1,4 @@
-module Dot
+module GameObject.Dot
     ( Dot (..)
     , createDot
     , draw

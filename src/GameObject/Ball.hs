@@ -1,6 +1,6 @@
 {-# LANGUAGE InstanceSigs #-}
 
-module Ball 
+module GameObject.Ball 
     ( Ball (..)
     , createBall
     , draw

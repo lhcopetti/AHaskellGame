@@ -18,9 +18,9 @@ import Control.Monad.IO.Class
 
 import GameObject.AnyGameObject
 import GameEnv (GameEnvironment(..))
-import Ball
-import Square
-import Dot
+import GameObject.Ball
+import GameObject.Square
+import GameObject.Dot
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]

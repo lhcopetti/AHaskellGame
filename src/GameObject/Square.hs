@@ -1,4 +1,4 @@
-module Square
+module GameObject.Square
     ( Square(..)
     , createSquare
     , update
