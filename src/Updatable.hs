@@ -1,5 +1,7 @@
 module Updatable
-    where
+    ( Updatable
+    , update
+    ) where
 
 import GameEnv (GameEnvironment)
 import Control.Monad.Trans.Reader (ReaderT)

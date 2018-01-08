@@ -1,4 +1,3 @@
-{-# LANGUAGE ExistentialQuantification #-}
 module Main where
 
 import Lib
@@ -18,9 +17,7 @@ import Control.Monad.Trans.Class
 import Control.Monad.Trans.Reader (ReaderT, runReaderT)
 import Control.Monad.IO.Class
 
-import Updatable
-import Drawable
-
+import GameObject.AnyGameObject
 import GameEnv (GameEnvironment(..))
 import Ball
 import Square
@@ -134,15 +131,3 @@ eventLoop window = do
 
 pollEventT :: RenderWindow -> MaybeT IO SFEvent
 pollEventT = MaybeT . pollEvent
-
-
-updateAnyGameObject :: AnyGameObject -> ReaderT GameEnvironment IO AnyGameObject
-updateAnyGameObject (AGO obj) = do 
-    newObj <- update obj
-    return (AGO newObj)
-
-drawAnyGameObject :: RenderWindow -> AnyGameObject -> IO ()
-drawAnyGameObject window (AGO obj) = draw window obj
-
-
-data AnyGameObject = forall a. (Updatable a, Drawable a) => AGO a
