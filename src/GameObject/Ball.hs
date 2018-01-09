@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module GameObject.Ball 
     ( Ball (..)
     , createBall
@@ -23,6 +24,7 @@ import GameEnv
 import Updatable
 import Synchronizable
 import Drawable
+import Killable
 import qualified Component.Position as Pos
 import qualified Component.Physics as Phy
 import Behavior.BoxedBehavior (boundToDimension)
@@ -31,15 +33,13 @@ data Ball = Ball { circle   :: CircleShape
                  , position :: Vec2f
                  , velocity :: Vec2f
                  , color    :: Color
+                 , alive    :: Bool
                  }
 
-instance Show Ball where
-    show (Ball c pos vel col) = "This is a ball of [" ++ show col ++ "] color"
-
 instance Updatable Ball where
-    update b@(Ball c pos vel@(Vec2f velX velY) color) = do
+    update b@Ball { position, velocity } = do
         -- Physics update
-        let newB = Pos.setPosition b (addVec2f pos vel)
+        let newB = Pos.setPosition b (addVec2f position velocity)
 
         -- Behavior update
         dimension <- asks gameArea
@@ -52,7 +52,7 @@ instance Synchronizable Ball where
     synchronize ball = setPosition (circle ball) (position ball)
 
 instance Drawable Ball where 
-    draw wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing
+    draw wnd Ball { circle } = drawCircle wnd circle Nothing
 
 instance Pos.Position Ball where
     getPosition = position
@@ -61,6 +61,10 @@ instance Pos.Position Ball where
 instance Phy.Physics Ball where
     getVelocity = velocity
     setVelocity ball newVel = ball { velocity = newVel }
+
+instance Killable Ball where 
+    isAlive = alive
+    kill b = b { alive = False }
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 
@@ -72,4 +76,4 @@ createBall pos@(Vec2f x y) vel = do
             let color = blue
             liftIO $ setFillColor r color
             liftIO $ setRadius r 25
-            return (Ball r pos vel color)
+            return (Ball r pos vel color True)

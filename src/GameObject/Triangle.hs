@@ -23,6 +23,7 @@ import GameEnv
 import Updatable
 import Synchronizable
 import Drawable
+import Killable
 import qualified Component.Position as Pos
 -- import qualified Component.Physics as Phy
 import Behavior.BoxedBehavior (boundToDimension)
@@ -33,13 +34,17 @@ data Triangle = Triangle { pointer :: ConvexShape
                          }
 
 instance Updatable Triangle where
-    update = return
+    update = return . kill
 
 instance Synchronizable Triangle where
     synchronize t = setPosition (pointer t) (position t)
 
 instance Drawable Triangle where 
     draw wnd Triangle { pointer } = drawConvexShape wnd pointer Nothing
+
+instance Killable Triangle where
+    isAlive = (> 0) . lifeCounter
+    kill t = t { lifeCounter = 0 }
 
 instance Pos.Position Triangle where
     getPosition = position

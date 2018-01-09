@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module GameObject.Square
     ( Square(..)
     , createSquare
@@ -20,20 +21,22 @@ import Vec2.Vec2Math (zero, addVec2f)
 import Updatable
 import Synchronizable
 import Drawable
+import Killable
 import GameEnv
 import Behavior.BoxedBehavior (wrapAround)
 import qualified Component.Position as Pos
 import qualified Component.Physics  as Phy
 
-data Square = Square { circle   :: RectangleShape
+data Square = Square { pointer  :: RectangleShape
                      , position :: Vec2f
                      , velocity :: Vec2f
                      , color    :: Color
+                     , alive    :: Bool
                      }
 
 instance Updatable Square where
-    update s@(Square c pos vel@(Vec2f velX velY) color) = do
-        let newS = Pos.setPosition s (addVec2f pos vel)
+    update s@Square { position, velocity } = do
+        let newS = Pos.setPosition s (addVec2f position velocity)
         
         dimension <- asks gameArea
         let newSquare = wrapAround newS dimension
@@ -41,10 +44,10 @@ instance Updatable Square where
         return newSquare
 
 instance Synchronizable Square where
-    synchronize square = setPosition (circle square) (position square)
+    synchronize square = setPosition (pointer square) (position square)
 
 instance Drawable Square where 
-    draw wnd (Square rect pos vel color) = drawRectangle wnd rect Nothing 
+    draw wnd Square { pointer } = drawRectangle wnd pointer Nothing 
 
 instance Pos.Position Square where
     getPosition = position
@@ -54,6 +57,9 @@ instance Phy.Physics Square where
     getVelocity = velocity
     setVelocity square newVel = square { velocity = newVel }
 
+instance Killable Square where
+    isAlive = alive
+    kill s = s { alive = False }
 
 createSquare :: Vec2f -> Vec2f -> MaybeT IO Square
 createSquare pos@(Vec2f x y) vel = do 
@@ -67,4 +73,4 @@ createSquare pos@(Vec2f x y) vel = do
             let color = green
             liftIO $ setFillColor r color
             liftIO $ setSize r (Vec2f 25 25)
-            return (Square r pos vel color)
+            return (Square r pos vel color True)
