@@ -28,6 +28,7 @@ import Killable
 import qualified Component.Position as Pos
 import qualified Component.Physics as Phy
 import Behavior.BoxedBehavior (boundToDimension)
+import Component.Draw.CircleDrawing (createCircle)
 
 data Ball = Ball { circle   :: CircleShape
                  , position :: Vec2f
@@ -70,11 +71,6 @@ instance Killable Ball where
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 
     liftIO $ putStrLn $ "Creating ball at " ++ show pos
-    myCircle <- liftIO createCircleShape
-    case myCircle of
-        Left e -> liftIO (putStrLn $ "Error while creating a circle shape. " ++ show e) >> mzero
-        Right r -> do
-            let color = blue
-            liftIO $ setFillColor r color
-            liftIO $ setRadius r 25
-            return (Ball r pos vel color True)
+    let color = blue
+    shape <- createCircle 25 color
+    return (Ball shape pos vel color True)
