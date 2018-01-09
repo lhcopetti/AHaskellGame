@@ -26,6 +26,7 @@ import GameEnv
 import Behavior.BoxedBehavior (wrapAround)
 import qualified Component.Position as Pos
 import qualified Component.Physics  as Phy
+import Component.Draw.RectangleDrawing (createRectangle)
 
 data Square = Square { pointer  :: RectangleShape
                      , position :: Vec2f
@@ -65,13 +66,6 @@ instance Killable Square where
 createSquare :: Vec2f -> Vec2f -> MaybeT IO Square
 createSquare pos@(Vec2f x y) vel = do 
     liftIO $ putStrLn $ "Creating square at " ++ show pos
-    mySquare <- liftIO createRectangleShape
-    case mySquare of
-        Left e -> do 
-            liftIO (putStrLn $ "Error while trying to create a rectangle shape. " ++ show e)
-            mzero
-        Right r -> do
-            let color = green
-            liftIO $ setFillColor r color
-            liftIO $ setSize r (Vec2f 25 25)
-            return (Square r pos vel color True)
+    let color = green
+    square <- createRectangle (Vec2f 25 25) color
+    return (Square square pos vel color True)
