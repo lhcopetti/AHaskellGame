@@ -14,6 +14,7 @@ import Foreign.Marshal.Utils
 import Control.Monad.Trans.Maybe
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Reader (runReaderT)
+import Control.Monad.Reader (runReader)
 import Control.Monad.IO.Class
 
 import GameObject.AnyGameObject
@@ -115,7 +116,7 @@ gameLoop all@(GameWorld wnd objs) env = do
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
 
-    newObjs <- runReaderT (forM objs updateAnyGameObject) env
+    let newObjs = runReader (forM objs updateAnyGameObject) env
 
     synchronizeObjects all
 

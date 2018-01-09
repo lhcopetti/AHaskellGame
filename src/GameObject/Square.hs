@@ -37,12 +37,11 @@ instance Updatable Square where
         
         dimension <- asks gameArea
         let newSquare = wrapAround newS dimension
-    
-        liftIO (setPosition c (Pos.getPosition newSquare))
+
         return newSquare
 
 instance Synchronizable Square where
-    synchronize x = return ()
+    synchronize square = setPosition (circle square) (position square)
 
 instance Drawable Square where 
     draw wnd (Square rect pos vel color) = drawRectangle wnd rect Nothing 

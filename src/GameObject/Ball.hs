@@ -46,14 +46,11 @@ instance Updatable Ball where
         dimension <- asks gameArea
         let newBall = boundToDimension newB dimension
 
-        -- Pointer update
-        liftIO (setPosition c (Pos.getPosition newBall))
-
         -- Return the new object
         return newBall
 
 instance Synchronizable Ball where
-    synchronize x = return ()
+    synchronize ball = setPosition (circle ball) (position ball)
 
 instance Drawable Ball where 
 
