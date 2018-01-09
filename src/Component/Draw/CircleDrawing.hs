@@ -18,5 +18,5 @@ createCircle radius color = do
     circle <- createShapeT createCircleShape
     liftIO $ do 
         setFillColor circle color
-        setRadius circle 25
+        setRadius circle radius
         return circle
