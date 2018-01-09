@@ -64,7 +64,8 @@ instance Phy.Physics Ball where
 
 instance Killable Ball where 
     isAlive = alive
-    kill b = b { alive = False }
+    die b = b { alive = False }
+    destroyResource = destroy . circle
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 

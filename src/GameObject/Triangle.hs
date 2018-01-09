@@ -14,6 +14,8 @@ import SFML.Graphics.Types
 import SFML.Graphics.RenderWindow (drawConvexShape)
 import SFML.Graphics.SFShape (setFillColor, setOutlineColor)
 import SFML.Graphics.SFTransformable (setPosition)
+import SFML.SFResource (destroy)
+
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Reader.Class (asks)
@@ -34,7 +36,7 @@ data Triangle = Triangle { pointer :: ConvexShape
                          }
 
 instance Updatable Triangle where
-    update = return . kill
+    update = return . die
 
 instance Synchronizable Triangle where
     synchronize t = setPosition (pointer t) (position t)
@@ -44,7 +46,8 @@ instance Drawable Triangle where
 
 instance Killable Triangle where
     isAlive = (> 0) . lifeCounter
-    kill t = t { lifeCounter = 0 }
+    die t = t { lifeCounter = 0 }
+    destroyResource = destroy . pointer
 
 instance Pos.Position Triangle where
     getPosition = position

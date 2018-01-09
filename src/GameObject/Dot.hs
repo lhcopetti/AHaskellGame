@@ -48,7 +48,8 @@ instance Comp.Position Dot where
 
 instance Killable Dot where
     isAlive = alive
-    kill d = d { alive = False }
+    die d = d { alive = False }
+    destroyResource = destroy . pointer
 
 createDot :: Vec2f -> MaybeT IO Dot
 createDot pos@(Vec2f x y) = do 

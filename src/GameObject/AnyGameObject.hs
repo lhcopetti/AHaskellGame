@@ -6,7 +6,11 @@ module GameObject.AnyGameObject
     , drawAnyGameObject
     , synchronizeGameObject
     , isAliveAnyGameObject
+    , removeDeadAnyGameObjects
     ) where
+
+import Control.Monad (forM_)
+import Data.List (partition)
 
 import GameEnv (GameEnvironment)
 import Drawable
@@ -33,3 +37,9 @@ drawAnyGameObject window (AGO obj) = draw window obj
 
 isAliveAnyGameObject :: AnyGameObject -> Bool
 isAliveAnyGameObject (AGO a) = isAlive a
+
+removeDeadAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
+removeDeadAnyGameObjects objs = do 
+    let (alive, dead) = partition isAliveAnyGameObject objs
+    forM_ dead (\(AGO a) -> destroyResource a)
+    return alive

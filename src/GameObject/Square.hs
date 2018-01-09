@@ -59,7 +59,8 @@ instance Phy.Physics Square where
 
 instance Killable Square where
     isAlive = alive
-    kill s = s { alive = False }
+    die s = s { alive = False }
+    destroyResource = destroy . pointer
 
 createSquare :: Vec2f -> Vec2f -> MaybeT IO Square
 createSquare pos@(Vec2f x y) vel = do 

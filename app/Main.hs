@@ -125,7 +125,7 @@ gameLoop all@(GameWorld wnd objs) env = do
     clearRenderWindow wnd black
 
     let newObjs = runReader (forM objs updateAnyGameObject) env
-    let newObjs' = removeDeadObjects newObjs
+    newObjs' <- removeDeadAnyGameObjects newObjs
 
     synchronizeObjects all
 
@@ -138,9 +138,6 @@ eventLoop :: RenderWindow -> MaybeT IO SFEvent
 eventLoop window = do 
     evt <- pollEventT window
     if shouldCloseWindow evt then return evt else mzero
-
-removeDeadObjects :: [AnyGameObject] -> [AnyGameObject]
-removeDeadObjects = filter isAliveAnyGameObject
 
 pollEventT :: RenderWindow -> MaybeT IO SFEvent
 pollEventT = MaybeT . pollEvent

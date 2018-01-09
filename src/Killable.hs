@@ -1,9 +1,11 @@
 module Killable
     ( Killable
     , isAlive
-    , kill
+    , die
+    , destroyResource
     ) where
 
 class Killable a where 
     isAlive :: a -> Bool
-    kill :: a -> a
+    die :: a -> a
+    destroyResource :: a -> IO ()
