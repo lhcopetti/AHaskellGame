@@ -18,6 +18,7 @@ import Control.Monad (mzero)
 
 import Vec2.Vec2Math (zero, addVec2f)
 import Updatable
+import Synchronizable
 import Drawable
 import GameEnv
 import Behavior.BoxedBehavior (wrapAround)
@@ -36,9 +37,11 @@ instance Updatable Square where
         
         dimension <- asks gameArea
         let newSquare = wrapAround newS dimension
-    
-        liftIO (setPosition c (Pos.getPosition newSquare))
+
         return newSquare
+
+instance Synchronizable Square where
+    synchronize square = setPosition (circle square) (position square)
 
 instance Drawable Square where 
     draw wnd (Square rect pos vel color) = drawRectangle wnd rect Nothing 

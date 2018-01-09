@@ -14,6 +14,7 @@ import Foreign.Marshal.Utils
 import Control.Monad.Trans.Maybe
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Reader (runReaderT)
+import Control.Monad.Reader (runReader)
 import Control.Monad.IO.Class
 
 import GameObject.AnyGameObject
@@ -94,6 +95,11 @@ shouldCloseWindow _                             = False
 drawObjects :: GameWorld -> IO ()
 drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
 
+synchronizeObjects :: GameWorld -> IO ()
+synchronizeObjects (GameWorld wnd objs) = do 
+    forM_ objs synchronizeGameObject
+    return ()
+
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop all@(GameWorld wnd objs) env = do 
 
@@ -110,7 +116,9 @@ gameLoop all@(GameWorld wnd objs) env = do
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
 
-    newObjs <- runReaderT (forM objs updateAnyGameObject) env
+    let newObjs = runReader (forM objs updateAnyGameObject) env
+
+    synchronizeObjects all
 
     drawObjects all
     display wnd
