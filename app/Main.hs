@@ -94,6 +94,11 @@ shouldCloseWindow _                             = False
 drawObjects :: GameWorld -> IO ()
 drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
 
+synchronizeObjects :: GameWorld -> IO ()
+synchronizeObjects (GameWorld wnd objs) = do 
+    forM_ objs synchronizeGameObject
+    return ()
+
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop all@(GameWorld wnd objs) env = do 
 
@@ -111,6 +116,8 @@ gameLoop all@(GameWorld wnd objs) env = do
     clearRenderWindow wnd black
 
     newObjs <- runReaderT (forM objs updateAnyGameObject) env
+
+    synchronizeObjects all
 
     drawObjects all
     display wnd

@@ -17,8 +17,9 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad (mzero)
 
-import Drawable
 import Updatable
+import Synchronizable
+import Drawable
 import qualified Component.Position as Comp
 
 data Dot = Dot { circle   :: CircleShape
@@ -28,11 +29,15 @@ data Dot = Dot { circle   :: CircleShape
 dotColor :: Color
 dotColor = white
 
+instance Updatable Dot where 
+    update = return
+
+instance Synchronizable Dot where
+    synchronize x = return ()
+
 instance Drawable Dot where 
     draw wnd (Dot circle pos) = drawCircle wnd circle Nothing
 
-instance Updatable Dot where 
-    update = return
 
 instance Comp.Position Dot where
     getPosition = position

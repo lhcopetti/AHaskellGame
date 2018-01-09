@@ -22,6 +22,7 @@ import Control.Monad (mzero)
 
 import GameEnv
 import Updatable
+import Synchronizable
 import Drawable
 import qualified Component.Position as Pos
 import qualified Component.Physics as Phy
@@ -51,6 +52,8 @@ instance Updatable Ball where
         -- Return the new object
         return newBall
 
+instance Synchronizable Ball where
+    synchronize x = return ()
 
 instance Drawable Ball where 
 
