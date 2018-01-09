@@ -1,10 +1,9 @@
-{-# LANGUAGE InstanceSigs #-}
-
 module GameObject.Ball 
     ( Ball (..)
     , createBall
     , draw
     , update
+    , synchronize
     ) where
     
 import SFML.Graphics.Color
@@ -53,8 +52,6 @@ instance Synchronizable Ball where
     synchronize ball = setPosition (circle ball) (position ball)
 
 instance Drawable Ball where 
-
-    draw :: RenderWindow -> Ball -> IO ()
     draw wnd (Ball circle pos vel color) = drawCircle wnd circle Nothing
 
 instance Pos.Position Ball where
@@ -70,9 +67,7 @@ createBall pos@(Vec2f x y) vel = do
     liftIO $ putStrLn $ "Creating ball at " ++ show pos
     myCircle <- liftIO createCircleShape
     case myCircle of
-        Left e -> do 
-            liftIO (putStrLn $ "Error while trying to create a circle shape. " ++ show e)
-            mzero
+        Left e -> liftIO (putStrLn $ "Error while creating a circle shape. " ++ show e) >> mzero
         Right r -> do
             let color = blue
             liftIO $ setFillColor r color
