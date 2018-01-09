@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module GameObject.Dot
     ( Dot (..)
     , createDot
@@ -20,10 +21,12 @@ import Control.Monad (mzero)
 import Updatable
 import Synchronizable
 import Drawable
+import Killable
 import qualified Component.Position as Comp
 
-data Dot = Dot { circle   :: CircleShape
+data Dot = Dot { pointer  :: CircleShape
                , position :: Vec2f
+               , alive    :: Bool
                }
 
 dotColor :: Color
@@ -36,12 +39,17 @@ instance Synchronizable Dot where
     synchronize x = return ()
 
 instance Drawable Dot where 
-    draw wnd (Dot circle pos) = drawCircle wnd circle Nothing
+    draw wnd Dot { pointer } = drawCircle wnd pointer Nothing
 
 
 instance Comp.Position Dot where
     getPosition = position
-    setPosition (Dot c _) = Dot c
+    setPosition d pos = d { position = pos }
+
+instance Killable Dot where
+    isAlive = alive
+    die d = d { alive = False }
+    destroyResource = destroy . pointer
 
 createDot :: Vec2f -> MaybeT IO Dot
 createDot pos@(Vec2f x y) = do 
@@ -55,4 +63,4 @@ createDot pos@(Vec2f x y) = do
             liftIO $ setFillColor r dotColor
             liftIO $ setPosition r pos
             liftIO $ setRadius r 5
-            return (Dot r pos)
+            return (Dot r pos True)

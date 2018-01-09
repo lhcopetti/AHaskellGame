@@ -22,6 +22,7 @@ import GameEnv (GameEnvironment(..))
 import GameObject.Ball
 import GameObject.Square
 import GameObject.Dot
+import GameObject.Triangle
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]
@@ -49,21 +50,23 @@ main = do
     createdBalls <- runMaybeT createObjects
     case createdBalls of 
         Nothing -> putStrLn "Error creating game objects"
-        Just (balls, squares, dots) -> do
+        Just (balls, squares, dots, triangles) -> do
             let anyBalls = map AGO balls
             let anySquares = map AGO squares
             let anyDots = map AGO dots
-            let world = GameWorld wnd (anyBalls ++ anySquares ++ anyDots)
+            let anyTriangles = map AGO triangles
+            let world = GameWorld wnd (anyBalls ++ anySquares ++ anyDots ++ anyTriangles)
             loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
 
-createObjects :: MaybeT IO ([Ball], [Square], [Dot])
+createObjects :: MaybeT IO ([Ball], [Square], [Dot], [Triangle])
 createObjects = do 
     balls <- createGameBalls
     squares <- createGameSquares
     dots <- createDots
-    return (balls, squares, dots)
+    triangles <- createTriangles
+    return (balls, squares, dots, triangles)
 
 createGameSquares :: MaybeT IO [Square]
 createGameSquares = do
@@ -87,6 +90,11 @@ createDots = do
     dot3    <- createDot (Vec2f 350 350)
     return [dot, dot', dot'', dot3]
 
+createTriangles :: MaybeT IO [Triangle]
+createTriangles = do
+    triangle <- createTriangle (Vec2f 150 150) (Vec2f 0 0)
+    return [triangle]
+
 shouldCloseWindow :: SFEvent -> Bool
 shouldCloseWindow SFEvtClosed                   = True
 shouldCloseWindow SFEvtMouseButtonPressed {}    = True
@@ -96,9 +104,7 @@ drawObjects :: GameWorld -> IO ()
 drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
 
 synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects (GameWorld wnd objs) = do 
-    forM_ objs synchronizeGameObject
-    return ()
+synchronizeObjects (GameWorld wnd objs) = forM_ objs synchronizeGameObject
 
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop all@(GameWorld wnd objs) env = do 
@@ -117,13 +123,15 @@ gameLoop all@(GameWorld wnd objs) env = do
     clearRenderWindow wnd black
 
     let newObjs = runReader (forM objs updateAnyGameObject) env
+    newObjs' <- removeDeadAnyGameObjects newObjs
 
-    synchronizeObjects all
+    let newWorld = GameWorld wnd newObjs'
 
-    drawObjects all
+    synchronizeObjects newWorld
+    drawObjects newWorld
     display wnd
 
-    return (GameWorld wnd newObjs)
+    return newWorld
 
 eventLoop :: RenderWindow -> MaybeT IO SFEvent
 eventLoop window = do 
