@@ -22,6 +22,7 @@ import GameEnv (GameEnvironment(..))
 import GameObject.Ball
 import GameObject.Square
 import GameObject.Dot
+import GameObject.Triangle
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]
@@ -49,21 +50,23 @@ main = do
     createdBalls <- runMaybeT createObjects
     case createdBalls of 
         Nothing -> putStrLn "Error creating game objects"
-        Just (balls, squares, dots) -> do
+        Just (balls, squares, dots, triangles) -> do
             let anyBalls = map AGO balls
             let anySquares = map AGO squares
             let anyDots = map AGO dots
-            let world = GameWorld wnd (anyBalls ++ anySquares ++ anyDots)
+            let anyTriangles = map AGO triangles
+            let world = GameWorld wnd (anyBalls ++ anySquares ++ anyDots ++ anyTriangles)
             loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
 
-createObjects :: MaybeT IO ([Ball], [Square], [Dot])
+createObjects :: MaybeT IO ([Ball], [Square], [Dot], [Triangle])
 createObjects = do 
     balls <- createGameBalls
     squares <- createGameSquares
     dots <- createDots
-    return (balls, squares, dots)
+    triangles <- createTriangles
+    return (balls, squares, dots, triangles)
 
 createGameSquares :: MaybeT IO [Square]
 createGameSquares = do
@@ -86,6 +89,11 @@ createDots = do
     dot''   <- createDot (Vec2f 250 250)
     dot3    <- createDot (Vec2f 350 350)
     return [dot, dot', dot'', dot3]
+
+createTriangles :: MaybeT IO [Triangle]
+createTriangles = do
+    triangle <- createTriangle (Vec2f 150 150) (Vec2f 0 0)
+    return [triangle]
 
 shouldCloseWindow :: SFEvent -> Bool
 shouldCloseWindow SFEvtClosed                   = True
