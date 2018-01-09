@@ -104,9 +104,7 @@ drawObjects :: GameWorld -> IO ()
 drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
 
 synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects (GameWorld wnd objs) = do 
-    forM_ objs synchronizeGameObject
-    return ()
+synchronizeObjects (GameWorld wnd objs) = forM_ objs synchronizeGameObject
 
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop all@(GameWorld wnd objs) env = do 
@@ -127,12 +125,13 @@ gameLoop all@(GameWorld wnd objs) env = do
     let newObjs = runReader (forM objs updateAnyGameObject) env
     newObjs' <- removeDeadAnyGameObjects newObjs
 
-    synchronizeObjects all
+    let newWorld = GameWorld wnd newObjs'
 
-    drawObjects all
+    synchronizeObjects newWorld
+    drawObjects newWorld
     display wnd
 
-    return (GameWorld wnd newObjs')
+    return newWorld
 
 eventLoop :: RenderWindow -> MaybeT IO SFEvent
 eventLoop window = do 

@@ -27,8 +27,16 @@
 08/01/2018
 	OK! Remove the manual handling of objects (Use the new AnyGameObject type)
 
+09/01/2018
+	OK! Create a new set of objects (Triangles, maybe?)
+	OK! Create the Killable type class that represents game objects that die
+		(This will be part of the GameObject primitive type class)
+
+	TODO: Kill a specific type of game object after 'X' collisions 
+		Use bound to dimension?
+		Change color as the counter aproaches zero.
 	TODO: Add acceleration to the PhysicsBehavior
-	TODO: Create a new set of objects (Triangles, maybe?)
+	
 	TODO: Add acceleration behavior for the triangles
 	TODO: Create another type of object  that will "die" after 'n' collisions.
 		Like a time bomb (Maybe use a sprite for this one?)
