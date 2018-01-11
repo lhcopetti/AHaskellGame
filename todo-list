@@ -36,6 +36,7 @@
 		Use bound to dimension?
 		Change color as the counter aproaches zero.
 	TODO: Add acceleration to the PhysicsBehavior
+	TODO: Destroy every SFML resource on program exit
 	
 	TODO: Add acceleration behavior for the triangles
 	TODO: Create another type of object  that will "die" after 'n' collisions.

@@ -2,6 +2,7 @@
 module GameObject.Ball 
     ( Ball (..)
     , createBall
+    , createRedBall
     , draw
     , update
     , synchronize
@@ -34,7 +35,6 @@ import Component.Draw.CircleDrawing (createCircle)
 data Ball = Ball { drawComp :: Drawing
                  , position :: Vec2f
                  , velocity :: Vec2f
-                 , color    :: Color
                  , alive    :: Bool
                  }
 
@@ -74,4 +74,10 @@ createBall pos@(Vec2f x y) vel = do
     liftIO $ putStrLn $ "Creating ball at " ++ show pos
     let color = blue
     shape <- createCircle 25 color
-    return (Ball shape pos vel color True)
+    return (Ball shape pos vel True)
+
+createRedBall :: Vec2f -> Vec2f -> MaybeT IO Ball
+createRedBall pos vel = do 
+    liftIO $ putStrLn $ "Creating red ball at " ++ show pos
+    drawComponent <- createCircle 10 red
+    return (Ball drawComponent pos vel True)
