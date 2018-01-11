@@ -27,10 +27,11 @@ import Drawable
 import Killable
 import qualified Component.Position as Pos
 import qualified Component.Physics as Phy
+import Component.Draw.Drawing
 import Behavior.BoxedBehavior (boundToDimension)
 import Component.Draw.CircleDrawing (createCircle)
 
-data Ball = Ball { circle   :: CircleShape
+data Ball = Ball { drawComp :: Drawing
                  , position :: Vec2f
                  , velocity :: Vec2f
                  , color    :: Color
@@ -50,10 +51,10 @@ instance Updatable Ball where
         return newBall
 
 instance Synchronizable Ball where
-    synchronize ball = setPosition (circle ball) (position ball)
+    synchronize ball = updateDrawing (drawComp ball) ball
 
 instance Drawable Ball where 
-    draw wnd Ball { circle } = drawCircle wnd circle Nothing
+    draw wnd Ball { drawComp } = draw wnd drawComp
 
 instance Pos.Position Ball where
     getPosition = position
@@ -66,7 +67,7 @@ instance Phy.Physics Ball where
 instance Killable Ball where 
     isAlive = alive
     die b = b { alive = False }
-    destroyResource = destroy . circle
+    destroyResource Ball { drawComp } = destroyDrawing drawComp 
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 

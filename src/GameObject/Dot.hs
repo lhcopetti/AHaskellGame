@@ -22,8 +22,9 @@ import Drawable
 import Killable
 import qualified Component.Position as Comp
 import Component.Draw.CircleDrawing (createCircle)
+import Component.Draw.Drawing
 
-data Dot = Dot { pointer  :: CircleShape
+data Dot = Dot { drawComp :: Drawing
                , position :: Vec2f
                , alive    :: Bool
                }
@@ -35,10 +36,10 @@ instance Updatable Dot where
     update = return
 
 instance Synchronizable Dot where
-    synchronize Dot { pointer, position } = setPosition pointer position
+    synchronize dot = updateDrawing (drawComp dot) dot 
 
 instance Drawable Dot where 
-    draw wnd Dot { pointer } = drawCircle wnd pointer Nothing
+    draw wnd dot = draw wnd (drawComp dot)
 
 instance Comp.Position Dot where
     getPosition = position
@@ -47,7 +48,7 @@ instance Comp.Position Dot where
 instance Killable Dot where
     isAlive = alive
     die d = d { alive = False }
-    destroyResource = destroy . pointer
+    destroyResource dot = destroyDrawing (drawComp dot)
 
 createDot :: Vec2f -> MaybeT IO Dot
 createDot pos@(Vec2f x y) = do 
