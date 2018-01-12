@@ -20,7 +20,6 @@ import Control.Monad.IO.Class
 import GameObject.AnyGameObject
 import GameEnv (GameEnvironment(..))
 import GameObject.Ball
-import GameObject.Square
 import GameObject.Dot
 import GameObject.Triangle
 import BallFactory
@@ -52,30 +51,21 @@ main = do
     createdBalls <- runMaybeT createObjects
     case createdBalls of 
         Nothing -> putStrLn "Error creating game objects"
-        Just (balls, squares, dots, triangles) -> do
+        Just (balls, dots, triangles) -> do
             let anyBalls = map AGO balls
-            let anySquares = map AGO squares
             let anyDots = map AGO dots
             let anyTriangles = map AGO triangles
-            let world = GameWorld wnd (anyBalls ++ anySquares ++ anyDots ++ anyTriangles)
+            let world = GameWorld wnd (anyBalls ++ anyDots ++ anyTriangles)
             loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
 
-createObjects :: MaybeT IO ([Ball], [Square], [Dot], [Triangle])
+createObjects :: MaybeT IO ([Ball], [Dot], [Triangle])
 createObjects = do 
     balls <- createGameBalls
-    squares <- createGameSquares
     dots <- createDots
     triangles <- createTriangles
-    return (balls, squares, dots, triangles)
-
-createGameSquares :: MaybeT IO [Square]
-createGameSquares = do
-    sq <- createSquare (Vec2f 25 25) (Vec2f 2 2)
-    sq' <- createSquare (Vec2f 15 15) (Vec2f 1 0)
-    sq'' <- createSquare (Vec2f 150 150) (Vec2f 1 1)
-    return [sq, sq', sq'']
+    return (balls, dots, triangles)
 
 createGameBalls :: MaybeT IO [Ball]
 createGameBalls = do
@@ -91,7 +81,8 @@ createGameBalls = do
     ball10 <- createCyanTriangle (Vec2f 250 300) (Vec2f 1 2)
     ball11 <- createCyanTriangle (Vec2f 150 200) (Vec2f 1 (-3))
     ball12 <- createCyanTriangle (Vec2f 50 100) (Vec2f (-1) 1)
-    return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball10, ball11, ball12]
+    ball13 <- createMagentaWrapAroundBall (Vec2f 300 300) (Vec2f 2.5 4.5)
+    return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball10, ball11, ball12, ball13]
 
 createDots :: MaybeT IO [Dot]
 createDots = do
