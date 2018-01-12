@@ -1,6 +1,5 @@
 module Main where
 
-import Lib
 import SFML.Window
 import Control.Monad (forM_, forM, mzero)
 import SFML.Utils
