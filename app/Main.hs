@@ -23,6 +23,7 @@ import GameObject.Ball
 import GameObject.Square
 import GameObject.Dot
 import GameObject.Triangle
+import BallFactory
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]

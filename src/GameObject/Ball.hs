@@ -1,10 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module GameObject.Ball 
     ( Ball (..)
-    , createBall
-    , createRedBall
-    , createYellowSquare
-    , createCyanTriangle
     , draw
     , update
     , synchronize
@@ -32,9 +28,6 @@ import qualified Component.Position as Pos
 import qualified Component.Physics as Phy
 import Component.Draw.Drawing
 import Behavior.BoxedBehavior (boundToDimension)
-import Component.Draw.CircleDrawing (createCircle)
-import Component.Draw.RectangleDrawing (createSquare)
-import Component.Draw.ConvexDrawing (createConvex)
 
 data Ball = Ball { drawComp :: Drawing
                  , position :: Vec2f
@@ -71,29 +64,4 @@ instance Phy.Physics Ball where
 instance Killable Ball where 
     isAlive = alive
     die b = b { alive = False }
-    destroyResource Ball { drawComp } = destroyDrawing drawComp 
-
-createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
-createBall pos@(Vec2f x y) vel = do 
-    liftIO $ putStrLn $ "Creating ball at " ++ show pos
-    let color = blue
-    shape <- createCircle 25 color
-    return (Ball shape pos vel True)
-
-createRedBall :: Vec2f -> Vec2f -> MaybeT IO Ball
-createRedBall pos vel = do 
-    liftIO $ putStrLn $ "Creating red ball at " ++ show pos
-    drawComponent <- createCircle 10 red
-    return (Ball drawComponent pos vel True)
-
-createYellowSquare :: Vec2f -> Vec2f -> MaybeT IO Ball
-createYellowSquare pos vel = do
-    liftIO $ putStrLn $ "Creating yellow square at " ++ show pos
-    drawComponent <- createSquare 5 yellow
-    return (Ball drawComponent pos vel True)
-
-createCyanTriangle :: Vec2f -> Vec2f -> MaybeT IO Ball
-createCyanTriangle pos vel = do
-    liftIO $ putStrLn $ "Creating blue triangle at " ++ show pos
-    drawComponent <- createConvex cyan [Vec2f 55 30, Vec2f 70 60, Vec2f 40 60]
-    return (Ball drawComponent pos vel True)
+    destroyResource Ball { drawComp } = destroyDrawing drawComp
