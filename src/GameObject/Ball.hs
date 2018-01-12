@@ -3,6 +3,7 @@ module GameObject.Ball
     ( Ball (..)
     , createBall
     , createRedBall
+    , createYellowSquare
     , draw
     , update
     , synchronize
@@ -31,6 +32,7 @@ import qualified Component.Physics as Phy
 import Component.Draw.Drawing
 import Behavior.BoxedBehavior (boundToDimension)
 import Component.Draw.CircleDrawing (createCircle)
+import Component.Draw.RectangleDrawing (createSquare)
 
 data Ball = Ball { drawComp :: Drawing
                  , position :: Vec2f
@@ -80,4 +82,10 @@ createRedBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createRedBall pos vel = do 
     liftIO $ putStrLn $ "Creating red ball at " ++ show pos
     drawComponent <- createCircle 10 red
+    return (Ball drawComponent pos vel True)
+
+createYellowSquare :: Vec2f -> Vec2f -> MaybeT IO Ball
+createYellowSquare pos vel = do
+    liftIO $ putStrLn $ "Creating yellow square at " ++ show pos
+    drawComponent <- createSquare 5 yellow
     return (Ball drawComponent pos vel True)
