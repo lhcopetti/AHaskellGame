@@ -8,6 +8,7 @@ import SFML.Graphics.Color
 import SFML.Graphics.SFRenderTarget
 import SFML.Graphics.RenderWindow
 import SFML.Graphics.Types
+
 import Control.Concurrent
 import Foreign.Marshal.Utils
 import Control.Monad.Trans.Maybe
@@ -23,6 +24,7 @@ import GameObject.Square
 import GameObject.Dot
 import GameObject.Triangle
 import BallFactory
+import System.EventSystem (pollClosingEvent)
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]
@@ -104,11 +106,6 @@ createTriangles = do
     triangle <- createTriangle (Vec2f 150 150) (Vec2f 0 0)
     return [triangle]
 
-shouldCloseWindow :: SFEvent -> Bool
-shouldCloseWindow SFEvtClosed                   = True
-shouldCloseWindow SFEvtMouseButtonPressed {}    = True
-shouldCloseWindow _                             = False
-
 drawObjects :: GameWorld -> IO ()
 drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
 
@@ -120,7 +117,7 @@ loop all@(GameWorld wnd objs) env = do
 
     updatedWorld <- gameLoop all env
 
-    evt <- runMaybeT (eventLoop wnd)
+    evt <- runMaybeT (pollClosingEvent wnd)
     case evt of 
         Nothing -> loop updatedWorld env
         (Just event) -> putStrLn ("Closing event: " ++ show event)
@@ -141,11 +138,3 @@ gameLoop all@(GameWorld wnd objs) env = do
     display wnd
 
     return newWorld
-
-eventLoop :: RenderWindow -> MaybeT IO SFEvent
-eventLoop window = do 
-    evt <- pollEventT window
-    if shouldCloseWindow evt then return evt else mzero
-
-pollEventT :: RenderWindow -> MaybeT IO SFEvent
-pollEventT = MaybeT . pollEvent
