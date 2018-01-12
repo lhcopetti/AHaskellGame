@@ -80,7 +80,13 @@ createGameBalls = do
     ball <- createBall (Vec2f 25 25) (Vec2f 4 4)
     ball2 <- createBall (Vec2f 15 15) (Vec2f 2 0)
     ball3 <- createBall (Vec2f 150 150) (Vec2f 1 3)
-    return [ball, ball2, ball3]
+    ball4 <- createRedBall (Vec2f 300 150) (Vec2f 4 3)
+    ball5 <- createRedBall (Vec2f 350 150) (Vec2f 1 (-3))
+    ball6 <- createRedBall (Vec2f 400 150) (Vec2f (-1) 2)
+    ball7 <- createYellowSquare (Vec2f 100 100) (Vec2f 2 3)
+    ball8 <- createYellowSquare (Vec2f 200 200) (Vec2f 2 (-3))
+    ball9 <- createYellowSquare (Vec2f 300 300) (Vec2f 2 (-5))
+    return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9]
 
 createDots :: MaybeT IO [Dot]
 createDots = do

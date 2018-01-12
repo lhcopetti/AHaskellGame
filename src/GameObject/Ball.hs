@@ -2,6 +2,8 @@
 module GameObject.Ball 
     ( Ball (..)
     , createBall
+    , createRedBall
+    , createYellowSquare
     , draw
     , update
     , synchronize
@@ -27,13 +29,14 @@ import Drawable
 import Killable
 import qualified Component.Position as Pos
 import qualified Component.Physics as Phy
+import Component.Draw.Drawing
 import Behavior.BoxedBehavior (boundToDimension)
 import Component.Draw.CircleDrawing (createCircle)
+import Component.Draw.RectangleDrawing (createSquare)
 
-data Ball = Ball { circle   :: CircleShape
+data Ball = Ball { drawComp :: Drawing
                  , position :: Vec2f
                  , velocity :: Vec2f
-                 , color    :: Color
                  , alive    :: Bool
                  }
 
@@ -50,10 +53,10 @@ instance Updatable Ball where
         return newBall
 
 instance Synchronizable Ball where
-    synchronize ball = setPosition (circle ball) (position ball)
+    synchronize ball = updateDrawing (drawComp ball) ball
 
 instance Drawable Ball where 
-    draw wnd Ball { circle } = drawCircle wnd circle Nothing
+    draw wnd Ball { drawComp } = draw wnd drawComp
 
 instance Pos.Position Ball where
     getPosition = position
@@ -66,11 +69,23 @@ instance Phy.Physics Ball where
 instance Killable Ball where 
     isAlive = alive
     die b = b { alive = False }
-    destroyResource = destroy . circle
+    destroyResource Ball { drawComp } = destroyDrawing drawComp 
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 
     liftIO $ putStrLn $ "Creating ball at " ++ show pos
     let color = blue
     shape <- createCircle 25 color
-    return (Ball shape pos vel color True)
+    return (Ball shape pos vel True)
+
+createRedBall :: Vec2f -> Vec2f -> MaybeT IO Ball
+createRedBall pos vel = do 
+    liftIO $ putStrLn $ "Creating red ball at " ++ show pos
+    drawComponent <- createCircle 10 red
+    return (Ball drawComponent pos vel True)
+
+createYellowSquare :: Vec2f -> Vec2f -> MaybeT IO Ball
+createYellowSquare pos vel = do
+    liftIO $ putStrLn $ "Creating yellow square at " ++ show pos
+    drawComponent <- createSquare 5 yellow
+    return (Ball drawComponent pos vel True)

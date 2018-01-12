@@ -26,9 +26,10 @@ import GameEnv
 import Behavior.BoxedBehavior (wrapAround)
 import qualified Component.Position as Pos
 import qualified Component.Physics  as Phy
+import Component.Draw.Drawing
 import Component.Draw.RectangleDrawing (createRectangle)
 
-data Square = Square { pointer  :: RectangleShape
+data Square = Square { drawComp  :: Drawing
                      , position :: Vec2f
                      , velocity :: Vec2f
                      , color    :: Color
@@ -45,10 +46,10 @@ instance Updatable Square where
         return newSquare
 
 instance Synchronizable Square where
-    synchronize square = setPosition (pointer square) (position square)
+    synchronize square = updateDrawing (drawComp square) square
 
 instance Drawable Square where 
-    draw wnd Square { pointer } = drawRectangle wnd pointer Nothing 
+    draw wnd Square { drawComp } = draw wnd drawComp
 
 instance Pos.Position Square where
     getPosition = position
@@ -61,7 +62,7 @@ instance Phy.Physics Square where
 instance Killable Square where
     isAlive = alive
     die s = s { alive = False }
-    destroyResource = destroy . pointer
+    destroyResource Square { drawComp } = destroyDrawing drawComp 
 
 createSquare :: Vec2f -> Vec2f -> MaybeT IO Square
 createSquare pos@(Vec2f x y) vel = do 
