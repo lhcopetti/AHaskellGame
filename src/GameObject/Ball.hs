@@ -17,16 +17,17 @@ import Killable
 import qualified Component.Position as Pos
 import qualified Component.Physics as Phy
 import Component.Draw.Drawing
-import Component.Behavior.EnclosedBehavior
+import Component.Behavior.Behavior
 
 data Ball = Ball { drawComp :: Drawing
+                 , behavior :: Behavior
                  , position :: Vec2f
                  , velocity :: Vec2f
                  , alive    :: Bool
                  }
 
 instance Updatable Ball where
-    update = encloseToBox
+    update ball@Ball { behavior } = behave behavior ball
 
 instance Synchronizable Ball where
     synchronize ball = updateDrawing (drawComp ball) ball

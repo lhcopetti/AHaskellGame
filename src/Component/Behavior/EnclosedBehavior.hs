@@ -14,7 +14,7 @@ import Component.Physics
 import GameEnv
 
 
-encloseToBox :: (Position a, Physics a) => a -> Reader GameEnvironment a
+encloseToBox :: BehaviorType
 encloseToBox obj = do
         let pos = getPosition obj
         let vel = getVelocity obj
