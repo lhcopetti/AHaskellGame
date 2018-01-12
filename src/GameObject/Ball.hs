@@ -4,6 +4,7 @@ module GameObject.Ball
     , createBall
     , createRedBall
     , createYellowSquare
+    , createCyanTriangle
     , draw
     , update
     , synchronize
@@ -33,6 +34,7 @@ import Component.Draw.Drawing
 import Behavior.BoxedBehavior (boundToDimension)
 import Component.Draw.CircleDrawing (createCircle)
 import Component.Draw.RectangleDrawing (createSquare)
+import Component.Draw.ConvexDrawing (createConvex)
 
 data Ball = Ball { drawComp :: Drawing
                  , position :: Vec2f
@@ -88,4 +90,10 @@ createYellowSquare :: Vec2f -> Vec2f -> MaybeT IO Ball
 createYellowSquare pos vel = do
     liftIO $ putStrLn $ "Creating yellow square at " ++ show pos
     drawComponent <- createSquare 5 yellow
+    return (Ball drawComponent pos vel True)
+
+createCyanTriangle :: Vec2f -> Vec2f -> MaybeT IO Ball
+createCyanTriangle pos vel = do
+    liftIO $ putStrLn $ "Creating blue triangle at " ++ show pos
+    drawComponent <- createConvex cyan [Vec2f 55 30, Vec2f 70 60, Vec2f 40 60]
     return (Ball drawComponent pos vel True)
