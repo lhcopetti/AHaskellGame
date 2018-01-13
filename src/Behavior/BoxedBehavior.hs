@@ -1,14 +1,15 @@
 module Behavior.BoxedBehavior 
     ( boundToDimension
     , wrapAround
+    , wrapAroundValue
     ) where
 
+import Control.Applicative (ZipList (..))
 
 import Component.Position
 import Component.Physics
 import Container.TupleHelper (mapTuple)
 import Vec2.Vec2Math (v2fToTuple)
-import Math.MathFunctions (signumWithoutZero)
 
 import SFML.System.Vector2 (Vec2u (..), Vec2f (..))
 
@@ -21,10 +22,26 @@ boundToDimension obj (Vec2u width height) = let
     in 
         setVelocity obj (Vec2f newVx newVy)
 
-wrapAround :: (Position a, Physics a) => a -> Vec2u -> a
-wrapAround obj (Vec2u width height) = setPosition obj (Vec2f newX newY)
-        where
-            (x, y) = mapTuple round . v2fToTuple . getPosition $ obj
-            (signalX, signalY) = mapTuple signumWithoutZero (x, y)
-            newX = fromIntegral (x `mod` (signalX * width))
-            newY = fromIntegral (y `mod` (signalY * height))
+wrapAround :: (Position a) => a -> Vec2u -> a
+wrapAround obj dimension = setPosition obj newPos 
+    where 
+        pos = getPosition obj
+        newPos = wrapAroundPos pos dimension
+
+wrapAroundPos :: Vec2f -> Vec2u -> Vec2f 
+wrapAroundPos (Vec2f px py) (Vec2u width height) = let
+            position = ZipList [px, py]
+            dimension = ZipList [width, height]
+            ZipList [nx, ny] = wrapAroundFloat <$> position <*> dimension
+            in 
+                Vec2f nx ny
+
+wrapAroundFloat :: Float -> Word -> Float
+wrapAroundFloat value max = let 
+    iValue = round value
+    iMax = round . fromIntegral $ max
+    in 
+        fromIntegral (wrapAroundValue iValue iMax)
+
+wrapAroundValue :: Integral a => a -> a -> a
+wrapAroundValue value max = value `mod` max
