@@ -6,7 +6,7 @@ I'm still unsure whether it will be a simple game or a more ambitious yet with a
 
 ## Diary
 
-* 13/01/2017 - Some abstractions are starting to show up
+### 13/01/2017 - Some abstractions are starting to show up
 
 ![alt text][diary-01]
 
@@ -58,12 +58,11 @@ stack exec AHaskellGame-exe
 
 Sometimes it may be helpful to get some insight as to why something is going bad. Take this trace for example:
 
-`
+```
 Creating circle R: 5.0C: Color {r = 255, g = 255, b = 255, a = 255}
 Creating triangle at Vec2f 150.0 150.0
 AHaskellGame-exe: divide by zero
-lhcopetti@lhcopetti-Vostro-5470:~/Documents/Dev/Haskell/SFMLHelloWorld$
-`
+```
 
 The execution simply halts on that not so glorifying math error. After some research, I found out that you need to enable some flags on compilation and execution to actually get some information about that exception. 
 
@@ -82,7 +81,7 @@ stack exec AHaskellGame-exe +RTC --profile --trace --rts-options -xc
 
 And simply wait for the error to ocurr again, however, this time, you will be presented with a lot more than a simple obscure error message:
 
-`
+```
 *** Exception (reporting due to +RTS -xc): (THUNK_STATIC), stack trace:
   GHC.Real.CAF
   --> evaluated by: Behavior.BoxedBehavior.wrapAround,
@@ -101,7 +100,7 @@ And simply wait for the error to ocurr again, however, this time, you will be pr
   called from Main.loop,
   called from Main.main
 AHaskellGame-exe: divide by zero
-`
+```
 
 This is also in honor for being the first logic bug on the project, and rightfully so because I haven't done any testing whatsoever prior to this event (my bad!).
 
