@@ -8,6 +8,7 @@ import Component.Position
 import Component.Physics
 import Container.TupleHelper (mapTuple)
 import Vec2.Vec2Math (v2fToTuple)
+import Math.MathFunctions (signumWithoutZero)
 
 import SFML.System.Vector2 (Vec2u (..), Vec2f (..))
 
@@ -24,6 +25,6 @@ wrapAround :: (Position a, Physics a) => a -> Vec2u -> a
 wrapAround obj (Vec2u width height) = setPosition obj (Vec2f newX newY)
         where
             (x, y) = mapTuple round . v2fToTuple . getPosition $ obj
-            (signalX, signalY) = mapTuple signum (x, y)
+            (signalX, signalY) = mapTuple signumWithoutZero (x, y)
             newX = fromIntegral (x `mod` (signalX * width))
             newY = fromIntegral (y `mod` (signalY * height))
