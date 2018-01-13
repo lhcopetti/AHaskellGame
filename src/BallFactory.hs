@@ -4,6 +4,7 @@ module BallFactory
     , createYellowSquare
     , createCyanTriangle
     , createMagentaWrapAroundBall
+    , createWhiteNoopBall
     ) where
 
 import SFML.System.Vector2
@@ -16,7 +17,7 @@ import GameObject.Ball
 import Component.Draw.CircleDrawing (createCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
-import Component.Behavior.Behaviors (encloseToBoxB, encloseByWrapAroundB)
+import Component.Behavior.Behaviors (encloseToBoxB, encloseByWrapAroundB, noopB)
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 
@@ -48,3 +49,9 @@ createMagentaWrapAroundBall pos vel = do
     liftIO $ putStrLn $ "Creating magenta ball at " ++ show pos
     drawComponent <- createCircle 5 magenta
     return (Ball drawComponent encloseByWrapAroundB pos vel True)
+
+createWhiteNoopBall :: Vec2f -> Vec2f -> MaybeT IO Ball
+createWhiteNoopBall pos vel = do
+    liftIO $ putStrLn $ "Creating white noop ball " ++ show pos
+    drawComponent <- createCircle 5 white
+    return (Ball drawComponent noopB pos vel True)

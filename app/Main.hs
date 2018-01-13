@@ -24,6 +24,7 @@ import GameObject.Dot
 import GameObject.Triangle
 import BallFactory
 import System.EventSystem (pollClosingEvent)
+import Vec2.Vec2Math (zero)
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]
@@ -82,7 +83,8 @@ createGameBalls = do
     ball11 <- createCyanTriangle (Vec2f 150 200) (Vec2f 1 (-3))
     ball12 <- createCyanTriangle (Vec2f 50 100) (Vec2f (-1) 1)
     ball13 <- createMagentaWrapAroundBall (Vec2f 300 300) (Vec2f 2.5 4.5)
-    return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball10, ball11, ball12, ball13]
+    ball14 <- createWhiteNoopBall (Vec2f 60 60) zero
+    return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball10, ball11, ball12, ball13, ball14]
 
 createDots :: MaybeT IO [Dot]
 createDots = do
