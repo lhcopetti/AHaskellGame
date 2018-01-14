@@ -1,7 +1,7 @@
 module Main where
 
 import SFML.Window
-import Control.Monad (forM_, forM, mzero)
+import Control.Monad (forM_, forM)
 import SFML.Utils
 import SFML.Graphics.CircleShape
 import SFML.Graphics.Color
@@ -20,11 +20,9 @@ import Control.Monad.IO.Class
 import GameObject.AnyGameObject
 import GameEnv (GameEnvironment(..))
 import GameObject.Ball
-import GameObject.Dot
 import GameObject.Triangle
 import BallFactory
 import System.EventSystem (pollClosingEvent)
-import Vec2.Vec2Math (zero)
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]
@@ -52,21 +50,20 @@ main = do
     createdBalls <- runMaybeT createObjects
     case createdBalls of 
         Nothing -> putStrLn "Error creating game objects"
-        Just (balls, dots, triangles) -> do
+        Just (balls, triangles) -> do
             let anyBalls = map AGO balls
-            let anyDots = map AGO dots
             let anyTriangles = map AGO triangles
-            let world = GameWorld wnd (anyBalls ++ anyDots ++ anyTriangles)
+            let world = GameWorld wnd (anyBalls ++ anyTriangles)
             loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
 
-createObjects :: MaybeT IO ([Ball], [Dot], [Triangle])
+createObjects :: MaybeT IO ([Ball], [Triangle])
 createObjects = do 
     balls <- createGameBalls
     dots <- createDots
     triangles <- createTriangles
-    return (balls, dots, triangles)
+    return (balls ++ dots, triangles)
 
 createGameBalls :: MaybeT IO [Ball]
 createGameBalls = do
@@ -83,15 +80,15 @@ createGameBalls = do
     ball11 <- createCyanTriangle (Vec2f 150 200) (Vec2f 1 (-3))
     ball12 <- createCyanTriangle (Vec2f 50 100) (Vec2f (-1) 1)
     ball13 <- createMagentaWrapAroundBall (Vec2f 300 300) (Vec2f 2.5 4.5)
-    ball14 <- createWhiteNoopBall (Vec2f 60 60) zero
+    ball14 <- createWhiteNoopBall (Vec2f 60 60)
     return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball10, ball11, ball12, ball13, ball14]
 
-createDots :: MaybeT IO [Dot]
+createDots :: MaybeT IO [Ball]
 createDots = do
-    dot     <- createDot (Vec2f 50 50)
-    dot'    <- createDot (Vec2f 150 150)
-    dot''   <- createDot (Vec2f 250 250)
-    dot3    <- createDot (Vec2f 350 350)
+    dot     <- createWhiteNoopBall (Vec2f 50 50)
+    dot'    <- createWhiteNoopBall (Vec2f 150 150)
+    dot''   <- createWhiteNoopBall (Vec2f 250 250)
+    dot3    <- createWhiteNoopBall (Vec2f 350 350)
     return [dot, dot', dot'', dot3]
 
 createTriangles :: MaybeT IO [Triangle]
