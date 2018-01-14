@@ -20,7 +20,6 @@ import Control.Monad.IO.Class
 import GameObject.AnyGameObject
 import GameEnv (GameEnvironment(..))
 import GameObject.Ball
-import GameObject.Triangle
 import BallFactory
 import System.EventSystem (pollClosingEvent)
 
@@ -50,20 +49,19 @@ main = do
     createdBalls <- runMaybeT createObjects
     case createdBalls of 
         Nothing -> putStrLn "Error creating game objects"
-        Just (balls, triangles) -> do
+        Just balls -> do
             let anyBalls = map AGO balls
-            let anyTriangles = map AGO triangles
-            let world = GameWorld wnd (anyBalls ++ anyTriangles)
+            let world = GameWorld wnd anyBalls
             loop world gameEnv
             destroy wnd
             putStrLn "This is the End!"
 
-createObjects :: MaybeT IO ([Ball], [Triangle])
+createObjects :: MaybeT IO [Ball]
 createObjects = do 
     balls <- createGameBalls
     dots <- createDots
     triangles <- createTriangles
-    return (balls ++ dots, triangles)
+    return (balls ++ dots ++ triangles)
 
 createGameBalls :: MaybeT IO [Ball]
 createGameBalls = do
@@ -91,9 +89,9 @@ createDots = do
     dot3    <- createWhiteNoopBall (Vec2f 350 350)
     return [dot, dot', dot'', dot3]
 
-createTriangles :: MaybeT IO [Triangle]
+createTriangles :: MaybeT IO [Ball]
 createTriangles = do
-    triangle <- createTriangle (Vec2f 150 150) (Vec2f 0 0)
+    triangle <- createDeadManWalking (Vec2f 150 150)
     return [triangle]
 
 drawObjects :: GameWorld -> IO ()
