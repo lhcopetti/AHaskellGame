@@ -22,6 +22,7 @@ import GameEnv (GameEnvironment(..))
 import GameObject.Ball
 import BallFactory
 import System.EventSystem (pollClosingEvent)
+import Input.Mouse (MouseInput (..))
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]
@@ -43,7 +44,7 @@ main = do
     
     -- Game Environment initialization
     dimensions <- getWindowSize wnd
-    let gameEnv = GameEnvironment dimensions 0
+    let gameEnv = GameEnvironment dimensions 0 (MouseInput (Vec2f 300 300))
 
 
     createdBalls <- runMaybeT createObjects
@@ -61,7 +62,8 @@ createObjects = do
     balls <- createGameBalls
     dots <- createDots
     triangles <- createTriangles
-    return (balls ++ dots ++ triangles)
+    mousePointer <- createMousePointer
+    return (mousePointer : balls ++ dots ++ triangles)
 
 createGameBalls :: MaybeT IO [Ball]
 createGameBalls = do
