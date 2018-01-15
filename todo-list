@@ -44,6 +44,12 @@
 		Steps on how to build, test, execute and debug. Maybe a little GIF showing an example?
 	OK! Replicate all the behaviors from the other datatypes using the Ball.hs (Triangle.hs, Square.hs, etc)
 
+	TODO: Create a physics component to update the velocity position automatically.
+	TODO: Add the Vec2Instances.hs to another module that also reexports the following:
+		import SFML.System.Vec2 (Vec2f (..).
+	TODO: Create an abstraction for testing that uses tuples as (input, expected result)
+	TODO: Add a routine to pollevents from the SFML until it receives none.
+		(Flush, it may be this behavior that is making the closing behavior (mouse click) stall to execute
 	TODO: Finally turn the Ball.hs into the GameObject.hs data type.
 	TODO: Using the list monad, generate a lot of game objects by using all possible combinations
 	between velocity, position, etc...
