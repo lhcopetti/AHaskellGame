@@ -63,8 +63,15 @@ createObjects = do
     dots <- createDots
     triangles <- createTriangles
     mousePointer <- createMousePointer
-    mouseFollower <- createMouseFollower
-    return (mousePointer : mouseFollower : balls ++ dots ++ triangles)
+    mouseFollowers <- createMouseFollowers
+    return (mousePointer : mouseFollowers ++ balls ++ dots ++ triangles)
+
+createMouseFollowers :: MaybeT IO [Ball]
+createMouseFollowers = do
+    m <- createMouseFollower    (Vec2f 0.0 100.0)
+    m' <- createMouseFollower   (Vec2f 0.0 250.0)    
+    m'' <- createMouseFollower  (Vec2f 0.0 500.0)  
+    return [m, m', m'']
 
 createGameBalls :: MaybeT IO [Ball]
 createGameBalls = do

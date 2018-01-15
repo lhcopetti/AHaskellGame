@@ -73,8 +73,8 @@ createMousePointer = do
     drawComponent <- createCenteredCircle 3 green
     return (createGameObject drawComponent mousePointerB zero zero)
 
-createMouseFollower :: MaybeT IO Ball
-createMouseFollower = do
+createMouseFollower :: Vec2f -> MaybeT IO Ball
+createMouseFollower pos = do
     liftIO $ putStrLn "Creating mouse follower"
     drawComponent <- createCenteredCircle 10 blue
-    return (createGameObject drawComponent mouseFollowerB zero zero)
+    return (createGameObject drawComponent mouseFollowerB pos zero)
