@@ -32,6 +32,31 @@
 	OK! Create the Killable type class that represents game objects that die
 		(This will be part of the GameObject primitive type class)
 
+12/01/2018
+	OK! Abstract the behavior away from the GameObject
+	OK! Creation of the DrawingComponent
+	OK! Add  tests for the MathFunction (signumWithoutZero)
+
+13/01/2018
+	OK! Fix the bug for the square that goes to the top but appears in the middle of the screen
+		Bug in the workaround, probably. (Add tests)
+	OK! Add a simple README stating where you are at, what are your goals (Component Driven Design),
+		Steps on how to build, test, execute and debug. Maybe a little GIF showing an example?
+	OK! Replicate all the behaviors from the other datatypes using the Ball.hs (Triangle.hs, Square.hs, etc)
+
+	TODO: Finally turn the Ball.hs into the GameObject.hs data type.
+	TODO: Using the list monad, generate a lot of game objects by using all possible combinations
+	between velocity, position, etc...
+	TODO: Print the seed used in the beginning of the program
+	TODO: Add a compilation flag to control whether to use the random generated ones or the deterministic
+
+
+	TODO: Add badge for automatic testing (haskell code, travis)
+	TODO: Update the resolver to the latest one available (Currently 10.3)
+
+	TODO: Create a gameobject that will follow the mouse upon clicking. It will stop as soons as it arrives
+	close enough (5 radius?)
+
 	TODO: Kill a specific type of game object after 'X' collisions 
 		Use bound to dimension?
 		Change color as the counter aproaches zero.
@@ -39,5 +64,3 @@
 	TODO: Destroy every SFML resource on program exit
 	
 	TODO: Add acceleration behavior for the triangles
-	TODO: Create another type of object  that will "die" after 'n' collisions.
-		Like a time bomb (Maybe use a sprite for this one?)
