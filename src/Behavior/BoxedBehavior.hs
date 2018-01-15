@@ -7,7 +7,7 @@ module Behavior.BoxedBehavior
 import Control.Applicative (ZipList (..))
 
 import Component.Position
-import Component.PhysicsClass
+import Component.Physics.PhysicsClass
 import Container.TupleHelper (mapTuple)
 import Vec2.Vec2Math (v2fToTuple)
 

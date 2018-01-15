@@ -11,7 +11,7 @@ import Behavior.BoxedBehavior (boundToDimension, wrapAround)
 import Vec2.Vec2Math (addVec2f)
 import Component.Behavior.Behavior
 import Component.Position
-import Component.PhysicsClass
+import Component.Physics.PhysicsClass
 import GameEnv
 
 

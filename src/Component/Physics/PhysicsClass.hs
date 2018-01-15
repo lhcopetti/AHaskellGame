@@ -1,4 +1,4 @@
-module Component.PhysicsClass
+module Component.Physics.PhysicsClass
     where
 
 import SFML.System.Vector2 (Vec2f)

@@ -15,7 +15,7 @@ import Synchronizable
 import Drawable
 import Killable
 import qualified Component.Position as Pos
-import qualified Component.PhysicsClass as Phy
+import qualified Component.Physics.PhysicsClass as Phy
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
 

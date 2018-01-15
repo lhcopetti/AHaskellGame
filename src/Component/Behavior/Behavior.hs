@@ -7,7 +7,7 @@ module Component.Behavior.Behavior
 import Control.Monad.Reader (Reader)
 
 import Component.Position
-import Component.PhysicsClass
+import Component.Physics.PhysicsClass
 import Killable
 import GameEnv
 

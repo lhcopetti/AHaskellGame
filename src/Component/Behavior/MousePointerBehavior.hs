@@ -9,7 +9,7 @@ import Component.Behavior.Behavior (BehaviorType)
 import GameEnv (GameEnvironment (..))
 
 import Component.Position (setPosition, getPosition)
-import Component.PhysicsClass (setVelocity, getVelocity)
+import Component.Physics.PhysicsClass (setVelocity, getVelocity)
 import Input.Mouse (MouseInput (..))
 import Vec2.Vec2Behavior (direction)
 import Vec2.Vec2Math (addVec2f)
