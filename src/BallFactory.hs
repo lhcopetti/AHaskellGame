@@ -7,6 +7,7 @@ module BallFactory
     , createWhiteNoopBall
     , createDeadManWalking
     , createMousePointer
+    , createMouseFollower
     ) where
 
 import SFML.System.Vector2
@@ -20,7 +21,7 @@ import GameObject.Ball (Ball)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
-import Component.Behavior.Behaviors (encloseToBoxB, encloseByWrapAroundB, deadManWalkingB, mousePointerB)
+import Component.Behavior.Behaviors (encloseToBoxB, encloseByWrapAroundB, deadManWalkingB, mousePointerB, mouseFollowerB)
 import Vec2.Vec2Math (zero)
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
@@ -71,3 +72,9 @@ createMousePointer = do
     liftIO $ putStrLn "Creating mouse pointer"
     drawComponent <- createCenteredCircle 3 green
     return (createGameObject drawComponent mousePointerB zero zero)
+
+createMouseFollower :: MaybeT IO Ball
+createMouseFollower = do
+    liftIO $ putStrLn "Creating mouse follower"
+    drawComponent <- createCenteredCircle 10 blue
+    return (createGameObject drawComponent mouseFollowerB zero zero)
