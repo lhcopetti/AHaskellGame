@@ -12,7 +12,10 @@ import Control.Monad (mzero)
 pollClosingEvent :: RenderWindow -> MaybeT IO SFEvent
 pollClosingEvent window = do 
     evt <- pollEventT window
-    if shouldCloseWindow evt then return evt else mzero
+    if shouldCloseWindow evt then 
+        return evt 
+    else 
+        pollClosingEvent window
 
 pollEventT :: RenderWindow -> MaybeT IO SFEvent
 pollEventT = MaybeT . pollEvent
