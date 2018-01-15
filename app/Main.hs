@@ -22,7 +22,7 @@ import GameEnv (GameEnvironment(..))
 import GameObject.Ball
 import BallFactory
 import System.EventSystem (pollClosingEvent)
-import Input.Mouse (MouseInput (..))
+import Input.Mouse (MouseInput (..), getMouseInput)
 
 data GameWorld = GameWorld  { window :: RenderWindow
                             , gameObjects :: [AnyGameObject]
@@ -105,7 +105,8 @@ synchronizeObjects (GameWorld wnd objs) = forM_ objs synchronizeGameObject
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop all@(GameWorld wnd objs) env = do 
 
-    updatedWorld <- gameLoop all env
+    mouse <- getMouseInput wnd
+    updatedWorld <- gameLoop all env { input = mouse }
 
     evt <- runMaybeT (pollClosingEvent wnd)
     case evt of 
