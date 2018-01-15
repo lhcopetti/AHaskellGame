@@ -15,19 +15,22 @@ import Synchronizable
 import Drawable
 import Killable
 import qualified Component.Position as Pos
-import qualified Component.Physics as Phy
+import Component.Physics.PhysicsClass
+import Component.Physics.Physics
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
 
-data Ball = Ball { drawComp :: Drawing
-                 , behavior :: Behavior
-                 , position :: Vec2f
-                 , velocity :: Vec2f
-                 , alive    :: Bool
+data Ball = Ball { drawComp     :: Drawing
+                 , behavior     :: Behavior
+                 , physicsComp  :: Physics
+                 , position     :: Vec2f
+                 , alive        :: Bool
                  }
 
 instance Updatable Ball where
-    update ball@Ball { behavior } = behave behavior ball
+    update ball@Ball { behavior } = do 
+        let updatedBall = updatePhysics ball
+        behave behavior updatedBall
 
 instance Synchronizable Ball where
     synchronize ball = updateDrawing (drawComp ball) ball
@@ -39,9 +42,9 @@ instance Pos.Position Ball where
     getPosition = position
     setPosition ball newPosition = ball { position = newPosition } 
 
-instance Phy.Physics Ball where
-    getVelocity = velocity
-    setVelocity ball newVel = ball { velocity = newVel }
+instance PhysicsClass Ball where
+    getVelocity = velocity . physicsComp
+    setVelocity ball@Ball { physicsComp } newVel = ball { physicsComp = setVelocity physicsComp newVel }
 
 instance Killable Ball where 
     isAlive = alive
