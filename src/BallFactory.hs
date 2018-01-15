@@ -17,7 +17,7 @@ import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createStaticGameObject)
 import GameObject.Ball (Ball)
-import Component.Draw.CircleDrawing (createCircle)
+import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Behavior.Behaviors (encloseToBoxB, encloseByWrapAroundB, deadManWalkingB, mousePointerB)
@@ -68,6 +68,6 @@ createDeadManWalking pos = do
 
 createMousePointer :: MaybeT IO Ball
 createMousePointer = do
-    liftIO $ putStrLn $ "Creating mouse pointer"
-    drawComponent <- createCircle 3 green
+    liftIO $ putStrLn "Creating mouse pointer"
+    drawComponent <- createCenteredCircle 3 green
     return (createGameObject drawComponent mousePointerB zero zero)
