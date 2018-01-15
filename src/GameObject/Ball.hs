@@ -28,7 +28,9 @@ data Ball = Ball { drawComp     :: Drawing
                  }
 
 instance Updatable Ball where
-    update ball@Ball { behavior } = behave behavior ball
+    update ball@Ball { behavior } = do 
+        let updatedBall = updatePhysics ball
+        behave behavior updatedBall
 
 instance Synchronizable Ball where
     synchronize ball = updateDrawing (drawComp ball) ball

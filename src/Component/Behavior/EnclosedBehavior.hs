@@ -17,26 +17,10 @@ import GameEnv
 
 encloseToBox :: BehaviorType
 encloseToBox obj = do
-        let pos = getPosition obj
-        let vel = getVelocity obj
-
-        -- Physics update
-        let newObj = setPosition obj (addVec2f pos vel)
-
-        -- Behavior update
         dimension <- asks gameArea
-        let newObject = boundToDimension newObj dimension
-
-        -- Return the new object
-        return newObject
+        return (boundToDimension obj dimension)
 
 encloseByWrapAround :: BehaviorType
 encloseByWrapAround obj = do
-    let pos = getPosition obj
-    let vel = getVelocity obj
-    let newObj = setPosition obj (addVec2f pos vel)
-    
     dimension <- asks gameArea
-    let newObject = wrapAround newObj dimension
-
-    return newObject
+    return (wrapAround obj dimension)

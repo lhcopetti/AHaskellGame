@@ -21,12 +21,6 @@ mousePointer obj = do
 
 mouseFollower :: BehaviorType
 mouseFollower obj = do
-    -- Physics update
-    let pos = getPosition obj
-    let vel = getVelocity obj
-    let newObj = setPosition obj (addVec2f pos vel)
-
     mousePosition <- asks (position . input)
-    let objPos = getPosition newObj
-    return (setVelocity newObj (direction mousePosition objPos))
-
+    let objPos = getPosition obj
+    return (setVelocity obj (direction mousePosition objPos))
