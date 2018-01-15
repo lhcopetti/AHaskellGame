@@ -7,13 +7,13 @@ module Behavior.BoxedBehavior
 import Control.Applicative (ZipList (..))
 
 import Component.Position
-import Component.Physics
+import Component.PhysicsClass
 import Container.TupleHelper (mapTuple)
 import Vec2.Vec2Math (v2fToTuple)
 
 import SFML.System.Vector2 (Vec2u (..), Vec2f (..))
 
-boundToDimension :: (Position a, Physics a) => a -> Vec2u -> a
+boundToDimension :: (Position a, PhysicsClass a) => a -> Vec2u -> a
 boundToDimension obj (Vec2u width height) = let 
     (Vec2f x y) = getPosition obj
     (Vec2f vx vy) = getVelocity obj

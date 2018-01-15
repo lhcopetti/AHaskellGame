@@ -15,7 +15,7 @@ import Synchronizable
 import Drawable
 import Killable
 import qualified Component.Position as Pos
-import qualified Component.Physics as Phy
+import qualified Component.PhysicsClass as Phy
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
 
@@ -39,7 +39,7 @@ instance Pos.Position Ball where
     getPosition = position
     setPosition ball newPosition = ball { position = newPosition } 
 
-instance Phy.Physics Ball where
+instance Phy.PhysicsClass Ball where
     getVelocity = velocity
     setVelocity ball newVel = ball { velocity = newVel }
 
