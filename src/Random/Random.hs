@@ -5,6 +5,7 @@ module Random.Random
     , createRandomPositions
     , createRandomSpeed
     , createRandomSpeeds
+    , newGeneratorFromString
     ) where
 
 import SFML.System.Vector2 (Vec2f (..), Vec2u (..))
@@ -21,6 +22,12 @@ import GameEnv
 newGenerator :: IO StdGen 
 newGenerator = do
     gen <- getStdGen
+    printSeed gen
+    return gen
+
+newGeneratorFromString :: String -> IO StdGen
+newGeneratorFromString xs = do
+    let gen = read xs :: StdGen
     printSeed gen
     return gen
 

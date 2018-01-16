@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Main where
 
 import SFML.Window
@@ -22,6 +23,8 @@ import System.GameWorld (GameWorld (..))
 import Random.Random
 import Random.RandomState
 
+#define USE_RANDOM_GENERATOR
+
 main = do
     desktopMode <- getDesktopMode
     fsModes <- getFullscreenModes
@@ -40,8 +43,12 @@ main = do
     dimensions <- getWindowSize wnd
     let gameEnv = createGameEnv dimensions
 
-    -- Initialize the Random Generator
+    -- Initialize a Random Generator
+#ifdef USE_RANDOM_GENERATOR
     gen <- newGenerator
+#else
+    gen <- newGeneratorFromString "1458194910 1"
+#endif
 
     objects  <- runMaybeT (createObjects gen gameEnv)
     case objects of 
