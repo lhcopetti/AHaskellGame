@@ -8,6 +8,7 @@ module BallFactory
     , createDeadManWalking
     , createMousePointer
     , createMouseFollower
+    , createMiniBall
     ) where
 
 import SFML.System.Vector2
@@ -23,6 +24,13 @@ import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Behavior.Behaviors (encloseToBoxB, encloseByWrapAroundB, deadManWalkingB, mousePointerB, mouseFollowerB)
 import Vec2.Vec2Math (zero)
+
+createMiniBall :: Vec2f -> Vec2f -> MaybeT IO Ball
+createMiniBall pos vel = do
+    liftIO $ putStrLn $ "Creating mini ball at " ++ show pos
+    let color = blue
+    shape <- createCircle 2 color
+    return (createGameObject shape encloseToBoxB pos vel)    
 
 createBall :: Vec2f -> Vec2f -> MaybeT IO Ball
 createBall pos@(Vec2f x y) vel = do 

@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Main where
 
 import SFML.Window
@@ -5,13 +6,24 @@ import SFML.Graphics.SFRenderTarget
 import SFML.Graphics.RenderWindow
 
 import Control.Monad.Trans.Maybe (MaybeT (..))
+import Control.Monad.Trans.Reader
+import Control.Monad.Trans.State
+import Control.Monad.Trans.Class
+import Control.Monad.IO.Class (liftIO)
+import Control.Applicative
+import System.Random (StdGen)
+import Data.Functor.Identity
 
-import GameEnv (createGameEnv)
+import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.Ball (Ball)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import BallFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
+import Random.Random
+import Random.RandomState
+
+#define USE_RANDOM_GENERATOR
 
 main = do
     desktopMode <- getDesktopMode
@@ -31,8 +43,15 @@ main = do
     dimensions <- getWindowSize wnd
     let gameEnv = createGameEnv dimensions
 
-    createdBalls <- runMaybeT createObjects
-    case createdBalls of 
+    -- Initialize a Random Generator
+#ifdef USE_RANDOM_GENERATOR
+    gen <- newGenerator
+#else
+    gen <- newGeneratorFromString "1458194910 1"
+#endif
+
+    objects  <- runMaybeT (createObjects gen gameEnv)
+    case objects of 
         Nothing -> putStrLn "Error creating game objects"
         Just balls -> do
             let anyBalls = map AGO balls
@@ -40,14 +59,31 @@ main = do
             startGame world gameEnv
             putStrLn "This is the End!"
 
-createObjects :: MaybeT IO [Ball]
-createObjects = do 
+
+type BallCreation a = ReaderT GameEnvironment (StateT StdGen (MaybeT IO)) a
+
+runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> MaybeT IO (a, StdGen)
+runBallCreation gen env eval = runStateT (runReaderT eval env) gen
+
+createObjects :: StdGen -> GameEnvironment -> MaybeT IO [Ball]
+createObjects gen env = do 
     balls <- createGameBalls
     dots <- createDots
     triangles <- createTriangles
     mousePointer <- createMousePointer
     mouseFollowers <- createMouseFollowers
-    return (mousePointer : mouseFollowers ++ balls ++ dots ++ triangles)
+    (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
+    return (mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
+
+createRandomMiniBalls :: BallCreation [Ball]
+createRandomMiniBalls = do
+    position <- createRandomPositions 5
+    speed <- lift (createRandomSpeeds 8.0 10)
+    sequence (ballCreationMiniBall <$> position <*> speed)
+
+ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation Ball
+ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
+
 
 createMouseFollowers :: MaybeT IO [Ball]
 createMouseFollowers = do
