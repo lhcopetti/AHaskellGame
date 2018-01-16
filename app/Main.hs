@@ -5,13 +5,22 @@ import SFML.Graphics.SFRenderTarget
 import SFML.Graphics.RenderWindow
 
 import Control.Monad.Trans.Maybe (MaybeT (..))
+import Control.Monad.Trans.Reader
+import Control.Monad.Trans.State
+import Control.Monad.Trans.Class
+import Control.Monad.IO.Class (liftIO)
+import Control.Applicative
+import System.Random (StdGen)
+import Data.Functor.Identity
 
-import GameEnv (createGameEnv)
+import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.Ball (Ball)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import BallFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
+import Random.Random
+import Random.RandomState
 
 main = do
     desktopMode <- getDesktopMode
@@ -31,14 +40,30 @@ main = do
     dimensions <- getWindowSize wnd
     let gameEnv = createGameEnv dimensions
 
-    createdBalls <- runMaybeT createObjects
-    case createdBalls of 
+    gen <- newGenerator
+    objects  <- runBallCreation gen gameEnv ballCreationObjects
+    case objects of 
         Nothing -> putStrLn "Error creating game objects"
-        Just balls -> do
+        Just (balls, _) -> do
             let anyBalls = map AGO balls
             let world = GameWorld wnd anyBalls
             startGame world gameEnv
             putStrLn "This is the End!"
+
+
+type BallCreation a = ReaderT GameEnvironment (StateT StdGen (MaybeT IO)) a
+
+runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> IO (Maybe (a, StdGen))
+runBallCreation gen env eval = runMaybeT $ runStateT (runReaderT eval env) gen
+
+ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation Ball
+ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
+
+ballCreationObjects :: BallCreation [Ball]
+ballCreationObjects = do
+    position <- createRandomPositions 5
+    speed <- lift (createRandomSpeeds 8.0 10)
+    sequence (ballCreationMiniBall <$> position <*> speed)
 
 createObjects :: MaybeT IO [Ball]
 createObjects = do 
