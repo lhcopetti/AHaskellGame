@@ -40,11 +40,13 @@ main = do
     dimensions <- getWindowSize wnd
     let gameEnv = createGameEnv dimensions
 
+    -- Initialize the Random Generator
     gen <- newGenerator
-    objects  <- runBallCreation gen gameEnv ballCreationObjects
+
+    objects  <- runMaybeT (createObjects gen gameEnv)
     case objects of 
         Nothing -> putStrLn "Error creating game objects"
-        Just (balls, _) -> do
+        Just balls -> do
             let anyBalls = map AGO balls
             let world = GameWorld wnd anyBalls
             startGame world gameEnv
@@ -53,26 +55,28 @@ main = do
 
 type BallCreation a = ReaderT GameEnvironment (StateT StdGen (MaybeT IO)) a
 
-runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> IO (Maybe (a, StdGen))
-runBallCreation gen env eval = runMaybeT $ runStateT (runReaderT eval env) gen
+runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> MaybeT IO (a, StdGen)
+runBallCreation gen env eval = runStateT (runReaderT eval env) gen
 
-ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation Ball
-ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
-
-ballCreationObjects :: BallCreation [Ball]
-ballCreationObjects = do
-    position <- createRandomPositions 5
-    speed <- lift (createRandomSpeeds 8.0 10)
-    sequence (ballCreationMiniBall <$> position <*> speed)
-
-createObjects :: MaybeT IO [Ball]
-createObjects = do 
+createObjects :: StdGen -> GameEnvironment -> MaybeT IO [Ball]
+createObjects gen env = do 
     balls <- createGameBalls
     dots <- createDots
     triangles <- createTriangles
     mousePointer <- createMousePointer
     mouseFollowers <- createMouseFollowers
-    return (mousePointer : mouseFollowers ++ balls ++ dots ++ triangles)
+    (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
+    return (mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
+
+createRandomMiniBalls :: BallCreation [Ball]
+createRandomMiniBalls = do
+    position <- createRandomPositions 5
+    speed <- lift (createRandomSpeeds 8.0 10)
+    sequence (ballCreationMiniBall <$> position <*> speed)
+
+ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation Ball
+ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
+
 
 createMouseFollowers :: MaybeT IO [Ball]
 createMouseFollowers = do
