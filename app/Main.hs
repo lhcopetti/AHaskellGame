@@ -1,32 +1,17 @@
 module Main where
 
 import SFML.Window
-import Control.Monad (forM_, forM)
-import SFML.Utils
-import SFML.Graphics.CircleShape
-import SFML.Graphics.Color
 import SFML.Graphics.SFRenderTarget
 import SFML.Graphics.RenderWindow
-import SFML.Graphics.Types
 
-import Control.Concurrent
-import Foreign.Marshal.Utils
-import Control.Monad.Trans.Maybe
-import Control.Monad.Trans.Class
-import Control.Monad.Trans.Reader (runReaderT)
-import Control.Monad.Reader (runReader)
-import Control.Monad.IO.Class
+import Control.Monad.Trans.Maybe (MaybeT (..))
 
-import GameObject.AnyGameObject
-import GameEnv (GameEnvironment(..))
-import GameObject.Ball
+import GameEnv (createGameEnv)
+import GameObject.Ball (Ball)
+import GameObject.AnyGameObject (AnyGameObject (..))
 import BallFactory
-import System.EventSystem (pollClosingEvent)
-import Input.Mouse (MouseInput (..), getMouseInput)
-
-data GameWorld = GameWorld  { window :: RenderWindow
-                            , gameObjects :: [AnyGameObject]
-                            }
+import System.GameSystem (startGame)
+import System.GameWorld (GameWorld (..))
 
 main = do
     desktopMode <- getDesktopMode
@@ -44,8 +29,7 @@ main = do
     
     -- Game Environment initialization
     dimensions <- getWindowSize wnd
-    let gameEnv = GameEnvironment dimensions 0 (MouseInput (Vec2f 300 300))
-
+    let gameEnv = createGameEnv dimensions
 
     createdBalls <- runMaybeT createObjects
     case createdBalls of 
@@ -53,8 +37,7 @@ main = do
         Just balls -> do
             let anyBalls = map AGO balls
             let world = GameWorld wnd anyBalls
-            loop world gameEnv
-            destroy wnd
+            startGame world gameEnv
             putStrLn "This is the End!"
 
 createObjects :: MaybeT IO [Ball]
@@ -103,37 +86,3 @@ createTriangles :: MaybeT IO [Ball]
 createTriangles = do
     triangle <- createDeadManWalking (Vec2f 150 150)
     return [triangle]
-
-drawObjects :: GameWorld -> IO ()
-drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
-
-synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects (GameWorld wnd objs) = forM_ objs synchronizeGameObject
-
-loop :: GameWorld -> GameEnvironment -> IO ()
-loop all@(GameWorld wnd objs) env = do 
-
-    mouse <- getMouseInput wnd
-    updatedWorld <- gameLoop all env { input = mouse }
-
-    evt <- runMaybeT (pollClosingEvent wnd)
-    case evt of 
-        Nothing -> loop updatedWorld env
-        (Just event) -> putStrLn ("Closing event: " ++ show event)
-
-
-gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop all@(GameWorld wnd objs) env = do 
-    threadDelay (10 * 10^3)
-    clearRenderWindow wnd black
-
-    let newObjs = runReader (forM objs updateAnyGameObject) env
-    newObjs' <- removeDeadAnyGameObjects newObjs
-
-    let newWorld = GameWorld wnd newObjs'
-
-    synchronizeObjects newWorld
-    drawObjects newWorld
-    display wnd
-
-    return newWorld
