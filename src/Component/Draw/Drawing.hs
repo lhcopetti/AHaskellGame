@@ -32,9 +32,15 @@ setOriginDrawing (ConvexDrawing    ptr) pos = setOrigin ptr pos
     
 
 updateDrawing :: Pos.Position a => Drawing -> a -> IO ()
-updateDrawing (CircleDrawing shape) obj = setPosition shape (Pos.getPosition obj)
-updateDrawing (RectangleDrawing shape) obj = setPosition shape (Pos.getPosition obj)
-updateDrawing (ConvexDrawing shape) obj = setPosition shape (Pos.getPosition obj)
+updateDrawing (CircleDrawing shape) obj = do
+    setPosition shape (Pos.getPosition obj)
+    setRotation shape (Pos.getRotation obj)
+updateDrawing (RectangleDrawing shape) obj = do
+    setPosition shape (Pos.getPosition obj)
+    setRotation shape (Pos.getRotation obj)
+updateDrawing (ConvexDrawing shape) obj = do
+    setPosition shape (Pos.getPosition obj)
+    setRotation shape (Pos.getRotation obj)
 
 
 destroyDrawing :: Drawing -> IO ()
