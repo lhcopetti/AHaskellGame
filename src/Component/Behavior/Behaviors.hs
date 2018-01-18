@@ -6,11 +6,12 @@ module Component.Behavior.Behaviors
     , mousePositionCopierB
     , mouseFollowerB
     , rotateB
+    , mousePointerB
     ) where
 
 import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
-import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower)
+import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer)
 import Component.Behavior.RotationalBehavior (rotate)
 import Killable (die)
 
@@ -34,3 +35,6 @@ mouseFollowerB = Behavior mouseFollower
 
 rotateB :: Float -> Behavior
 rotateB f = Behavior (rotate f)
+
+mousePointerB :: Behavior
+mousePointerB = Behavior mousePointer
