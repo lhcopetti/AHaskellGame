@@ -7,6 +7,7 @@ module Component.Behavior.Behaviors
     , mouseFollowerB
     , rotateB
     , mousePointerB
+    , followPointingMouseB
     ) where
 
 import Component.Behavior.Behavior
@@ -38,3 +39,6 @@ rotateB f = Behavior (rotate f)
 
 mousePointerB :: Behavior
 mousePointerB = Behavior mousePointer
+
+followPointingMouseB :: Behavior
+followPointingMouseB = Behavior $ (mousePointer =<< ) . mouseFollower

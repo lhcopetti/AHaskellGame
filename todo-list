@@ -65,14 +65,17 @@
 18/01/2018
 	OK! Implement game objects that have rotation. (Rotating triangle?)
 		I prefered to use an hexagon.
-
-	TODO: Add a triangle that follows the mouse (one of the edges must be pointing towards the mouse at all times)
+	OK! Add a triangle that follows the mouse (one of the edges must be pointing towards the mouse at all times)
+	
 	TODO: Add a behavior that after colliding X times, the object dies
 	TODO: Add a drawing that contains text (font-size, color) (Add the game title to the screen?)
 	TODO: Add a statistics object that will show:
 		Composite drawing?
 		current number of game objects
 		all time counter (all of the game objects)
+
+	TODO: Make the mouse pointer (probably the triangle) turn itself into a ball when it is on top
+	of the mouse cursor (or close enough).
 
 
 	TODO: Add the Vec2Instances.hs to another module that also reexports the following:

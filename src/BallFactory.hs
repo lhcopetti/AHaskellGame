@@ -89,7 +89,7 @@ createSimpleEqTriangle :: Vec2f -> MaybeT IO Ball
 createSimpleEqTriangle pos = do
     liftIO $ putStrLn $ "Creating a simple hexagon " ++ show pos
     drawComponent <- createEqTriangle 25.0 white
-    return (createGameObject drawComponent mousePointerB pos zero)
+    return (createGameObject drawComponent followPointingMouseB pos zero)
 
 createMousePositionCopier :: MaybeT IO Ball
 createMousePositionCopier = do
