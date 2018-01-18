@@ -24,6 +24,7 @@ data Ball = Ball { drawComp     :: Drawing
                  , behavior     :: Behavior
                  , physicsComp  :: Physics
                  , position     :: Vec2f
+                 , rotation     :: Float
                  , alive        :: Bool
                  }
 
@@ -41,6 +42,8 @@ instance Drawable Ball where
 instance Pos.Position Ball where
     getPosition = position
     setPosition ball newPosition = ball { position = newPosition } 
+    getRotation = rotation
+    setRotation newRotation ball = ball { rotation = newRotation }
 
 instance PhysicsClass Ball where
     getVelocity = velocity . physicsComp

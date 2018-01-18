@@ -9,6 +9,7 @@ module BallFactory
     , createMousePointer
     , createMouseFollower
     , createMiniBall
+    , createSimpleHexagon
     ) where
 
 import SFML.System.Vector2
@@ -22,7 +23,8 @@ import GameObject.Ball (Ball)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
-import Component.Behavior.Behaviors (encloseToBoxB, encloseByWrapAroundB, deadManWalkingB, mousePointerB, mouseFollowerB)
+import Component.Draw.HexagonDrawing (createHexagon)
+import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
 
 createMiniBall :: Vec2f -> Vec2f -> MaybeT IO Ball
@@ -74,6 +76,12 @@ createDeadManWalking pos = do
     liftIO $ putStrLn $ "Creating dead man walking noop triangle " ++ show pos
     drawComponent <- createConvex white [Vec2f 55 30, Vec2f 70 60, Vec2f 40 60]
     return (createGameObject drawComponent deadManWalkingB pos zero)
+
+createSimpleHexagon :: Vec2f -> MaybeT IO Ball
+createSimpleHexagon pos = do
+    liftIO $ putStrLn $ "Creating a simple hexagon " ++ show pos
+    drawComponent <- createHexagon 25.0 white
+    return (createGameObject drawComponent (rotateB 1.0) pos zero)
 
 createMousePointer :: MaybeT IO Ball
 createMousePointer = do

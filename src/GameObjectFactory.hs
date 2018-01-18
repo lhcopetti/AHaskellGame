@@ -17,7 +17,8 @@ createGameObject :: Drawing -> Behavior -> Vec2f -> Vec2f -> Ball
 createGameObject drw beh pos vel = let
     alive = True
     physics = newSimplePhysics vel
-    in Ball drw beh physics pos alive
+    initialRotation = 0.0
+    in Ball drw beh physics pos initialRotation alive
 
 createStaticGameObject :: Drawing -> Vec2f -> Ball
 createStaticGameObject drw pos = let

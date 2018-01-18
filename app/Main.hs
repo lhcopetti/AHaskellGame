@@ -70,10 +70,11 @@ createObjects gen env = do
     balls <- createGameBalls
     dots <- createDots
     triangles <- createTriangles
+    hex <- createSimpleHexagon (Vec2f 200 200)
     mousePointer <- createMousePointer
     mouseFollowers <- createMouseFollowers
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
-    return (mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
+    return (hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
 
 createRandomMiniBalls :: BallCreation [Ball]
 createRandomMiniBalls = do
