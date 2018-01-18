@@ -8,9 +8,11 @@ module Vec2.Vec2Math ( zero
                      , v2fToTuple
                      , v2uToTuple
                      , minVec2f
+                     , angleVec2f
                      ) where
 
 import SFML.System.Vector2
+import Math.Angle (toDegree)
 
 zero :: Vec2f 
 zero = Vec2f 0.0 0.0
@@ -49,3 +51,6 @@ minVec2f :: Vec2f -> Float -> Vec2f
 minVec2f vec maxVel 
     | sizeVec2f vec <= maxVel = vec
     | otherwise = (`multiplyScalarVec2f` maxVel) . unitVec2f $ vec
+
+angleVec2f :: Vec2f -> Float
+angleVec2f (Vec2f x y) = toDegree (atan2 y x)

@@ -6,10 +6,11 @@ module BallFactory
     , createMagentaWrapAroundBall
     , createWhiteNoopBall
     , createDeadManWalking
-    , createMousePointer
+    , createMousePositionCopier
     , createMouseFollower
     , createMiniBall
     , createSimpleHexagon
+    , createSimpleEqTriangle
     ) where
 
 import SFML.System.Vector2
@@ -24,6 +25,7 @@ import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.HexagonDrawing (createHexagon)
+import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
 
@@ -83,11 +85,17 @@ createSimpleHexagon pos = do
     drawComponent <- createHexagon 25.0 white
     return (createGameObject drawComponent (rotateB 1.0) pos zero)
 
-createMousePointer :: MaybeT IO Ball
-createMousePointer = do
+createSimpleEqTriangle :: Vec2f -> MaybeT IO Ball
+createSimpleEqTriangle pos = do
+    liftIO $ putStrLn $ "Creating a simple hexagon " ++ show pos
+    drawComponent <- createEqTriangle 25.0 white
+    return (createGameObject drawComponent followPointingMouseB pos zero)
+
+createMousePositionCopier :: MaybeT IO Ball
+createMousePositionCopier = do
     liftIO $ putStrLn "Creating mouse pointer"
     drawComponent <- createCenteredCircle 3 green
-    return (createGameObject drawComponent mousePointerB zero zero)
+    return (createGameObject drawComponent mousePositionCopierB zero zero)
 
 createMouseFollower :: Vec2f -> MaybeT IO Ball
 createMouseFollower pos = do

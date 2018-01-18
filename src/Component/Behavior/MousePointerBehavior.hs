@@ -1,6 +1,7 @@
 module Component.Behavior.MousePointerBehavior
-    ( mousePointer
+    ( mousePositionCopier
     , mouseFollower
+    , mousePointer
     ) where
 
 import Control.Monad.Reader (asks)
@@ -8,14 +9,14 @@ import Control.Monad.Reader (asks)
 import Component.Behavior.Behavior (BehaviorType)
 import GameEnv (GameEnvironment (..))
 
-import Component.Position (setPosition, getPosition)
+import Component.Position (setPosition, getPosition, setRotation)
 import Component.Physics.PhysicsClass (setVelocity, getVelocity)
 import Input.Mouse (MouseInput (..))
-import Vec2.Vec2Behavior (direction)
-import Vec2.Vec2Math (addVec2f)
+import Vec2.Vec2Behavior (direction, orientation)
+import Vec2.Vec2Math (addVec2f, subtractVec2f)
 
-mousePointer :: BehaviorType
-mousePointer obj = do
+mousePositionCopier :: BehaviorType
+mousePositionCopier obj = do
     mousePosition <- asks (position . input)
     return (setPosition obj mousePosition)
 
@@ -24,3 +25,10 @@ mouseFollower obj = do
     mousePosition <- asks (position . input)
     let objPos = getPosition obj
     return (setVelocity obj (direction mousePosition objPos))
+
+mousePointer :: BehaviorType 
+mousePointer obj = do
+    mousePosition <- asks (position . input)
+    let objPos = getPosition obj
+    let angle = orientation (subtractVec2f mousePosition objPos)
+    return (setRotation angle obj)

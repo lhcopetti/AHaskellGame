@@ -3,14 +3,16 @@ module Component.Behavior.Behaviors
     , encloseByWrapAroundB
     , noopB
     , deadManWalkingB
-    , mousePointerB
+    , mousePositionCopierB
     , mouseFollowerB
     , rotateB
+    , mousePointerB
+    , followPointingMouseB
     ) where
 
 import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
-import Component.Behavior.MousePointerBehavior (mousePointer, mouseFollower)
+import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer)
 import Component.Behavior.RotationalBehavior (rotate)
 import Killable (die)
 
@@ -26,11 +28,17 @@ noopB = Behavior return
 deadManWalkingB :: Behavior
 deadManWalkingB = Behavior (return . die)
 
-mousePointerB :: Behavior 
-mousePointerB = Behavior mousePointer
+mousePositionCopierB :: Behavior 
+mousePositionCopierB = Behavior mousePositionCopier
 
 mouseFollowerB :: Behavior
 mouseFollowerB = Behavior mouseFollower
 
 rotateB :: Float -> Behavior
 rotateB f = Behavior (rotate f)
+
+mousePointerB :: Behavior
+mousePointerB = Behavior mousePointer
+
+followPointingMouseB :: Behavior
+followPointingMouseB = Behavior $ (mousePointer =<< ) . mouseFollower
