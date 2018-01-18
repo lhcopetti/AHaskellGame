@@ -6,7 +6,7 @@ module BallFactory
     , createMagentaWrapAroundBall
     , createWhiteNoopBall
     , createDeadManWalking
-    , createMousePointer
+    , createMousePositionCopier
     , createMouseFollower
     , createMiniBall
     , createSimpleHexagon
@@ -91,11 +91,11 @@ createSimpleEqTriangle pos = do
     drawComponent <- createEqTriangle 25.0 white
     return (createStaticGameObject drawComponent pos)
 
-createMousePointer :: MaybeT IO Ball
-createMousePointer = do
+createMousePositionCopier :: MaybeT IO Ball
+createMousePositionCopier = do
     liftIO $ putStrLn "Creating mouse pointer"
     drawComponent <- createCenteredCircle 3 green
-    return (createGameObject drawComponent mousePointerB zero zero)
+    return (createGameObject drawComponent mousePositionCopierB zero zero)
 
 createMouseFollower :: Vec2f -> MaybeT IO Ball
 createMouseFollower pos = do

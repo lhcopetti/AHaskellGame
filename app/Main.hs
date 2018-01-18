@@ -72,7 +72,7 @@ createObjects gen env = do
     triangles <- createTriangles
     hex <- createSimpleHexagon (Vec2f 200 200)
     eqT <- createSimpleEqTriangle (Vec2f 300 300)
-    mousePointer <- createMousePointer
+    mousePointer <- createMousePositionCopier
     mouseFollowers <- createMouseFollowers
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
     return (eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)

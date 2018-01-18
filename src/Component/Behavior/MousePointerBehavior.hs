@@ -1,5 +1,5 @@
 module Component.Behavior.MousePointerBehavior
-    ( mousePointer
+    ( mousePositionCopier
     , mouseFollower
     ) where
 
@@ -14,8 +14,8 @@ import Input.Mouse (MouseInput (..))
 import Vec2.Vec2Behavior (direction)
 import Vec2.Vec2Math (addVec2f)
 
-mousePointer :: BehaviorType
-mousePointer obj = do
+mousePositionCopier :: BehaviorType
+mousePositionCopier obj = do
     mousePosition <- asks (position . input)
     return (setPosition obj mousePosition)
 
