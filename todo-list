@@ -59,7 +59,20 @@
 		All seeds are printed by default now regardless of the generator (random or read from a string)
 	OK! Add a compilation flag to control whether to use the random generated ones or the deterministic
 
+17/01/2018
+	-
 
+18/01/2018
+	OK! Implement game objects that have rotation. (Rotating triangle?)
+		I prefered to use an hexagon.
+
+	TODO: Add a triangle that follows the mouse (one of the edges must be pointing towards the mouse at all times)
+	TODO: Add a behavior that after colliding X times, the object dies
+	TODO: Add a drawing that contains text (font-size, color) (Add the game title to the screen?)
+	TODO: Add a statistics object that will show:
+		Composite drawing?
+		current number of game objects
+		all time counter (all of the game objects)
 
 
 	TODO: Add the Vec2Instances.hs to another module that also reexports the following:
@@ -79,6 +92,9 @@
 		Change color as the counter aproaches zero.
 	TODO: Add acceleration to the PhysicsBehavior
 	TODO: Destroy every SFML resource on program exit
+
+	TODO: Change the name of the Position type class, it is no longer responsible for the posiion only, 
+	it now hosts the rotation transform as well.
 	
 	TODO: Add acceleration behavior for the triangles
 	TODO: Create a Scene object that will hold its own list of gameobjects
