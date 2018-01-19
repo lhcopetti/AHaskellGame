@@ -17,6 +17,7 @@ import Component.Draw.HexagonDrawing (createHexagon)
 import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Draw.TextDrawing (createEmptyText, createText)
 import Component.Draw.CompositeDrawing (createComposite)
+import Component.Draw.SpriteDrawing (createSpriteDrawing)
 import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
 
@@ -130,4 +131,11 @@ createDeathByHitsOnWall pos vel = do
     liftIO $ putStrLn "Creating object that dies from hitting on walls"
     drawComponent <- createCenteredCircle 15 green
     let behavior = deathByHitsOnWallB
+    return (createGameObject drawComponent behavior pos vel)
+
+createSprite :: FilePath -> Vec2f -> Vec2f -> MaybeT IO Ball
+createSprite path pos vel = do
+    liftIO $ putStrLn ("Creating a Sprite GameObject from " ++ path)
+    drawComponent <- createSpriteDrawing path
+    let behavior = encloseByWrapAroundB
     return (createGameObject drawComponent behavior pos vel)

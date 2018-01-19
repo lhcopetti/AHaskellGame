@@ -30,7 +30,7 @@ library:
   source-dirs: src
 
 data-files:
-- resources/fonts/arial.ttf
+- resources/**/*
 
 executables:
   AHaskellGame-exe:
