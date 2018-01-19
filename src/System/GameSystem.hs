@@ -32,7 +32,8 @@ loop :: GameWorld -> GameEnvironment -> IO ()
 loop all@(GameWorld wnd objs) env = do 
 
     mouse <- getMouseInput wnd
-    updatedWorld <- gameLoop all env { input = mouse }
+    let liveGameObjects = fromIntegral . length $ objs
+    updatedWorld <- gameLoop all env { input = mouse, countGOs = liveGameObjects }
 
     evt <- runMaybeT (pollClosingEvent wnd)
     case evt of 

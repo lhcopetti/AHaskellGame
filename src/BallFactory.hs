@@ -28,7 +28,7 @@ import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.HexagonDrawing (createHexagon)
 import Component.Draw.TriangleDrawing (createEqTriangle)
-import Component.Draw.TextDrawing (createText)
+import Component.Draw.TextDrawing (createEmptyText, createText)
 import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
 
@@ -115,6 +115,6 @@ createSimpleText pos text = do
 createLiveGameObjectCounter :: Vec2f -> MaybeT IO Ball
 createLiveGameObjectCounter pos = do
     liftIO $ putStrLn "Creating live GameObject counter"
-    drawComponent <- createText 15 "-_-_-____----_-_"
-    let behavior = updatePromptForGOCountB "Current count of GOs: "
+    drawComponent <- createEmptyText 15
+    let behavior = updatePromptForGOCountB "GameObjects"
     return (createStaticGameObjectB drawComponent pos behavior)

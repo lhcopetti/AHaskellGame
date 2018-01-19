@@ -1,5 +1,6 @@
 module Component.Draw.TextDrawing
     ( createText
+    , createEmptyText
     ) where
 
 import SFML.Graphics.Types (Text)
@@ -11,6 +12,9 @@ import Control.Monad.IO.Class (liftIO)
 import Component.Draw.Drawing
 import Component.Draw.DrawingHelper (createShapeT)
 import Component.Draw.TextFont (loadFontT)
+
+createEmptyText :: Int -> MaybeT IO Drawing
+createEmptyText = (`createText` "")
 
 createText :: Int -> String -> MaybeT IO Drawing
 createText size text = do 
