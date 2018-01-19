@@ -111,3 +111,10 @@ createDeathByUpdates pos = do
     drawComponent <- createCenteredCircle 10 blue
     let behavior = deathByUpdatesB
     return (createStaticGameObjectB drawComponent pos behavior)
+
+createDeathByHitsOnWall :: Vec2f -> Vec2f -> MaybeT IO Ball
+createDeathByHitsOnWall pos vel = do
+    liftIO $ putStrLn "Creating object that dies from hitting on walls"
+    drawComponent <- createCenteredCircle 15 green
+    let behavior = deathByHitsOnWallB
+    return (createGameObject drawComponent behavior pos vel)

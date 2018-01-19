@@ -10,6 +10,7 @@ module Component.Behavior.Behaviors
     , followPointingMouseB
     , updatePromptForGOCountB
     , deathByUpdatesB
+    , deathByHitsOnWallB
     ) where
 
 import Component.Behavior.Behavior
@@ -18,7 +19,7 @@ import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollow
 import Component.Behavior.RotationalBehavior (rotate)
 import Component.Behavior.TextBehavior (updatePromptForGOCount)
 import Component.Behavior.NoopBehavior (noopBehavior)
-import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates)
+import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
 
 encloseToBoxB :: Behavior
 encloseToBoxB = Behavior encloseToBox
@@ -52,3 +53,6 @@ updatePromptForGOCountB prompt = Behavior (updatePromptForGOCount prompt)
 
 deathByUpdatesB :: Behavior 
 deathByUpdatesB = Behavior (deathByUpdates 500)
+
+deathByHitsOnWallB :: Behavior 
+deathByHitsOnWallB = Behavior (deathByHitsOnWall 5)

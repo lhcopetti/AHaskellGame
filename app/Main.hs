@@ -78,7 +78,8 @@ createObjects gen env = do
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
     goCounter <- createLiveGameObjectCounter (Vec2f 20 20)
     willDieSoon <- createDeathByUpdates (Vec2f 400 400)
-    return (willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
+    willHitAndDie <- createDeathByHitsOnWall (Vec2f 200 200) (Vec2f 5.0 7.0)
+    return (willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
 
 createRandomMiniBalls :: BallCreation [Ball]
 createRandomMiniBalls = do
