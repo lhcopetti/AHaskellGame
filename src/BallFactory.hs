@@ -11,6 +11,8 @@ module BallFactory
     , createMiniBall
     , createSimpleHexagon
     , createSimpleEqTriangle
+    , createSimpleText
+    , createLiveGameObjectCounter
     ) where
 
 import SFML.System.Vector2
@@ -19,13 +21,14 @@ import SFML.Graphics.Color
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 
-import GameObjectFactory (createGameObject, createStaticGameObject)
+import GameObjectFactory (createGameObject, createStaticGameObject, createStaticGameObjectB)
 import GameObject.Ball (Ball)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.HexagonDrawing (createHexagon)
 import Component.Draw.TriangleDrawing (createEqTriangle)
+import Component.Draw.TextDrawing (createEmptyText, createText)
 import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
 
@@ -102,3 +105,16 @@ createMouseFollower pos = do
     liftIO $ putStrLn "Creating mouse follower"
     drawComponent <- createCenteredCircle 10 blue
     return (createGameObject drawComponent mouseFollowerB pos zero)
+
+createSimpleText :: Vec2f -> String -> MaybeT IO Ball
+createSimpleText pos text = do
+    liftIO $ putStrLn "Creating simple text"
+    drawComponent <- createText 30 text
+    return (createStaticGameObject drawComponent pos)
+
+createLiveGameObjectCounter :: Vec2f -> MaybeT IO Ball
+createLiveGameObjectCounter pos = do
+    liftIO $ putStrLn "Creating live GameObject counter"
+    drawComponent <- createEmptyText 15
+    let behavior = updatePromptForGOCountB "GameObjects"
+    return (createStaticGameObjectB drawComponent pos behavior)

@@ -29,6 +29,9 @@ dependencies:
 library:
   source-dirs: src
 
+data-files:
+- resources/fonts/arial.ttf
+
 executables:
   AHaskellGame-exe:
     main:                Main.hs
@@ -39,6 +42,8 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - AHaskellGame
+    other-modules:
+    - Paths_AHaskellGame
 
 tests:
   AHaskellGame-test:

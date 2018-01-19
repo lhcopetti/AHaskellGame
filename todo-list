@@ -66,14 +66,22 @@
 	OK! Implement game objects that have rotation. (Rotating triangle?)
 		I prefered to use an hexagon.
 	OK! Add a triangle that follows the mouse (one of the edges must be pointing towards the mouse at all times)
-	
-	TODO: Add a behavior that after colliding X times, the object dies
-	TODO: Add a drawing that contains text (font-size, color) (Add the game title to the screen?)
+	OK! Add a drawing that contains text (font-size, color) (Add the game title to the screen?)
+
+	TODO: Add a composite drawing
 	TODO: Add a statistics object that will show:
 		Composite drawing?
 		current number of game objects
 		all time counter (all of the game objects)
+	TODO: Fix the following behavior when the target is too close. (Remove flicking).
 
+	TODO: Add a behavior that after colliding X times, the object dies
+
+	TODO: Add z-ordering to drawing components. Make the game title always appear on top.
+
+	TODO: Create composite drawing components
+		Maybe use the mouse following equilateral triangle. Add component(s) that will
+		make it clear which edge is the "pointing" one.
 	TODO: Make the mouse pointer (probably the triangle) turn itself into a ball when it is on top
 	of the mouse cursor (or close enough).
 
