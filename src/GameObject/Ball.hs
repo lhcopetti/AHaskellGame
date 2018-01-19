@@ -19,12 +19,14 @@ import Component.Physics.PhysicsClass
 import Component.Physics.Physics
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
+import System.Messaging.DrawingMessage
 
 data Ball = Ball { drawComp     :: Drawing
                  , behavior     :: Behavior
                  , physicsComp  :: Physics
                  , position     :: Vec2f
                  , rotation     :: Float
+                 , inbox         :: [DrawingMessage]
                  , alive        :: Bool
                  }
 
@@ -53,3 +55,7 @@ instance Killable Ball where
     isAlive = alive
     die b = b { alive = False }
     destroyResource Ball { drawComp } = destroyDrawing drawComp
+
+instance DrawingInbox Ball where
+    getInbox = inbox
+    setInbox newMsgs b = b { inbox = newMsgs }

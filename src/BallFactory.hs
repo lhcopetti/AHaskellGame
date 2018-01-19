@@ -21,7 +21,7 @@ import SFML.Graphics.Color
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 
-import GameObjectFactory (createGameObject, createStaticGameObject)
+import GameObjectFactory (createGameObject, createStaticGameObject, createStaticGameObjectB)
 import GameObject.Ball (Ball)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
@@ -115,5 +115,6 @@ createSimpleText pos text = do
 createLiveGameObjectCounter :: Vec2f -> MaybeT IO Ball
 createLiveGameObjectCounter pos = do
     liftIO $ putStrLn "Creating live GameObject counter"
-    drawComponent <- createText 15 "Current count of GOs: "
-    return (createStaticGameObject drawComponent pos)
+    drawComponent <- createText 15 "-_-_-____----_-_"
+    let behavior = updatePromptForGOCountB "Current count of GOs: "
+    return (createStaticGameObjectB drawComponent pos behavior)

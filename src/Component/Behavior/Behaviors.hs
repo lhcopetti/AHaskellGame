@@ -8,12 +8,14 @@ module Component.Behavior.Behaviors
     , rotateB
     , mousePointerB
     , followPointingMouseB
+    , updatePromptForGOCountB
     ) where
 
 import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer)
 import Component.Behavior.RotationalBehavior (rotate)
+import Component.Behavior.TextBehavior (updatePromptForGOCount)
 import Killable (die)
 
 encloseToBoxB :: Behavior
@@ -42,3 +44,6 @@ mousePointerB = Behavior mousePointer
 
 followPointingMouseB :: Behavior
 followPointingMouseB = Behavior $ (mousePointer =<< ) . mouseFollower
+
+updatePromptForGOCountB :: String -> Behavior
+updatePromptForGOCountB prompt = Behavior (updatePromptForGOCount prompt)

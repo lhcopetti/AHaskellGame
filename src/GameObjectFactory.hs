@@ -1,6 +1,7 @@
 module GameObjectFactory
     ( createGameObject
     , createStaticGameObject
+    , createStaticGameObjectB
     ) where
 
 import SFML.System.Vector2 (Vec2f)
@@ -18,11 +19,16 @@ createGameObject drw beh pos vel = let
     alive = True
     physics = newSimplePhysics vel
     initialRotation = 0.0
-    in Ball drw beh physics pos initialRotation alive
+    in Ball drw beh physics pos initialRotation [] alive
+
+createStaticGameObjectB :: Drawing -> Vec2f -> Behavior -> Ball
+createStaticGameObjectB drw pos behavior = let 
+    velocity = zero
+    in
+        createGameObject drw behavior pos velocity
 
 createStaticGameObject :: Drawing -> Vec2f -> Ball
 createStaticGameObject drw pos = let
     behavior = noopB
-    velocity = zero
     in
-        createGameObject drw behavior pos velocity
+        createStaticGameObjectB drw pos behavior

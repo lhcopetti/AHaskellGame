@@ -15,12 +15,9 @@ import SFML.SFResource
 import SFML.System.Vector2 (Vec2f)
 
 import qualified Component.Position as Pos
+import Component.Draw.DrawingData
 import Drawable
-
-data Drawing = CircleDrawing CircleShape
-             | RectangleDrawing RectangleShape
-             | ConvexDrawing ConvexShape
-             | TextDrawing Text
+import System.Messaging.DrawingMessage
 
 instance Drawable Drawing where
     draw wnd (CircleDrawing ptr) = drawCircle wnd ptr Nothing
@@ -35,7 +32,7 @@ setOriginDrawing (ConvexDrawing     ptr) pos = setOrigin ptr pos
 setOriginDrawing (TextDrawing       ptr) pos = setOrigin ptr pos
     
 
-updateDrawing :: Pos.Position a => Drawing -> a -> IO ()
+updateDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
 updateDrawing (CircleDrawing shape) obj = do
     setPosition shape (Pos.getPosition obj)
     setRotation shape (Pos.getRotation obj)
@@ -48,7 +45,13 @@ updateDrawing (ConvexDrawing shape) obj = do
 updateDrawing (TextDrawing text) obj = do
     setPosition text (Pos.getPosition obj)
     setRotation text (Pos.getRotation obj)
+    executeMessages (TextDrawing text) (getInbox obj)
 
+executeMessages :: Drawing -> [DrawingMessage] -> IO ()
+executeMessages drw = mapM_ (executeMessage drw)
+
+executeMessage :: Drawing -> DrawingMessage -> IO ()
+executeMessage drw (MSG f) = f drw
 
 destroyDrawing :: Drawing -> IO ()
 destroyDrawing (CircleDrawing ptr) = destroy ptr
