@@ -1,19 +1,5 @@
-module BallFactory
-    ( createBall
-    , createRedBall
-    , createYellowSquare
-    , createCyanTriangle
-    , createMagentaWrapAroundBall
-    , createWhiteNoopBall
-    , createDeadManWalking
-    , createMousePositionCopier
-    , createMouseFollower
-    , createMiniBall
-    , createSimpleHexagon
-    , createSimpleEqTriangle
-    , createSimpleText
-    , createLiveGameObjectCounter
-    ) where
+module BallFactory 
+    where
 
 import SFML.System.Vector2
 import SFML.Graphics.Color
@@ -118,3 +104,17 @@ createLiveGameObjectCounter pos = do
     drawComponent <- createEmptyText 15
     let behavior = updatePromptForGOCountB "GameObjects"
     return (createStaticGameObjectB drawComponent pos behavior)
+
+createDeathByUpdates :: Vec2f -> MaybeT IO Ball
+createDeathByUpdates pos = do
+    liftIO $ putStrLn "Creating object that dies from updates"
+    drawComponent <- createCenteredCircle 10 blue
+    let behavior = deathByUpdatesB
+    return (createStaticGameObjectB drawComponent pos behavior)
+
+createDeathByHitsOnWall :: Vec2f -> Vec2f -> MaybeT IO Ball
+createDeathByHitsOnWall pos vel = do
+    liftIO $ putStrLn "Creating object that dies from hitting on walls"
+    drawComponent <- createCenteredCircle 15 green
+    let behavior = deathByHitsOnWallB
+    return (createGameObject drawComponent behavior pos vel)

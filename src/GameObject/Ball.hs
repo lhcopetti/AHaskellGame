@@ -59,3 +59,7 @@ instance Killable Ball where
 instance DrawingInbox Ball where
     getInbox = inbox
     setInbox newMsgs b = b { inbox = newMsgs }
+
+instance Behavioral Ball where
+    setBehavior behav b = b { behavior = behav }
+    setBehaviorT behav b = b { behavior = Behavior behav }

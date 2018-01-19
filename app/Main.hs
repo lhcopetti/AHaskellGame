@@ -77,7 +77,9 @@ createObjects gen env = do
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
     goCounter <- createLiveGameObjectCounter (Vec2f 20 20)
-    return (goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
+    willDieSoon <- createDeathByUpdates (Vec2f 400 400)
+    willHitAndDie <- createDeathByHitsOnWall (Vec2f 200 200) (Vec2f 5.0 7.0)
+    return (willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
 
 createRandomMiniBalls :: BallCreation [Ball]
 createRandomMiniBalls = do

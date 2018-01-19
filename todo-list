@@ -68,11 +68,12 @@
 	OK! Add a triangle that follows the mouse (one of the edges must be pointing towards the mouse at all times)
 	OK! Add a drawing that contains text (font-size, color) (Add the game title to the screen?)
 
+	TODO: Create behavior that after 100 updates will die.
+	TODO: All time counter (all of the game objects)
 	TODO: Add a composite drawing
 	TODO: Add a statistics object that will show:
 		Composite drawing?
 		current number of game objects
-		all time counter (all of the game objects)
 	TODO: Fix the following behavior when the target is too close. (Remove flicking).
 
 	TODO: Add a behavior that after colliding X times, the object dies
