@@ -24,12 +24,14 @@ instance Drawable Drawing where
     draw wnd (RectangleDrawing ptr) = drawRectangle wnd ptr Nothing
     draw wnd (ConvexDrawing ptr) = drawConvexShape wnd ptr Nothing
     draw wnd (TextDrawing ptr) = drawText wnd ptr Nothing
+    draw wnd (CompositeDrawing drws) = mapM_ (draw wnd) drws
 
 setOriginDrawing :: Drawing -> Vec2f -> IO ()
 setOriginDrawing (CircleDrawing     ptr) pos = setOrigin ptr pos
 setOriginDrawing (RectangleDrawing  ptr) pos = setOrigin ptr pos
 setOriginDrawing (ConvexDrawing     ptr) pos = setOrigin ptr pos
 setOriginDrawing (TextDrawing       ptr) pos = setOrigin ptr pos
+setOriginDrawing (CompositeDrawing drws) pos = mapM_ (`setOriginDrawing` pos) drws
     
 
 updateDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
@@ -46,6 +48,8 @@ updateDrawing (TextDrawing text) obj = do
     setPosition text (Pos.getPosition obj)
     setRotation text (Pos.getRotation obj)
     executeMessages (TextDrawing text) (getInbox obj)
+updateDrawing (CompositeDrawing drws) obj = mapM_ (`updateDrawing` obj) drws
+
 
 executeMessages :: Drawing -> [DrawingMessage] -> IO ()
 executeMessages drw = mapM_ (executeMessage drw)
@@ -58,3 +62,4 @@ destroyDrawing (CircleDrawing ptr) = destroy ptr
 destroyDrawing (RectangleDrawing ptr) = destroy ptr
 destroyDrawing (ConvexDrawing ptr) = destroy ptr
 destroyDrawing (TextDrawing ptr) = destroy ptr
+destroyDrawing (CompositeDrawing drws) = mapM_ destroyDrawing drws

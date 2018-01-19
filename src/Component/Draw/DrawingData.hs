@@ -8,3 +8,4 @@ data Drawing = CircleDrawing CircleShape
              | RectangleDrawing RectangleShape
              | ConvexDrawing ConvexShape
              | TextDrawing Text
+             | CompositeDrawing [Drawing]
