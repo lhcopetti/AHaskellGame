@@ -74,8 +74,9 @@ createObjects gen env = do
     eqT <- createSimpleEqTriangle (Vec2f 300 300)
     mousePointer <- createMousePositionCopier
     mouseFollowers <- createMouseFollowers
+    simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
-    return (eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
+    return (simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
 
 createRandomMiniBalls :: BallCreation [Ball]
 createRandomMiniBalls = do

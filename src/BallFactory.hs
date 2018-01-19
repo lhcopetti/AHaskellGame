@@ -11,6 +11,7 @@ module BallFactory
     , createMiniBall
     , createSimpleHexagon
     , createSimpleEqTriangle
+    , createSimpleText
     ) where
 
 import SFML.System.Vector2
@@ -26,6 +27,7 @@ import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.HexagonDrawing (createHexagon)
 import Component.Draw.TriangleDrawing (createEqTriangle)
+import Component.Draw.TextDrawing (createText)
 import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
 
@@ -102,3 +104,9 @@ createMouseFollower pos = do
     liftIO $ putStrLn "Creating mouse follower"
     drawComponent <- createCenteredCircle 10 blue
     return (createGameObject drawComponent mouseFollowerB pos zero)
+
+createSimpleText :: Vec2f -> String -> MaybeT IO Ball
+createSimpleText pos text = do
+    liftIO $ putStrLn "Creating simple text"
+    drawComponent <- createText 30 text
+    return (createStaticGameObject drawComponent pos)
