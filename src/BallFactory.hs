@@ -9,12 +9,14 @@ import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createStaticGameObject, createStaticGameObjectB)
 import GameObject.Ball (Ball)
+import Component.Draw.Drawing (setOriginDrawing)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.HexagonDrawing (createHexagon)
 import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Draw.TextDrawing (createEmptyText, createText)
+import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
 
@@ -76,9 +78,20 @@ createSimpleHexagon pos = do
 
 createSimpleEqTriangle :: Vec2f -> MaybeT IO Ball
 createSimpleEqTriangle pos = do
-    liftIO $ putStrLn $ "Creating a simple hexagon " ++ show pos
-    drawComponent <- createEqTriangle 25.0 white
-    return (createGameObject drawComponent followPointingMouseB pos zero)
+    liftIO $ putStrLn $ "Creating a simple eq triangle " ++ show pos
+    let factor = 25.0
+    drawComponent <- createEqTriangle factor white
+    miniBall1 <- createCenteredCircle 5 yellow
+    miniBall2 <- createCenteredCircle 5 yellow
+    let triOriginX = sqrt 3 / 4 * factor + 5
+    let triOriginY1 = 1/2 * factor + 5
+    let triOriginY2 = -1/2 * factor + 5
+
+    liftIO $ setOriginDrawing miniBall1 (Vec2f triOriginX triOriginY1)
+    liftIO $ setOriginDrawing miniBall2 (Vec2f triOriginX triOriginY2)
+    drw <- createComposite [drawComponent, miniBall1, miniBall2]
+    return (createGameObject drw followPointingMouseB pos zero)
+
 
 createMousePositionCopier :: MaybeT IO Ball
 createMousePositionCopier = do
