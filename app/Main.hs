@@ -76,7 +76,8 @@ createObjects gen env = do
     mouseFollowers <- createMouseFollowers
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
-    return (simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
+    goCounter <- createLiveGameObjectCounter (Vec2f 20 20)
+    return (goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
 
 createRandomMiniBalls :: BallCreation [Ball]
 createRandomMiniBalls = do

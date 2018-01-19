@@ -12,6 +12,7 @@ module BallFactory
     , createSimpleHexagon
     , createSimpleEqTriangle
     , createSimpleText
+    , createLiveGameObjectCounter
     ) where
 
 import SFML.System.Vector2
@@ -109,4 +110,10 @@ createSimpleText :: Vec2f -> String -> MaybeT IO Ball
 createSimpleText pos text = do
     liftIO $ putStrLn "Creating simple text"
     drawComponent <- createText 30 text
+    return (createStaticGameObject drawComponent pos)
+
+createLiveGameObjectCounter :: Vec2f -> MaybeT IO Ball
+createLiveGameObjectCounter pos = do
+    liftIO $ putStrLn "Creating live GameObject counter"
+    drawComponent <- createText 15 "Current count of GOs: "
     return (createStaticGameObject drawComponent pos)
