@@ -16,7 +16,8 @@ import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer)
 import Component.Behavior.RotationalBehavior (rotate)
 import Component.Behavior.TextBehavior (updatePromptForGOCount)
-import Killable (die)
+import Component.Behavior.NoopBehavior (noopBehavior)
+import Component.Behavior.DeathBehavior (dieBehavior)
 
 encloseToBoxB :: Behavior
 encloseToBoxB = Behavior encloseToBox
@@ -25,10 +26,10 @@ encloseByWrapAroundB :: Behavior
 encloseByWrapAroundB = Behavior encloseByWrapAround
 
 noopB :: Behavior 
-noopB = Behavior return
+noopB = Behavior noopBehavior
 
 deadManWalkingB :: Behavior
-deadManWalkingB = Behavior (return . die)
+deadManWalkingB = Behavior dieBehavior
 
 mousePositionCopierB :: Behavior 
 mousePositionCopierB = Behavior mousePositionCopier
