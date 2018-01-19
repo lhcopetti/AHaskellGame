@@ -23,6 +23,8 @@ import System.GameWorld (GameWorld (..))
 import Random.Random
 import Random.RandomState
 
+import Paths_AHaskellGame
+
 #define USE_RANDOM_GENERATOR
 
 main = do
@@ -79,7 +81,18 @@ createObjects gen env = do
     goCounter <- createLiveGameObjectCounter (Vec2f 20 20)
     willDieSoon <- createDeathByUpdates (Vec2f 400 400)
     willHitAndDie <- createDeathByHitsOnWall (Vec2f 200 200) (Vec2f 5.0 7.0)
-    return (willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects)
+    sprites <- createSprites
+    return (willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+
+createSprites :: MaybeT IO [Ball]
+createSprites = do
+    blueBird <- createSpriteFromFile "resources/sprites/blue-bird/blue-bird-0-resized.png" (Vec2f 400 100) (Vec2f 1.0 0)
+    return [blueBird]
+
+createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> MaybeT IO Ball
+createSpriteFromFile path pos vel = do
+    systemPath <- liftIO $ getDataFileName path
+    createSprite systemPath pos vel
 
 createRandomMiniBalls :: BallCreation [Ball]
 createRandomMiniBalls = do
