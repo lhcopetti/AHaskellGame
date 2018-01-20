@@ -8,6 +8,7 @@ import SFML.Graphics.Text (setTextString)
 
 import Control.Monad.Reader (asks)
 
+import GameObject.GameObject ()
 import Component.Behavior.Behavior
 import Component.Draw.DrawingData (Drawing (..))
 import System.Messaging.DrawingMessage (DrawingMessageType, DrawingMessage (..), setInbox)

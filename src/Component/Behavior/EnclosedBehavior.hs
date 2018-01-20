@@ -12,6 +12,7 @@ import Vec2.Vec2Math (addVec2f)
 import Component.Behavior.Behavior
 import Component.Position
 import Component.Physics.PhysicsClass
+import GameObject.GameObject ()
 import GameEnv
 
 

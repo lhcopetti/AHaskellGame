@@ -14,16 +14,7 @@ import Component.Physics.PhysicsClass
 import System.Messaging.DrawingMessage (DrawingInbox)
 import Killable
 import GameEnv
-
-type BehaviorType = forall a.   ( Position a
-                                , PhysicsClass a
-                                , Killable a
-                                , DrawingInbox a
-                                , Behavioral a
-                                ) => a -> Reader GameEnvironment a
-
-data Behavior = Behavior {  behave :: BehaviorType
-                         }
+import GameObject.GameObjectTypes
 
 class Behavioral a where
     setBehavior :: Behavior -> a -> a

@@ -20,15 +20,7 @@ import Component.Physics.Physics
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
-
-data GameObject = GameObject { drawComp     :: Drawing
-                             , behavior     :: Behavior
-                             , physicsComp  :: Physics
-                             , position     :: Vec2f
-                             , rotation     :: Float
-                             , inbox         :: [DrawingMessage]
-                             , alive        :: Bool
-                             }
+import GameObject.GameObjectTypes
 
 instance Updatable GameObject where
     update go@GameObject { behavior } = do 

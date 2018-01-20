@@ -7,8 +7,8 @@ import SFML.System.Vector2 (Vec2f (..), Vec2i (..))
 import SFML.Graphics.Types (RenderWindow)
 import SFML.Graphics.RenderWindow (getMousePosition)
 
-data MouseInput = MouseInput { position :: Vec2f
-                   }
+data MouseInput = MouseInput { mousePos :: Vec2f
+                             }
 
 newMouseInput :: Vec2i -> MouseInput
 newMouseInput (Vec2i px py) = let 
