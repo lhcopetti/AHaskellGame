@@ -2,7 +2,6 @@
 module Main where
 
 import SFML.Window
-import SFML.Graphics.SFRenderTarget
 import SFML.Graphics.RenderWindow
 
 import Control.Monad.Trans.Maybe (MaybeT (..))
@@ -10,9 +9,7 @@ import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
 import Control.Monad.Trans.Class
 import Control.Monad.IO.Class (liftIO)
-import Control.Applicative
 import System.Random (StdGen)
-import Data.Functor.Identity
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
@@ -21,12 +18,12 @@ import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
 import Random.Random
-import Random.RandomState
 
 import Paths_AHaskellGame
 
 #define USE_RANDOM_GENERATOR
 
+main :: IO ()
 main = do
     desktopMode <- getDesktopMode
     fsModes <- getFullscreenModes
@@ -96,9 +93,9 @@ createSpriteFromFile path pos vel = do
 
 createRandomMiniBalls :: BallCreation [GameObject]
 createRandomMiniBalls = do
-    position <- createRandomPositions 5
+    pos <- createRandomPositions 5
     speed <- lift (createRandomSpeeds 8.0 10)
-    sequence (ballCreationMiniBall <$> position <*> speed)
+    sequence (ballCreationMiniBall <$> pos <*> speed)
 
 ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation GameObject
 ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
