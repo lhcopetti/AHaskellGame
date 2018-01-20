@@ -1,4 +1,4 @@
-module BallFactory 
+module ObjectsFactory
     where
 
 import SFML.System.Vector2

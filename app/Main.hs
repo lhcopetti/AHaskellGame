@@ -17,7 +17,7 @@ import Data.Functor.Identity
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
-import BallFactory
+import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
 import Random.Random
