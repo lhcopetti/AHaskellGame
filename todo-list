@@ -96,6 +96,8 @@
 
 	TODO: Add badge for automatic testing (haskell code, travis)
 	TODO: Update the resolver to the latest one available (Currently 10.3)
+	TODO: Add the Flyweight pattern for the sprites and textures.
+		A single texture should  be resuable across all drawings.
 
 	TODO: Create a gameobject that will follow the mouse upon clicking. It will stop as soons as it arrives
 	close enough (5 radius?)

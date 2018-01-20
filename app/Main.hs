@@ -15,9 +15,9 @@ import System.Random (StdGen)
 import Data.Functor.Identity
 
 import GameEnv (GameEnvironment (..), createGameEnv)
-import GameObject.Ball (Ball)
+import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
-import BallFactory
+import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
 import Random.Random
@@ -67,7 +67,7 @@ type BallCreation a = ReaderT GameEnvironment (StateT StdGen (MaybeT IO)) a
 runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> MaybeT IO (a, StdGen)
 runBallCreation gen env eval = runStateT (runReaderT eval env) gen
 
-createObjects :: StdGen -> GameEnvironment -> MaybeT IO [Ball]
+createObjects :: StdGen -> GameEnvironment -> MaybeT IO [GameObject]
 createObjects gen env = do 
     balls <- createGameBalls
     dots <- createDots
@@ -84,34 +84,34 @@ createObjects gen env = do
     sprites <- createSprites
     return (willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
-createSprites :: MaybeT IO [Ball]
+createSprites :: MaybeT IO [GameObject]
 createSprites = do
     blueBird <- createSpriteFromFile "resources/sprites/blue-bird/blue-bird-0-resized.png" (Vec2f 400 100) (Vec2f 1.0 0)
     return [blueBird]
 
-createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> MaybeT IO Ball
+createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> MaybeT IO GameObject
 createSpriteFromFile path pos vel = do
     systemPath <- liftIO $ getDataFileName path
     createSprite systemPath pos vel
 
-createRandomMiniBalls :: BallCreation [Ball]
+createRandomMiniBalls :: BallCreation [GameObject]
 createRandomMiniBalls = do
     position <- createRandomPositions 5
     speed <- lift (createRandomSpeeds 8.0 10)
     sequence (ballCreationMiniBall <$> position <*> speed)
 
-ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation Ball
+ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation GameObject
 ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
 
 
-createMouseFollowers :: MaybeT IO [Ball]
+createMouseFollowers :: MaybeT IO [GameObject]
 createMouseFollowers = do
     m <- createMouseFollower    (Vec2f 0.0 100.0)
     m' <- createMouseFollower   (Vec2f 0.0 250.0)    
     m'' <- createMouseFollower  (Vec2f 0.0 500.0)  
     return [m, m', m'']
 
-createGameBalls :: MaybeT IO [Ball]
+createGameBalls :: MaybeT IO [GameObject]
 createGameBalls = do
     ball <- createBall (Vec2f 25 25) (Vec2f 4 4)
     ball2 <- createBall (Vec2f 15 15) (Vec2f 2 0)
@@ -129,7 +129,7 @@ createGameBalls = do
     ball14 <- createWhiteNoopBall (Vec2f 60 60)
     return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball10, ball11, ball12, ball13, ball14]
 
-createDots :: MaybeT IO [Ball]
+createDots :: MaybeT IO [GameObject]
 createDots = do
     dot     <- createWhiteNoopBall (Vec2f 50 50)
     dot'    <- createWhiteNoopBall (Vec2f 150 150)
@@ -137,7 +137,7 @@ createDots = do
     dot3    <- createWhiteNoopBall (Vec2f 350 350)
     return [dot, dot', dot'', dot3]
 
-createTriangles :: MaybeT IO [Ball]
+createTriangles :: MaybeT IO [GameObject]
 createTriangles = do
     triangle <- createDeadManWalking (Vec2f 150 150)
     return [triangle]
