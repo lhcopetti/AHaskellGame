@@ -31,35 +31,35 @@ data GameObject = GameObject { drawComp     :: Drawing
                              }
 
 instance Updatable GameObject where
-    update ball@GameObject { behavior } = do 
-        let updatedBall = updatePhysics ball
+    update go@GameObject { behavior } = do 
+        let updatedBall = updatePhysics go
         behave behavior updatedBall
 
 instance Synchronizable GameObject where
-    synchronize ball = updateDrawing (drawComp ball) ball
+    synchronize go = updateDrawing (drawComp go) go
 
 instance Drawable GameObject where 
     draw wnd GameObject { drawComp } = draw wnd drawComp
 
 instance Pos.Position GameObject where
     getPosition = position
-    setPosition ball newPosition = ball { position = newPosition } 
+    setPosition go newPosition = go { position = newPosition } 
     getRotation = rotation
-    setRotation newRotation ball = ball { rotation = newRotation }
+    setRotation newRotation go = go { rotation = newRotation }
 
 instance PhysicsClass GameObject where
     getVelocity = velocity . physicsComp
-    setVelocity ball@GameObject { physicsComp } newVel = ball { physicsComp = setVelocity physicsComp newVel }
+    setVelocity go@GameObject { physicsComp } newVel = go { physicsComp = setVelocity physicsComp newVel }
 
 instance Killable GameObject where 
     isAlive = alive
-    die b = b { alive = False }
+    die g = g { alive = False }
     destroyResource GameObject { drawComp } = destroyDrawing drawComp
 
 instance DrawingInbox GameObject where
     getInbox = inbox
-    setInbox newMsgs b = b { inbox = newMsgs }
+    setInbox newMsgs g = g { inbox = newMsgs }
 
 instance Behavioral GameObject where
-    setBehavior behav b = b { behavior = behav }
-    setBehaviorT behav b = b { behavior = Behavior behav }
+    setBehavior behav g = g { behavior = behav }
+    setBehaviorT behav g = g { behavior = Behavior behav }
