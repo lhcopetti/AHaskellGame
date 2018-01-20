@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
-module GameObject.Ball 
-    ( Ball (..)
+module GameObject.GameObject
+    ( GameObject (..)
     , draw
     , update
     , synchronize
@@ -21,45 +21,45 @@ import Component.Draw.Drawing
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
 
-data Ball = Ball { drawComp     :: Drawing
-                 , behavior     :: Behavior
-                 , physicsComp  :: Physics
-                 , position     :: Vec2f
-                 , rotation     :: Float
-                 , inbox         :: [DrawingMessage]
-                 , alive        :: Bool
-                 }
+data GameObject = GameObject { drawComp     :: Drawing
+                             , behavior     :: Behavior
+                             , physicsComp  :: Physics
+                             , position     :: Vec2f
+                             , rotation     :: Float
+                             , inbox         :: [DrawingMessage]
+                             , alive        :: Bool
+                             }
 
-instance Updatable Ball where
-    update ball@Ball { behavior } = do 
+instance Updatable GameObject where
+    update ball@GameObject { behavior } = do 
         let updatedBall = updatePhysics ball
         behave behavior updatedBall
 
-instance Synchronizable Ball where
+instance Synchronizable GameObject where
     synchronize ball = updateDrawing (drawComp ball) ball
 
-instance Drawable Ball where 
-    draw wnd Ball { drawComp } = draw wnd drawComp
+instance Drawable GameObject where 
+    draw wnd GameObject { drawComp } = draw wnd drawComp
 
-instance Pos.Position Ball where
+instance Pos.Position GameObject where
     getPosition = position
     setPosition ball newPosition = ball { position = newPosition } 
     getRotation = rotation
     setRotation newRotation ball = ball { rotation = newRotation }
 
-instance PhysicsClass Ball where
+instance PhysicsClass GameObject where
     getVelocity = velocity . physicsComp
-    setVelocity ball@Ball { physicsComp } newVel = ball { physicsComp = setVelocity physicsComp newVel }
+    setVelocity ball@GameObject { physicsComp } newVel = ball { physicsComp = setVelocity physicsComp newVel }
 
-instance Killable Ball where 
+instance Killable GameObject where 
     isAlive = alive
     die b = b { alive = False }
-    destroyResource Ball { drawComp } = destroyDrawing drawComp
+    destroyResource GameObject { drawComp } = destroyDrawing drawComp
 
-instance DrawingInbox Ball where
+instance DrawingInbox GameObject where
     getInbox = inbox
     setInbox newMsgs b = b { inbox = newMsgs }
 
-instance Behavioral Ball where
+instance Behavioral GameObject where
     setBehavior behav b = b { behavior = behav }
     setBehaviorT behav b = b { behavior = Behavior behav }
