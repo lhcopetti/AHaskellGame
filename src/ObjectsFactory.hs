@@ -7,7 +7,7 @@ import SFML.Graphics.Color
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 
-import GameObjectFactory (createGameObject, createStaticGameObject, createStaticGameObjectB)
+import GameObjectFactory (createGameObject, createGameObjectWithChildren, createStaticGameObject, createStaticGameObjectB)
 import GameObject.GameObject (GameObject)
 import GameObject.GameObjectTypes (GameObjectCreation)
 import Component.Draw.Drawing (setOriginDrawing)
@@ -147,3 +147,14 @@ createSprite path pos vel = do
     drawComponent <- createSpriteDrawing path
     let behavior = encloseByWrapAroundB
     return (createGameObject drawComponent behavior pos vel)
+
+createMultiplier :: Vec2f -> GameObjectCreation
+createMultiplier pos = do
+    liftIO $ putStrLn "Creating object that creates children"
+    drawComponent <- createCenteredCircle 5 green
+    let behavior = deadManWalkingB
+    let childrenFactory = (`createSimpleText` "this is a text")
+    let firstChild = childrenFactory (Vec2f 500 40)
+    let firstChild' = childrenFactory (Vec2f 500 80)
+    let firstChild'' = childrenFactory (Vec2f 500 120)
+    return (createGameObjectWithChildren drawComponent behavior pos zero [firstChild, firstChild', firstChild''])

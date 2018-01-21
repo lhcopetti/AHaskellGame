@@ -14,6 +14,7 @@ import Updatable
 import Synchronizable
 import Drawable
 import Killable
+import ChildBearer
 import qualified Component.Position as Pos
 import Component.Physics.PhysicsClass
 import Component.Physics.Physics
@@ -55,3 +56,7 @@ instance DrawingInbox GameObject where
 instance Behavioral GameObject where
     setBehavior behav g = g { behavior = behav }
     setBehaviorT behav g = g { behavior = Behavior behav }
+
+instance ChildBearer GameObject where
+    getChildren = childObjects
+    removeChildren obj = obj { childObjects = [] }

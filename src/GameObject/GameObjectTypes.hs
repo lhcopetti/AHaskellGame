@@ -22,6 +22,7 @@ data GameObject = GameObject { drawComp     :: Drawing
                              , position     :: Vec2f
                              , rotation     :: Float
                              , inbox        :: [DrawingMessage]
+                             , childObjects :: [GameObjectCreation]
                              , alive        :: Bool
                              }
 
