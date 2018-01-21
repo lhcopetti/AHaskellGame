@@ -14,6 +14,7 @@ import System.Random (StdGen)
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
+import GameObject.GameObjectTypes (GameObjectCreation)
 import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
@@ -73,20 +74,21 @@ createObjects gen env = do
     eqT <- createSimpleEqTriangle (Vec2f 300 300)
     mousePointer <- createMousePositionCopier
     mouseFollowers <- createMouseFollowers
+    mousePrinter <- createMousePositionPrinter (Vec2f 500 0)
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
     goCounter <- createLiveGameObjectCounter (Vec2f 20 20)
     willDieSoon <- createDeathByUpdates (Vec2f 400 400)
     willHitAndDie <- createDeathByHitsOnWall (Vec2f 200 200) (Vec2f 5.0 7.0)
     sprites <- createSprites
-    return (willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+    return (mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do
     blueBird <- createSpriteFromFile "resources/sprites/blue-bird/blue-bird-0-resized.png" (Vec2f 400 100) (Vec2f 1.0 0)
     return [blueBird]
 
-createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> MaybeT IO GameObject
+createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation
 createSpriteFromFile path pos vel = do
     systemPath <- liftIO $ getDataFileName path
     createSprite systemPath pos vel
