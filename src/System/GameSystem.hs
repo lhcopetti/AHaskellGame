@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module System.GameSystem
     ( startGame
     ) where
@@ -11,11 +12,11 @@ import Control.Monad.Reader (runReader)
 import Control.Monad.Trans.Maybe (runMaybeT)
 import Control.Concurrent (threadDelay)
 
-import System.GameWorld (GameWorld (..))
+import System.GameWorld (GameWorld (..), adoptChildren)
 import System.EventSystem (pollClosingEvent)
 import Input.Mouse (MouseInput (..), getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject)
+import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject)
 
 startGame :: GameWorld -> GameEnvironment -> IO ()
 startGame world gameEnv = do
@@ -46,15 +47,20 @@ gameLoop all@(GameWorld wnd objs) env = do
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
 
+    (newWorld, orphanChildren) <- updateGameWorld all env
+    updateScreen newWorld
+    return $ adoptChildren newWorld orphanChildren
+
+updateScreen :: GameWorld -> IO ()
+updateScreen world @ GameWorld { window } = do
+    synchronizeObjects world
+    drawObjects world
+    display window
+
+updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
+updateGameWorld (GameWorld wnd objs) env = do
     let newObjs = runReader (forM objs updateAnyGameObject) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
     let newObjs'' = map removeChildrenAnyGameObject newObjs'
-
-    let newWorld = GameWorld wnd newObjs''
-
-    synchronizeObjects newWorld
-    drawObjects newWorld
-    display wnd
-
-    return $ GameWorld wnd (newObjs'' ++ childrenObj)
+    return (GameWorld wnd newObjs'', childrenObj)
