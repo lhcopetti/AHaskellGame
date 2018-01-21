@@ -152,7 +152,7 @@ createMultiplier :: Vec2f -> GameObjectCreation
 createMultiplier pos = do
     liftIO $ putStrLn "Creating object that creates children"
     drawComponent <- createCenteredCircle 5 green
-    let behavior = deadManWalkingB
+    let behavior = noopB
     let childrenFactory = (`createSimpleText` "this is a text")
     let firstChild = childrenFactory (Vec2f 500 40)
     let firstChild' = childrenFactory (Vec2f 500 80)

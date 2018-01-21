@@ -15,7 +15,7 @@ import System.GameWorld (GameWorld (..))
 import System.EventSystem (pollClosingEvent)
 import Input.Mouse (MouseInput (..), getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject)
+import GameObject.AnyGameObject (updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject)
 
 startGame :: GameWorld -> GameEnvironment -> IO ()
 startGame world gameEnv = do
@@ -47,12 +47,14 @@ gameLoop all@(GameWorld wnd objs) env = do
     clearRenderWindow wnd black
 
     let newObjs = runReader (forM objs updateAnyGameObject) env
+    childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
+    let newObjs'' = map removeChildrenAnyGameObject newObjs'
 
-    let newWorld = GameWorld wnd newObjs'
+    let newWorld = GameWorld wnd newObjs''
 
     synchronizeObjects newWorld
     drawObjects newWorld
     display wnd
 
-    return newWorld
+    return $ GameWorld wnd (newObjs'' ++ childrenObj)

@@ -7,21 +7,28 @@ module GameObject.AnyGameObject
     , synchronizeGameObject
     , isAliveAnyGameObject
     , removeDeadAnyGameObjects
+    , getChildrenAnyGameObjects
+    , removeChildrenAnyGameObject
     ) where
 
-import Control.Monad (forM_)
+import Control.Monad (forM_, forM)
 import Data.List (partition)
+import Control.Monad.Trans.Maybe (runMaybeT)
 
+import GameObject.GameObject ()
+import GameObject.GameObjectTypes (GameObjectCreation, GameObject)
 import GameEnv (GameEnvironment)
 import Drawable
 import Updatable
 import Synchronizable
 import Killable
+import ChildBearer
 
 data AnyGameObject = forall a. ( Updatable a
                                , Drawable a
                                , Synchronizable a
-                               , Killable a) 
+                               , Killable a
+                               , ChildBearer a) 
                                => AGO a
 
 updateAnyGameObject :: UpdateType AnyGameObject
@@ -37,6 +44,23 @@ drawAnyGameObject window (AGO obj) = draw window obj
 
 isAliveAnyGameObject :: AnyGameObject -> Bool
 isAliveAnyGameObject (AGO a) = isAlive a
+
+getChildrenAnyGameObject :: AnyGameObject -> [GameObjectCreation]
+getChildrenAnyGameObject (AGO a) = getChildren a
+
+removeChildrenAnyGameObject :: AnyGameObject -> AnyGameObject
+removeChildrenAnyGameObject (AGO a) = AGO $ removeChildren a
+
+getChildrenAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
+getChildrenAnyGameObjects objs = do
+    let childrenCreation = concatMap getChildrenAnyGameObject objs
+    createdChildren <- createObjects childrenCreation
+    return $ maybe [] (map AGO) createdChildren
+
+createObjects :: [GameObjectCreation] -> IO (Maybe [GameObject])
+createObjects action = do
+    newObjs <- forM action runMaybeT
+    return (sequence newObjs)
 
 removeDeadAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
 removeDeadAnyGameObjects objs = do 
