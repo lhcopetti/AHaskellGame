@@ -74,8 +74,20 @@
 	OK! Create composite drawing components
 		Maybe use the mouse following equilateral triangle. Add component(s) that will
 		make it clear which edge is the "pointing" one.
-	TODO: Finally turn the Ball.hs into the GameObject.hs data type.
-	TODO: Create a sprite drawing, finally.
+	OK! Finally turn the Ball.hs into the GameObject.hs data type.
+	OK! Create a sprite drawing, finally.
+
+20/01/2018
+	Moved type definitions to a single file.
+
+21/01/2018
+	OK! Create GameObject that show mouse position
+	OK! Allow for gameobjects to have child objects
+
+22/01/2018
+	TODO: Create a Scene object that will hold its own list of gameobjects
+	TODO: Create a demo for switching between scenes
+
 
 
 	TODO: All time counter (all of the game objects)
@@ -112,5 +124,3 @@
 	it now hosts the rotation transform as well.
 	
 	TODO: Add acceleration behavior for the triangles
-	TODO: Create a Scene object that will hold its own list of gameobjects
-	TODO: Create a demo for switching between scenes

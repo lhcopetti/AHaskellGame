@@ -8,6 +8,7 @@ module Component.Behavior.DeathBehavior
 import Component.Behavior.Behavior
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.EnclosedBehavior (encloseToBox)
+import Component.Behavior.HigherOrderBehavior (behaviorPred)
 import GameObject.GameObjectTypes
 
 import Component.Physics.PhysicsClass
@@ -28,12 +29,6 @@ deathByHitsOnWall x obj
 
 deathByUpdates :: Int -> BehaviorType
 deathByUpdates x = behaviorPred (x < 0) dieBehavior (deathByUpdates (x - 1))
-
-behaviorPred :: Bool -> BehaviorType -> BehaviorType -> BehaviorType
-behaviorPred bool fst snd obj = let
-    chosenBehavior = if bool then fst else snd
-    in
-        return $ setBehaviorT chosenBehavior obj
 
 dieBehavior :: BehaviorType
 dieBehavior = return . die
