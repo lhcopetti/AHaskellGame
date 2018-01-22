@@ -48,12 +48,6 @@ createYellowSquare pos vel = do
     drawComponent <- createSquare 5 yellow
     return (createGameObject drawComponent encloseByWrapAroundB pos vel)
 
-createCyanTriangle :: Vec2f -> Vec2f -> GameObjectCreation
-createCyanTriangle pos vel = do
-    liftIO $ putStrLn $ "Creating blue triangle at " ++ show pos
-    drawComponent <- createConvex cyan [Vec2f 55 30, Vec2f 70 60, Vec2f 40 60]
-    return (createGameObject drawComponent encloseToBoxB pos vel)
-
 createMagentaWrapAroundBall :: Vec2f -> Vec2f -> GameObjectCreation
 createMagentaWrapAroundBall pos vel = do
     liftIO $ putStrLn $ "Creating magenta ball at " ++ show pos

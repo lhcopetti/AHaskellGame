@@ -74,7 +74,6 @@ createObjects gen env = do
     hex <- createSimpleHexagon (Vec2f 200 200)
     eqT <- createSimpleEqTriangle (Vec2f 300 300)
     mousePointer <- createMousePositionCopier
-    mouseFollowers <- createMouseFollowers
     mousePrinter <- createMousePositionPrinter (Vec2f 500 0)
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
@@ -83,7 +82,7 @@ createObjects gen env = do
     willHitAndDie <- createDeathByHitsOnWall (Vec2f 200 200) (Vec2f 5.0 7.0)
     sprites <- createSprites
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
-    return ( behaveOnce : multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+    return ( behaveOnce : multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do
@@ -104,14 +103,6 @@ createRandomMiniBalls = do
 ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation GameObject
 ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
 
-
-createMouseFollowers :: MaybeT IO [GameObject]
-createMouseFollowers = do
-    m <- createMouseFollower    (Vec2f 0.0 100.0)
-    m' <- createMouseFollower   (Vec2f 0.0 250.0)    
-    m'' <- createMouseFollower  (Vec2f 0.0 500.0)  
-    return [m, m', m'']
-
 createGameBalls :: MaybeT IO [GameObject]
 createGameBalls = do
     ball <- createBall (Vec2f 25 25) (Vec2f 4 4)
@@ -123,12 +114,9 @@ createGameBalls = do
     ball7 <- createYellowSquare (Vec2f 100 100) (Vec2f 2 3)
     ball8 <- createYellowSquare (Vec2f 200 200) (Vec2f 2 (-3))
     ball9 <- createYellowSquare (Vec2f 300 300) (Vec2f 2 (-5))
-    ball10 <- createCyanTriangle (Vec2f 250 300) (Vec2f 1 2)
-    ball11 <- createCyanTriangle (Vec2f 150 200) (Vec2f 1 (-3))
-    ball12 <- createCyanTriangle (Vec2f 50 100) (Vec2f (-1) 1)
     ball13 <- createMagentaWrapAroundBall (Vec2f 300 300) (Vec2f 2.5 4.5)
     ball14 <- createWhiteNoopBall (Vec2f 60 60)
-    return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball10, ball11, ball12, ball13, ball14]
+    return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball13, ball14]
 
 createDots :: MaybeT IO [GameObject]
 createDots = do
