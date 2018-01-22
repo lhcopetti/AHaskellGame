@@ -72,7 +72,7 @@ createObjects gen env = do
     dots <- createDots
     triangles <- createTriangles
     hex <- createSimpleHexagon (Vec2f 200 200)
-    eqT <- createSimpleEqTriangle (Vec2f 300 300)
+    eqT <- createMouseFollowerEqTriangle (Vec2f 300 300)
     mousePointer <- createMousePositionCopier
     mousePrinter <- createMousePositionPrinter (Vec2f 500 0)
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"

@@ -72,8 +72,8 @@ createSimpleHexagon pos = do
     drawComponent <- createHexagon 25.0 white
     return (createGameObject drawComponent (rotateB 1.0) pos zero)
 
-createSimpleEqTriangle :: Vec2f -> GameObjectCreation
-createSimpleEqTriangle pos = do
+createMouseFollowerEqTriangle :: Vec2f -> GameObjectCreation
+createMouseFollowerEqTriangle pos = do
     liftIO $ putStrLn $ "Creating a simple eq triangle " ++ show pos
     let factor = 25.0
     drawComponent <- createEqTriangle factor white
@@ -86,7 +86,7 @@ createSimpleEqTriangle pos = do
     liftIO $ setOriginDrawing miniBall1 (Vec2f triOriginX triOriginY1)
     liftIO $ setOriginDrawing miniBall2 (Vec2f triOriginX triOriginY2)
     drw <- createComposite [drawComponent, miniBall1, miniBall2]
-    return (createGameObject drw followPointingMouseB pos zero)
+    return (createGameObject drw followsAndDiesCloseToMouseB pos zero)
 
 
 createMousePositionCopier :: GameObjectCreation
