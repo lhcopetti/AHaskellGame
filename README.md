@@ -25,23 +25,23 @@ One of the things that I will work on the following week will probably be:
   - Created some objects to make use of the mouse position passed as an environment in the Reader Monad.
   - Composition of different behaviors using the (>>=) operator, one of the nicest findings, IMO. Eg: Follows the current mouse position as well as pointing towards it at all times. (White triangle with two yellow balls).
  
-`
-			followPointingMouseB :: Behavior
-			followPointingMouseB = Behavior $ (mousePointer =<< ) . mouseFollower
-`
+```
+followPointingMouseB :: Behavior
+followPointingMouseB = Behavior $ (mousePointer =<< ) . mouseFollower
+```
   - Another thing I'm actually proud of is the possibility of changing the current behavior based on runtime decisions.
 		This is done unsing the setBehaviorT method, example:
 
-`
-			deathByUpdates :: Int -> BehaviorType
-			deathByUpdates x = behaviorPred (x < 0) dieBehavior (deathByUpdates (x - 1))
+```
+deathByUpdates :: Int -> BehaviorType
+deathByUpdates x = behaviorPred (x < 0) dieBehavior (deathByUpdates (x - 1))
 
-			behaviorPred :: Bool -> BehaviorType -> BehaviorType -> BehaviorType
-			behaviorPred bool fst snd obj = let
-				chosenBehavior = if bool then fst else snd
-				in
-					return $ setBehaviorT chosenBehavior obj
-`
+behaviorPred :: Bool -> BehaviorType -> BehaviorType -> BehaviorType
+behaviorPred bool fst snd obj = let
+	chosenBehavior = if bool then fst else snd
+	in
+		return $ setBehaviorT chosenBehavior obj
+```
 
 The behaviorPred is also the first Higher order function I was able to create using my own datatypes. It will be moved from the current module it resides, don't worry.
 
