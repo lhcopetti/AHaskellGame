@@ -6,7 +6,7 @@ I'm still unsure whether it will be a simple game or a more ambitious yet with a
 
 ## Diary
 
-### 13/01/2017 - Some abstractions are starting to show up
+### 13/01/2018 - Some abstractions are starting to show up
 
 ![alt text][diary-01]
 
@@ -17,7 +17,44 @@ One of the things that I will work on the following week will probably be:
   - Sprites
   - GameObjects and Behavior that act upon events (Input, most probably)
 
-  
+### 21/01/2018 - Higher order behavior functions
+
+![alt text][diary-02]
+
+  - The Ball module was finally replaced by the GameObject data type (refactoring).
+  - Created some objects to make use of the mouse position passed as an environment in the Reader Monad.
+  - Composition of different behaviors using the (>>=) operator, one of the nicest findings, IMO. Eg: Follows the current mouse position as well as pointing towards it at all times. (White triangle with two yellow balls).
+ 
+`
+			followPointingMouseB :: Behavior
+			followPointingMouseB = Behavior $ (mousePointer =<< ) . mouseFollower
+`
+  - Another thing I'm actually proud of is the possibility of changing the current behavior based on runtime decisions.
+		This is done unsing the setBehaviorT method, example:
+
+`
+			deathByUpdates :: Int -> BehaviorType
+			deathByUpdates x = behaviorPred (x < 0) dieBehavior (deathByUpdates (x - 1))
+
+			behaviorPred :: Bool -> BehaviorType -> BehaviorType -> BehaviorType
+			behaviorPred bool fst snd obj = let
+				chosenBehavior = if bool then fst else snd
+				in
+					return $ setBehaviorT chosenBehavior obj
+`
+
+The behaviorPred is also the first Higher order function I was able to create using my own datatypes. It will be moved from the current module it resides, don't worry.
+
+Other honorable mentions are:
+  - Composite Drawing, a single game object with multiple drawings (represented by the triangle with the two yellow balls).
+  - Random creation of game objects using the StateT monad together with StdGen.
+      Also used a "LANGUAGE CPP" ghc language extension to enable the use of conditional directives just out of curiosity.
+  - Add rotation to game objects (The white hexagon).
+  - Add suport for text drawings
+  - Stateful behaviors which complements what was said above.
+  - Added the first sprite to the game. (It was about time, right)?
+  - The last meaningful change was the added ability that gameobjects have to create child objects (The three messy "This is ..." were created that way). I still haven't created a behavior to actually trigger the creation of a child, though.
+
 ## Development
 
 ### Setting up dependencies
@@ -106,3 +143,4 @@ This is also in honor for being the first logic bug on the project, and rightful
 
 
 [diary-01]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-13_AHaskellGame.gif "Diary 13/01/2018"
+[diary-02]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-21_AHaskellGame.gif "Diary 21/01/2018"
