@@ -1,6 +1,7 @@
 module Component.Behavior.HigherOrderBehavior
     ( behaviorPred
     , behaveOnce
+    , behaveBoth
     ) where
 
 import Control.Monad (liftM)
@@ -19,3 +20,6 @@ behaviorPred bool fst snd obj = let
 
 behaveOnce :: BehaviorType -> BehaviorType
 behaveOnce beh obj = liftM (setBehaviorT noopBehavior) (beh obj)
+
+behaveBoth :: BehaviorType -> BehaviorType -> BehaviorType
+behaveBoth fst snd = (snd =<<) . fst
