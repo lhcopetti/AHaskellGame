@@ -60,3 +60,4 @@ instance Behavioral GameObject where
 instance ChildBearer GameObject where
     getChildren = childObjects
     removeChildren obj = obj { childObjects = [] }
+    addChild child obj@GameObject { childObjects } = obj { childObjects = child : childObjects }

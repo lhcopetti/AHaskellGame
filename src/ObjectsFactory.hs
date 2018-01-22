@@ -158,3 +158,10 @@ createMultiplier pos = do
     let firstChild' = childrenFactory (Vec2f 500 80)
     let firstChild'' = childrenFactory (Vec2f 500 120)
     return (createGameObjectWithChildren drawComponent behavior pos zero [firstChild, firstChild', firstChild''])
+
+createBehaveOnce :: Vec2f -> GameObjectCreation
+createBehaveOnce pos = do
+    liftIO $ putStrLn "Creating object that behaves once"
+    drawComponent <- createCenteredCircle 5 white
+    let behavior = behaveOnceB (addChildB $ createWhiteNoopBall (Vec2f 600 230))
+    return (createGameObject drawComponent behavior pos zero )

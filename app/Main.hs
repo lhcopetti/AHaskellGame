@@ -82,7 +82,8 @@ createObjects gen env = do
     willDieSoon <- createDeathByUpdates (Vec2f 400 400)
     willHitAndDie <- createDeathByHitsOnWall (Vec2f 200 200) (Vec2f 5.0 7.0)
     sprites <- createSprites
-    return (multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+    behaveOnce <- createBehaveOnce (Vec2f 568 200)
+    return ( behaveOnce : multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : mouseFollowers ++ balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do

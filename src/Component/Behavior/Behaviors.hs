@@ -12,7 +12,11 @@ module Component.Behavior.Behaviors
     , deathByUpdatesB
     , deathByHitsOnWallB
     , updateTextWithMousePositionB
+    , behaveOnceB
+    , addChildB
     ) where
+
+import GameObject.GameObjectTypes (GameObjectCreation)
 
 import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
@@ -21,6 +25,8 @@ import Component.Behavior.RotationalBehavior (rotate)
 import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMousePosition)
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
+import Component.Behavior.ChildBearerBehavior (addChildBehavior)
+import Component.Behavior.HigherOrderBehavior (behaveOnce)
 
 encloseToBoxB :: Behavior
 encloseToBoxB = Behavior encloseToBox
@@ -60,3 +66,9 @@ deathByHitsOnWallB = Behavior (deathByHitsOnWall 5)
 
 updateTextWithMousePositionB :: Behavior
 updateTextWithMousePositionB = Behavior updateTextWithMousePosition
+
+behaveOnceB :: Behavior -> Behavior
+behaveOnceB (Behavior behType) = Behavior (behaveOnce behType)
+
+addChildB :: GameObjectCreation -> Behavior
+addChildB child = Behavior (addChildBehavior child)
