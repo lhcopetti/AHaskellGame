@@ -14,7 +14,7 @@ import Control.Concurrent (threadDelay)
 
 import System.GameWorld (GameWorld (..), adoptChildren)
 import System.EventSystem (pollClosingEvent)
-import Input.Mouse (MouseInput (..), getMouseInput)
+import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
 import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject)
 
@@ -43,7 +43,7 @@ loop all@(GameWorld wnd objs) env = do
 
 
 gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop all@(GameWorld wnd objs) env = do 
+gameLoop all@(GameWorld wnd _) env = do 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
 

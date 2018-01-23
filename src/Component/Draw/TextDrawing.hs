@@ -3,7 +3,6 @@ module Component.Draw.TextDrawing
     , createEmptyText
     ) where
 
-import SFML.Graphics.Types (Text)
 import qualified SFML.Graphics.Text as SFText (createText, setTextCharacterSize, setTextString, setTextFont)
 
 import Control.Monad.Trans.Maybe (MaybeT)

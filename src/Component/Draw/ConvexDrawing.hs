@@ -2,7 +2,6 @@ module Component.Draw.ConvexDrawing
     ( createConvex
     ) where
 
-import SFML.Graphics.Types (ConvexShape)
 import SFML.Graphics.ConvexShape
 import SFML.Graphics.Color (Color)
 import SFML.System.Vector2 (Vec2f)

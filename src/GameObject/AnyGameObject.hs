@@ -17,7 +17,6 @@ import Control.Monad.Trans.Maybe (runMaybeT)
 
 import GameObject.GameObject ()
 import GameObject.GameObjectTypes (GameObjectCreation, GameObject)
-import GameEnv (GameEnvironment)
 import Drawable
 import Updatable
 import Synchronizable

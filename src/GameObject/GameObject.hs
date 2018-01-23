@@ -5,10 +5,6 @@ module GameObject.GameObject
     , update
     , synchronize
     ) where
-    
-import SFML.System.Vector2
-import SFML.Graphics.Types
-import Control.Monad.Trans.Maybe (MaybeT)
 
 import Updatable
 import Synchronizable

@@ -8,8 +8,6 @@ import Control.Applicative (ZipList (..))
 
 import Component.Position
 import Component.Physics.PhysicsClass
-import Container.TupleHelper (mapTuple)
-import Vec2.Vec2Math (v2fToTuple)
 
 import SFML.System.Vector2 (Vec2u (..), Vec2f (..))
 

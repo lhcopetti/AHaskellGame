@@ -10,7 +10,7 @@ import SFML.System.Vector2 (Vec2f)
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
 import Component.Behavior.Behaviors (noopB)
-import Component.Physics.PhysicsFactory (newEmptyPhysics, newSimplePhysics)
+import Component.Physics.PhysicsFactory (newSimplePhysics)
 import Vec2.Vec2Math (zero)
 
 import GameObject.GameObject
