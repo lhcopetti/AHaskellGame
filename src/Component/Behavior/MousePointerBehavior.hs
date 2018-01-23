@@ -3,7 +3,7 @@ module Component.Behavior.MousePointerBehavior
     , mouseFollower
     , mousePointer
     , followPointingMouse
-    , followsAndDiesCloseToMouse
+    , mouseDistance
     ) where
 
 import Control.Monad.Reader (Reader, asks)
@@ -46,9 +46,3 @@ mouseDistance obj = do
     mousePosition <- asks (mousePos . input)
     let objPosition = getPosition obj
     return (distanceVec2f mousePosition objPosition)
-
-followsAndDiesCloseToMouse :: BehaviorType
-followsAndDiesCloseToMouse obj = do
-    newObj <- followPointingMouse obj
-    distanceToMouse <- mouseDistance newObj
-    behaviorPred (distanceToMouse < 5.0) dieBehavior followsAndDiesCloseToMouse newObj

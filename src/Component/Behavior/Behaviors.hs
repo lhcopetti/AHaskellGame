@@ -15,14 +15,13 @@ module Component.Behavior.Behaviors
     , behaveOnceB
     , behaveBothB
     , addChildB
-    , followsAndDiesCloseToMouseB
     ) where
 
 import GameObject.GameObjectTypes (GameObjectCreation)
 
 import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
-import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer, followPointingMouse, followsAndDiesCloseToMouse)
+import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer, followPointingMouse)
 import Component.Behavior.RotationalBehavior (rotate)
 import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMousePosition)
 import Component.Behavior.NoopBehavior (noopBehavior)
@@ -77,6 +76,3 @@ behaveBothB (Behavior fst) (Behavior snd) = Behavior (behaveBoth fst snd)
 
 addChildB :: GameObjectCreation -> Behavior
 addChildB child = Behavior (addChildBehavior child)
-
-followsAndDiesCloseToMouseB :: Behavior
-followsAndDiesCloseToMouseB = Behavior followsAndDiesCloseToMouse

@@ -15,6 +15,7 @@ import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes (GameObjectCreation)
+import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
 import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
@@ -72,7 +73,7 @@ createObjects gen env = do
     dots <- createDots
     triangles <- createTriangles
     hex <- createSimpleHexagon (Vec2f 200 200)
-    eqT <- createMouseFollowerEqTriangle (Vec2f 300 300)
+    eqT <- createMouseFollowerEqTriangle
     mousePointer <- createMousePositionCopier
     mousePrinter <- createMousePositionPrinter (Vec2f 500 0)
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
