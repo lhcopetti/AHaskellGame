@@ -72,7 +72,7 @@ behaveOnceB :: Behavior -> Behavior
 behaveOnceB (Behavior behType) = Behavior (behaveOnce behType)
 
 behaveBothB :: Behavior -> Behavior -> Behavior
-behaveBothB (Behavior fst) (Behavior snd) = Behavior (behaveBoth fst snd)
+behaveBothB (Behavior first) (Behavior second) = Behavior (behaveBoth first second)
 
 addChildB :: GameObjectCreation -> Behavior
 addChildB child = Behavior (addChildBehavior child)

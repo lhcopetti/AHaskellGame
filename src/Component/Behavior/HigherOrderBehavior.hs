@@ -13,8 +13,8 @@ import GameObject.GameObject ()
 
 -- | Sets the behavior of a gameObject given two options and a bool value.
 behaviorPred :: Bool -> BehaviorType -> BehaviorType -> BehaviorType
-behaviorPred bool fst snd obj = let
-    chosenBehavior = if bool then fst else snd
+behaviorPred bool first second obj = let
+    chosenBehavior = if bool then first else second
     in
         return $ setBehaviorT chosenBehavior obj
 
@@ -22,4 +22,4 @@ behaveOnce :: BehaviorType -> BehaviorType
 behaveOnce beh obj = liftM (setBehaviorT noopBehavior) (beh obj)
 
 behaveBoth :: BehaviorType -> BehaviorType -> BehaviorType
-behaveBoth fst snd = (snd =<<) . fst
+behaveBoth first second = (second =<<) . first

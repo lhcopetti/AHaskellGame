@@ -3,7 +3,6 @@ module Component.Draw.SpriteDrawing
     , createSpriteDrawing
     ) where
 
-import SFML.System.Vector2 (Vec2f (..))
 import SFML.Graphics.Sprite (createSprite, setTexture)
 import SFML.Graphics.Types (Texture, Sprite)
 

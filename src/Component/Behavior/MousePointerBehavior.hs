@@ -9,16 +9,15 @@ module Component.Behavior.MousePointerBehavior
 import Control.Monad.Reader (Reader, asks)
 
 import Component.Behavior.Behavior (BehaviorType)
-import Component.Behavior.HigherOrderBehavior (behaveBoth, behaviorPred)
-import Component.Behavior.DeathBehavior (dieBehavior)
+import Component.Behavior.HigherOrderBehavior (behaveBoth)
 import GameObject.GameObject (GameObject (..))
 import GameEnv (GameEnvironment (..))
 
 import Component.Position (setPosition, getPosition, setRotation)
-import Component.Physics.PhysicsClass (setVelocity, getVelocity)
+import Component.Physics.PhysicsClass (setVelocity)
 import Input.Mouse (MouseInput (..))
 import Vec2.Vec2Behavior (direction, orientation)
-import Vec2.Vec2Math (addVec2f, subtractVec2f, distanceVec2f)
+import Vec2.Vec2Math (subtractVec2f, distanceVec2f)
 
 mousePositionCopier :: BehaviorType
 mousePositionCopier obj = do

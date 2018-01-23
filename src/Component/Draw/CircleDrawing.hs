@@ -3,7 +3,7 @@ module Component.Draw.CircleDrawing
     , createCenteredCircle
     ) where
 
-import SFML.Graphics.CircleShape (createCircleShape, setRadius, setOrigin)
+import SFML.Graphics.CircleShape (createCircleShape, setRadius)
 import SFML.Graphics.Color (Color)
 import SFML.Graphics.SFShape (setFillColor)
 import SFML.System.Vector2 (Vec2f (..))

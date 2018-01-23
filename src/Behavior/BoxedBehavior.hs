@@ -8,8 +8,6 @@ import Control.Applicative (ZipList (..))
 
 import Component.Position
 import Component.Physics.PhysicsClass
-import Container.TupleHelper (mapTuple)
-import Vec2.Vec2Math (v2fToTuple)
 
 import SFML.System.Vector2 (Vec2u (..), Vec2f (..))
 
@@ -37,11 +35,11 @@ wrapAroundPos (Vec2f px py) (Vec2u width height) = let
                 Vec2f nx ny
 
 wrapAroundFloat :: Float -> Word -> Float
-wrapAroundFloat value max = let 
+wrapAroundFloat value maxValue = let 
     iValue = round value
-    iMax = round . fromIntegral $ max
+    iMax = round . fromIntegral $ maxValue
     in 
         fromIntegral (wrapAroundValue iValue iMax)
 
 wrapAroundValue :: Integral a => a -> a -> a
-wrapAroundValue value max = value `mod` max
+wrapAroundValue value maxValue = value `mod` maxValue

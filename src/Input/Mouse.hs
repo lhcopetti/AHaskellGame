@@ -19,5 +19,5 @@ newMouseInput (Vec2i px py) = let
 
 getMouseInput :: RenderWindow -> IO MouseInput
 getMouseInput wnd = do
-    mousePos <- getMousePosition (pure wnd)
-    return (newMouseInput mousePos)
+    mousePosition <- getMousePosition (pure wnd)
+    return (newMouseInput mousePosition)

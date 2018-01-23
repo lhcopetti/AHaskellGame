@@ -7,7 +7,6 @@ import SFML.Graphics.RenderWindow (pollEvent)
 import SFML.Window.Event (SFEvent (..))
 
 import Control.Monad.Trans.Maybe (MaybeT (..))
-import Control.Monad (mzero)
 
 pollClosingEvent :: RenderWindow -> MaybeT IO SFEvent
 pollClosingEvent window = do 

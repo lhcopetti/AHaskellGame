@@ -14,7 +14,7 @@ import Control.Concurrent (threadDelay)
 
 import System.GameWorld (GameWorld (..), adoptChildren)
 import System.EventSystem (pollClosingEvent)
-import Input.Mouse (MouseInput (..), getMouseInput)
+import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
 import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject)
 
@@ -27,14 +27,14 @@ drawObjects :: GameWorld -> IO ()
 drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
 
 synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects (GameWorld wnd objs) = forM_ objs synchronizeGameObject
+synchronizeObjects (GameWorld _ objs) = forM_ objs synchronizeGameObject
 
 loop :: GameWorld -> GameEnvironment -> IO ()
-loop all@(GameWorld wnd objs) env = do 
+loop world@(GameWorld wnd objs) env = do 
 
     mouse <- getMouseInput wnd
     let liveGameObjects = fromIntegral . length $ objs
-    updatedWorld <- gameLoop all env { input = mouse, countGOs = liveGameObjects }
+    updatedWorld <- gameLoop world env { input = mouse, countGOs = liveGameObjects }
 
     evt <- runMaybeT (pollClosingEvent wnd)
     case evt of 
@@ -43,11 +43,11 @@ loop all@(GameWorld wnd objs) env = do
 
 
 gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop all@(GameWorld wnd objs) env = do 
+gameLoop world@(GameWorld wnd _) env = do 
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
 
-    (newWorld, orphanChildren) <- updateGameWorld all env
+    (newWorld, orphanChildren) <- updateGameWorld world env
     updateScreen newWorld
     return $ adoptChildren newWorld orphanChildren
 

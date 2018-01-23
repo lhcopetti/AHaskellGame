@@ -3,8 +3,6 @@ module Component.Behavior.RotationalBehavior
     ( rotate
     ) where
 
-import SFML.System.Vector2 (Vec2f)
-
 import Component.Behavior.Behavior
 import GameObject.GameObject ()
 import Component.Position

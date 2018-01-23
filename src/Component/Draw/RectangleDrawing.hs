@@ -3,7 +3,6 @@ module Component.Draw.RectangleDrawing
     , createSquare
     ) where
 
-import SFML.Graphics.Types (RectangleShape)
 import SFML.Graphics.RectangleShape (createRectangleShape, setSize)
 import SFML.Graphics.Color (Color)
 import SFML.Graphics.SFShape (setFillColor)

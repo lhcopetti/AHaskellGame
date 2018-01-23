@@ -85,6 +85,13 @@
 	OK! Allow for gameobjects to have child objects
 
 22/01/2018
+	OK! Add behavior to create childs
+	OK! Make another diary entry on the README
+
+23/01/2018
+	TODO: Add the Vec2Instances.hs to another module that also reexports the following:
+		import SFML.System.Vec2 (Vec2f (..).
+
 	TODO: Create a Scene object that will hold its own list of gameobjects
 	TODO: Create a demo for switching between scenes
 
@@ -99,10 +106,6 @@
 	TODO: Add z-ordering to drawing components. Make the game title always appear on top.
 	TODO: Make the mouse pointer (probably the triangle) turn itself into a ball when it is on top
 	of the mouse cursor (or close enough).
-
-
-	TODO: Add the Vec2Instances.hs to another module that also reexports the following:
-		import SFML.System.Vec2 (Vec2f (..).
 	TODO: Create an abstraction for testing that uses tuples as (input, expected result)
 
 
