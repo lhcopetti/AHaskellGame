@@ -6,10 +6,8 @@ module Component.Behavior.DeathBehavior
     ) where
 
 import Component.Behavior.Behavior
-import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.EnclosedBehavior (encloseToBox)
 import Component.Behavior.HigherOrderBehavior (behaviorPred)
-import GameObject.GameObjectTypes
 
 import Component.Physics.PhysicsClass
 import Vec2.Vec2Instances

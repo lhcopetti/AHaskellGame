@@ -10,7 +10,6 @@ import Control.Monad.Reader (Reader, asks)
 
 import Component.Behavior.Behavior (BehaviorType)
 import Component.Behavior.HigherOrderBehavior (behaveBoth, behaviorPred)
-import Component.Behavior.DeathBehavior (dieBehavior)
 import GameObject.GameObject (GameObject (..))
 import GameEnv (GameEnvironment (..))
 

@@ -4,20 +4,15 @@ module ObjectsFactory
 import SFML.System.Vector2
 import SFML.Graphics.Color
 
-import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createGameObjectWithChildren, createStaticGameObject, createStaticGameObjectB)
-import GameObject.GameObject (GameObject)
 import GameObject.GameObjectTypes (GameObjectCreation)
-import Component.Draw.Drawing (setOriginDrawing)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.HexagonDrawing (createHexagon)
-import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Draw.TextDrawing (createEmptyText, createText)
-import Component.Draw.CompositeDrawing (createComposite)
 import Component.Draw.SpriteDrawing (createSpriteDrawing)
 import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
@@ -30,7 +25,7 @@ createMiniBall pos vel = do
     return (createGameObject shape encloseToBoxB pos vel)    
 
 createBall :: Vec2f -> Vec2f -> GameObjectCreation
-createBall pos@(Vec2f x y) vel = do 
+createBall pos vel = do 
     liftIO $ putStrLn $ "Creating ball at " ++ show pos
     let color = blue
     shape <- createCircle 25 color
