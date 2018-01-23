@@ -50,19 +50,28 @@ updateDrawing (FlaggedDrawing drw flg) obj = updateDrawingTransformable drw obj 
         updatePosition = NoPositionUpdates `notElem` flg
         updateRotation = NoRotationUpdates `notElem` flg
 updateDrawing (CompositeDrawing drws)  obj  = mapM_ (`updateDrawing` obj) drws
-updateDrawing (NamedDrawing   _ drw )  obj  = updateDrawing drw obj
 updateDrawing drw obj                      = updateAllTransformable drw obj
 
 updateDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
-updateDrawingTransformable (CircleDrawing shape)    obj tuple = updateTransformable shape obj tuple
-updateDrawingTransformable (RectangleDrawing shape) obj tuple = updateTransformable shape obj tuple
-updateDrawingTransformable (ConvexDrawing shape)    obj tuple = updateTransformable shape obj tuple
-updateDrawingTransformable (SpriteDrawing shape _)  obj tuple = updateTransformable shape obj tuple
-updateDrawingTransformable (NamedDrawing _ drw)     obj tuple = updateDrawingTransformable drw obj tuple
+updateDrawingTransformable (CircleDrawing shape)    obj tuple = do
+    updateTransformable shape obj tuple
+    executeMessages (CircleDrawing shape) (getInbox obj)
+updateDrawingTransformable d@(RectangleDrawing shape) obj tuple = do
+    updateTransformable shape obj tuple
+    executeMessages d (getInbox obj)
+updateDrawingTransformable d@(ConvexDrawing shape)    obj tuple = do
+    updateTransformable shape obj tuple
+    executeMessages d (getInbox obj)
+updateDrawingTransformable d@(SpriteDrawing shape _)  obj tuple = do
+    updateTransformable shape obj tuple
+    executeMessages d (getInbox obj)
+updateDrawingTransformable d@(NamedDrawing _ drw)     obj tuple = do
+    updateDrawingTransformable drw obj tuple
+    executeMessages d (getInbox obj)
 updateDrawingTransformable (CompositeDrawing drws)  obj tuple = mapM_ (updateDrawingTransformableFlip obj tuple) drws
-updateDrawingTransformable (TextDrawing text)       obj tuple = do
+updateDrawingTransformable d@(TextDrawing text)       obj tuple = do
     updateTransformable text obj tuple
-    executeMessages (TextDrawing text) (getInbox obj)
+    executeMessages d (getInbox obj)
 updateDrawingTransformable (FlaggedDrawing _ _)     _   _     = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'updateDrawing'"
 
 updateDrawingTransformableFlip :: (Pos.Position a, DrawingInbox a) => a -> (Bool, Bool) -> Drawing -> IO ()

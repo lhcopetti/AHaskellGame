@@ -15,6 +15,7 @@ module Component.Behavior.Behaviors
     , behaveOnceB
     , behaveBothB
     , addChildB
+    , updateMultipleTextsB
     ) where
 
 import GameObject.GameObjectTypes (GameObjectCreation)
@@ -23,7 +24,7 @@ import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer, followPointingMouse)
 import Component.Behavior.RotationalBehavior (rotate)
-import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMousePosition)
+import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMousePosition, updateMultipleTexts)
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
@@ -76,3 +77,6 @@ behaveBothB (Behavior first) (Behavior second) = Behavior (behaveBoth first seco
 
 addChildB :: GameObjectCreation -> Behavior
 addChildB child = Behavior (addChildBehavior child)
+
+updateMultipleTextsB :: Behavior
+updateMultipleTextsB = Behavior (updateMultipleTexts 0)
