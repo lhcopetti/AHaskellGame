@@ -12,6 +12,7 @@ data Drawing = CircleDrawing CircleShape
              | SpriteDrawing Sprite Texture
              | CompositeDrawing [Drawing]
              | FlaggedDrawing Drawing [DrawingFlag]
+             | NamedDrawing String Drawing
 
 data DrawingFlag = NoRotationUpdates
                   | NoPositionUpdates

@@ -10,6 +10,7 @@ import Component.Draw.DrawingData (Drawing)
 
 type DrawingMessageType = Drawing -> IO ()
 data DrawingMessage = MSG DrawingMessageType
+                    | NamedMessage String DrawingMessageType
 
 class DrawingInbox a where
     getInbox :: a -> [DrawingMessage]

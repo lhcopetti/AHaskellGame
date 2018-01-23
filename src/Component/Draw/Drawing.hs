@@ -5,7 +5,7 @@ module Component.Draw.Drawing
     , destroyDrawing
     ) where
 
-import Control.Monad (when)
+import Control.Monad (when, forM_)
 
 import SFML.Graphics.RenderWindow (drawCircle, drawRectangle, drawConvexShape, drawText, drawSprite)
 import SFML.Graphics.CircleShape ()
@@ -31,6 +31,7 @@ instance Drawable Drawing where
     draw wnd (SpriteDrawing sprite _) = drawSprite wnd sprite Nothing
     draw wnd (FlaggedDrawing drawing _) = draw wnd drawing
     draw wnd (CompositeDrawing drws) = mapM_ (draw wnd) drws
+    draw wnd (NamedDrawing _ drw) = draw wnd drw
 
 setOriginDrawing :: Drawing -> Vec2f -> IO ()
 setOriginDrawing (CircleDrawing     ptr) pos = setOrigin ptr pos
@@ -39,6 +40,7 @@ setOriginDrawing (ConvexDrawing     ptr) pos = setOrigin ptr pos
 setOriginDrawing (TextDrawing       ptr) pos = setOrigin ptr pos
 setOriginDrawing (SpriteDrawing   ptr _) pos = setOrigin ptr pos
 setOriginDrawing (FlaggedDrawing  ptr _) pos = setOriginDrawing ptr pos
+setOriginDrawing (NamedDrawing   _  drw) pos = setOriginDrawing drw pos
 setOriginDrawing (CompositeDrawing drws) pos = mapM_ (`setOriginDrawing` pos) drws
 
 
@@ -48,6 +50,7 @@ updateDrawing (FlaggedDrawing drw flg) obj = updateDrawingTransformable drw obj 
         updatePosition = NoPositionUpdates `notElem` flg
         updateRotation = NoRotationUpdates `notElem` flg
 updateDrawing (CompositeDrawing drws)  obj  = mapM_ (`updateDrawing` obj) drws
+updateDrawing (NamedDrawing   _ drw )  obj  = updateDrawing drw obj
 updateDrawing drw obj                      = updateAllTransformable drw obj
 
 updateDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
@@ -55,6 +58,7 @@ updateDrawingTransformable (CircleDrawing shape)    obj tuple = updateTransforma
 updateDrawingTransformable (RectangleDrawing shape) obj tuple = updateTransformable shape obj tuple
 updateDrawingTransformable (ConvexDrawing shape)    obj tuple = updateTransformable shape obj tuple
 updateDrawingTransformable (SpriteDrawing shape _)  obj tuple = updateTransformable shape obj tuple
+updateDrawingTransformable (NamedDrawing _ drw)     obj tuple = updateDrawingTransformable drw obj tuple
 updateDrawingTransformable (CompositeDrawing drws)  obj tuple = mapM_ (updateDrawingTransformableFlip obj tuple) drws
 updateDrawingTransformable (TextDrawing text)       obj tuple = do
     updateTransformable text obj tuple
@@ -76,7 +80,13 @@ executeMessages :: Drawing -> [DrawingMessage] -> IO ()
 executeMessages drw = mapM_ (executeMessage drw)
 
 executeMessage :: Drawing -> DrawingMessage -> IO ()
+executeMessage (NamedDrawing nameDrw drw) (NamedMessage nameMsg f) = when (nameDrw == nameMsg) (f drw)
+executeMessage (CompositeDrawing drws) msg@(NamedMessage _ _) = forM_ drws (`executeMessage` msg)
+executeMessage (CompositeDrawing _) (MSG _) = return () 
 executeMessage drw (MSG f) = f drw
+executeMessage _ (NamedMessage _ _) = return ()
+
+
 
 destroyDrawing :: Drawing -> IO ()
 destroyDrawing (CircleDrawing       ptr ) = destroy ptr
@@ -86,3 +96,4 @@ destroyDrawing (TextDrawing         ptr ) = destroy ptr
 destroyDrawing (SpriteDrawing   spr tex ) = destroy spr >> destroy tex
 destroyDrawing (CompositeDrawing    drws) = mapM_ destroyDrawing drws
 destroyDrawing (FlaggedDrawing    ptr _ ) = destroyDrawing ptr
+destroyDrawing (NamedDrawing      _ ptr ) = destroyDrawing ptr
