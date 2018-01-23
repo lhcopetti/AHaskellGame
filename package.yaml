@@ -29,7 +29,8 @@ dependencies:
 library:
   source-dirs: src
   ghc-options:
-  - -Wall
+  - -W
+  - -Werror
 
 data-files:
 - resources/**/*
@@ -42,7 +43,8 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Wall
+    - -W
+    - -Werror
     dependencies:
     - AHaskellGame
     other-modules:

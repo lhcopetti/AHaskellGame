@@ -42,4 +42,4 @@ wrapAroundFloat value maxValue = let
         fromIntegral (wrapAroundValue iValue iMax)
 
 wrapAroundValue :: Integral a => a -> a -> a
-wrapAroundValue value max = value `mod` max
+wrapAroundValue value maxValue = value `mod` maxValue

@@ -59,6 +59,7 @@ updateDrawingTransformable (CompositeDrawing drws)  obj tuple = mapM_ (updateDra
 updateDrawingTransformable (TextDrawing text)       obj tuple = do
     updateTransformable text obj tuple
     executeMessages (TextDrawing text) (getInbox obj)
+updateDrawingTransformable (FlaggedDrawing _ _)     _   _     = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'updateDrawing'"
 
 updateDrawingTransformableFlip :: (Pos.Position a, DrawingInbox a) => a -> (Bool, Bool) -> Drawing -> IO ()
 updateDrawingTransformableFlip obj (pos, rot) drw = updateDrawingTransformable drw obj (pos, rot)
