@@ -9,11 +9,12 @@ import SFML.Graphics.Color (yellow, white)
 import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject)
-import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation)
-import Component.Draw.Drawing (setOriginDrawing)
+import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation, Creation)
+import Component.Draw.Drawing (Drawing, setOriginDrawing)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Draw.CompositeDrawing (createComposite)
+import Component.Draw.TextDrawing (createText)
 import Component.Behavior.MousePointerBehavior (followPointingMouse, mouseDistance)
 import Component.Behavior.DeathBehavior (dieBehavior)
 import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveBoth)
@@ -31,11 +32,18 @@ createMouseFollowerEqTriangle = do
     let triOriginX = sqrt 3 / 4 * factor + 5
     let triOriginY1 = 1/2 * factor + 5
     let triOriginY2 = -1/2 * factor + 5
-
-    liftIO $ setOriginDrawing miniBall1 (Vec2f triOriginX triOriginY1)
-    liftIO $ setOriginDrawing miniBall2 (Vec2f triOriginX triOriginY2)
-    drw <- createComposite [drawComponent, miniBall1, miniBall2]
+    liftIO $ do
+        setOriginDrawing miniBall1 (Vec2f triOriginX triOriginY1)
+        setOriginDrawing miniBall2 (Vec2f triOriginX triOriginY2)
+    text <- createTextDrawing
+    drw <- createComposite [drawComponent, miniBall1, miniBall2, text]
     return (createGameObject drw (Behavior followsAndDiesCloseToMouse) zero zero)
+
+createTextDrawing :: Creation Drawing
+createTextDrawing = do
+    text <- createText 15 "EqTriangle death counter"
+    liftIO $ setOriginDrawing text (Vec2f 0 (-20))
+    return text
 
 followsAndDiesCloseToMouse :: BehaviorType
 followsAndDiesCloseToMouse obj = do
