@@ -8,12 +8,15 @@ import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createGameObjectWithChildren, createStaticGameObject, createStaticGameObjectB)
 import GameObject.GameObjectTypes (GameObjectCreation)
+import Component.Draw.Drawing (setOriginDrawing)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.HexagonDrawing (createHexagon)
 import Component.Draw.TextDrawing (createEmptyText, createText)
 import Component.Draw.SpriteDrawing (createSpriteDrawing)
+import Component.Draw.NamedDrawing (createNamedDrawing)
+import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Vec2.Vec2Math (zero)
 
@@ -137,3 +140,16 @@ createBehaveOnce pos = do
     drawComponent <- createCenteredCircle 5 white
     let behavior = behaveOnceB (addChildB $ createWhiteNoopBall (Vec2f 600 230))
     return (createGameObject drawComponent behavior pos zero )
+
+createNamedMessagesDemo :: Vec2f -> GameObjectCreation
+createNamedMessagesDemo pos = do 
+    liftIO $ putStrLn "Creating object that sends named messages"
+    circle <- createCenteredCircle 5 white
+    title <- createText 15 "this is it!"
+    subtitle <- createText 15 "that was it!"
+    allTogether <- createComposite [circle, createNamedDrawing "title" title, createNamedDrawing "subtitle" subtitle]
+    liftIO $ do
+        setOriginDrawing title (Vec2f 0 15)
+        setOriginDrawing subtitle (Vec2f 0 30)
+    let behavior = updateMultipleTextsB
+    return (createGameObject allTogether behavior pos zero )

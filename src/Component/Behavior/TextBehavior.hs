@@ -3,6 +3,7 @@ module Component.Behavior.TextBehavior
     ( updatePromptForGOCount
     , updateTextDrawing
     , updateTextWithMousePosition
+    , updateMultipleTexts
     ) where
 
 import SFML.Graphics.Text (setTextString)
@@ -22,6 +23,14 @@ updatePromptForGOCount prompt obj = do
     numberOfGameObjects <- asks countGOs
     let msg = MSG $ updateTextDrawing (prompt ++ ": " ++ show numberOfGameObjects)
     return (setInbox [msg] obj)
+
+updateMultipleTexts :: Int -> BehaviorType
+updateMultipleTexts count obj = do
+    let fstMsg = NamedMessage "title" (updateTextDrawing $ "This is the title:" ++ show count)
+    let sndMsg = NamedMessage "subtitle" (updateTextDrawing $ "This is the subtitle:" ++ show count)
+    let newObj = setInbox [fstMsg, sndMsg] obj
+    let newObj' = setBehaviorT (updateMultipleTexts (count + 1)) newObj
+    return newObj'
 
 updateTextWithMousePosition :: BehaviorType
 updateTextWithMousePosition obj = do
