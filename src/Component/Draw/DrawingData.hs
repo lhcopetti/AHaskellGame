@@ -1,5 +1,6 @@
 module Component.Draw.DrawingData
     ( Drawing (..)
+    , DrawingFlag (..)
     ) where
 
 import SFML.Graphics.Types (CircleShape, RectangleShape, ConvexShape, Text, Sprite, Texture)
@@ -10,3 +11,8 @@ data Drawing = CircleDrawing CircleShape
              | TextDrawing Text
              | SpriteDrawing Sprite Texture
              | CompositeDrawing [Drawing]
+             | FlaggedDrawing Drawing [DrawingFlag]
+
+data DrawingFlag = NoRotationUpdates
+                  | NoPositionUpdates
+                  deriving (Eq)

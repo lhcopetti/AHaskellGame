@@ -10,11 +10,13 @@ import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject)
 import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation, Creation)
+import Component.Draw.DrawingData (DrawingFlag (..))
 import Component.Draw.Drawing (Drawing, setOriginDrawing)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Draw.CompositeDrawing (createComposite)
 import Component.Draw.TextDrawing (createText)
+import Component.Draw.FlaggedDrawing (createSingleFlagDrawing)
 import Component.Behavior.MousePointerBehavior (followPointingMouse, mouseDistance)
 import Component.Behavior.DeathBehavior (dieBehavior)
 import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveBoth)
@@ -43,7 +45,7 @@ createTextDrawing :: Creation Drawing
 createTextDrawing = do
     text <- createText 15 "EqTriangle death counter"
     liftIO $ setOriginDrawing text (Vec2f 0 (-20))
-    return text
+    return $ createSingleFlagDrawing text NoRotationUpdates
 
 followsAndDiesCloseToMouse :: BehaviorType
 followsAndDiesCloseToMouse obj = do
