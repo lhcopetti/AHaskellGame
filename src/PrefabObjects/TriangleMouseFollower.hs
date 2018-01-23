@@ -16,7 +16,8 @@ import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.MousePointerBehavior (followPointingMouse, mouseDistance)
 import Component.Behavior.DeathBehavior (dieBehavior)
-import Component.Behavior.HigherOrderBehavior (behaviorPred)
+import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveBoth)
+import Component.Behavior.ChildBearerBehavior (addChildBehavior)
 import Vec2.Vec2Math (zero)
 
 
@@ -40,4 +41,11 @@ followsAndDiesCloseToMouse :: BehaviorType
 followsAndDiesCloseToMouse obj = do
     newObj <- followPointingMouse obj
     distanceToMouse <- mouseDistance newObj
-    behaviorPred (distanceToMouse < 5.0) dieBehavior followsAndDiesCloseToMouse newObj
+    behaviorPred (distanceToMouse < 5.0) giveBirthBeforeDying followsAndDiesCloseToMouse newObj
+
+giveBirthBeforeDying :: BehaviorType
+giveBirthBeforeDying = let 
+    fstBeh = addChildBehavior createMouseFollowerEqTriangle
+    sndBeh = dieBehavior
+    in
+        behaveBoth fstBeh sndBeh
