@@ -18,7 +18,7 @@ import SFML.System.Vector2 (Vec2f)
 
 import qualified Component.Position as Pos
 import Component.Draw.DrawingData
-import Component.Draw.DrawingUpdate (updateDrawingTransformable, updateAllTransformable)
+import Component.Draw.DrawingUpdate (executeUpdateOnDrawing)
 import Drawable
 import System.Messaging.DrawingMessage
 
@@ -43,12 +43,12 @@ setOriginDrawing (NamedDrawing   _  drw) pos = setOriginDrawing drw pos
 setOriginDrawing (CompositeDrawing drws) pos = mapM_ (`setOriginDrawing` pos) drws
 
 updateDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
-updateDrawing (FlaggedDrawing drw flg) obj = updateDrawingTransformable drw obj (updatePosition, updateRotation)
+updateDrawing (FlaggedDrawing drw flg) obj  = executeUpdateOnDrawing drw obj (updatePosition, updateRotation)
     where
         updatePosition = NoPositionUpdates `notElem` flg
         updateRotation = NoRotationUpdates `notElem` flg
 updateDrawing (CompositeDrawing drws)  obj  = mapM_ (`updateDrawing` obj) drws
-updateDrawing drw obj                      = updateAllTransformable drw obj
+updateDrawing drw obj                       = executeUpdateOnDrawing drw obj (True, True)
 
 destroyDrawing :: Drawing -> IO ()
 destroyDrawing (CircleDrawing       ptr ) = destroy ptr

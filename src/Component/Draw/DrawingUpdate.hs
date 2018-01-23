@@ -1,9 +1,8 @@
 module Component.Draw.DrawingUpdate
-    ( updateDrawingTransformable
-    , updateAllTransformable
+    ( executeUpdateOnDrawing
     ) where
 
-import Control.Monad (when, forM_)
+import Control.Monad (when)
 
 import SFML.Graphics.CircleShape ()
 import SFML.Graphics.RectangleShape ()
@@ -17,33 +16,21 @@ import qualified Component.Position as Pos
 import Component.Draw.DrawingData
 import System.Messaging.DrawingMessage
 
-updateDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
-updateDrawingTransformable (CircleDrawing shape)    obj tuple = do
-    updateTransformable shape obj tuple
-    executeMessages (CircleDrawing shape) (getInbox obj)
-updateDrawingTransformable d@(RectangleDrawing shape) obj tuple = do
-    updateTransformable shape obj tuple
-    executeMessages d (getInbox obj)
-updateDrawingTransformable d@(ConvexDrawing shape)    obj tuple = do
-    updateTransformable shape obj tuple
-    executeMessages d (getInbox obj)
-updateDrawingTransformable d@(SpriteDrawing shape _)  obj tuple = do
-    updateTransformable shape obj tuple
-    executeMessages d (getInbox obj)
-updateDrawingTransformable d@(NamedDrawing _ drw)     obj tuple = do
+executeUpdateOnDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
+executeUpdateOnDrawing drw obj tuple = do
     updateDrawingTransformable drw obj tuple
-    executeMessages d (getInbox obj)
-updateDrawingTransformable (CompositeDrawing drws)  obj tuple = mapM_ (updateDrawingTransformableFlip obj tuple) drws
-updateDrawingTransformable d@(TextDrawing text)       obj tuple = do
-    updateTransformable text obj tuple
-    executeMessages d (getInbox obj)
-updateDrawingTransformable (FlaggedDrawing _ _)     _   _     = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'updateDrawing'"
+    executeMessages drw (getInbox obj)
 
-updateDrawingTransformableFlip :: (Pos.Position a, DrawingInbox a) => a -> (Bool, Bool) -> Drawing -> IO ()
-updateDrawingTransformableFlip obj (pos, rot) drw = updateDrawingTransformable drw obj (pos, rot)
 
-updateAllTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
-updateAllTransformable drw obj = updateDrawingTransformable drw obj (True, True)
+updateDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
+updateDrawingTransformable (CircleDrawing shape)    obj tuple = updateTransformable shape obj tuple
+updateDrawingTransformable (RectangleDrawing shape) obj tuple = updateTransformable shape obj tuple
+updateDrawingTransformable (ConvexDrawing shape)    obj tuple = updateTransformable shape obj tuple
+updateDrawingTransformable (SpriteDrawing shape _)  obj tuple = updateTransformable shape obj tuple
+updateDrawingTransformable (TextDrawing text)       obj tuple = updateTransformable text obj tuple
+updateDrawingTransformable (NamedDrawing _ drw)     obj tuple = updateDrawingTransformable drw obj tuple
+updateDrawingTransformable (CompositeDrawing _) _ _ = error "This pattern should not happen as the CompositeDrawing is unwrapped on the 'updateDrawing'"
+updateDrawingTransformable (FlaggedDrawing _ _) _ _ = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'updateDrawing'"
 
 updateTransformable :: (SFTransformable a, Pos.Position b) => a -> b -> (Bool, Bool) -> IO ()
 updateTransformable ptr obj (pos, rot) = do
@@ -54,8 +41,6 @@ executeMessages :: Drawing -> [DrawingMessage] -> IO ()
 executeMessages drw = mapM_ (executeMessage drw)
 
 executeMessage :: Drawing -> DrawingMessage -> IO ()
-executeMessage (NamedDrawing nameDrw drw) (NamedMessage nameMsg f) = when (nameDrw == nameMsg) (f drw)
-executeMessage (CompositeDrawing drws) msg@(NamedMessage _ _) = forM_ drws (`executeMessage` msg)
-executeMessage (CompositeDrawing _) (MSG _) = return () 
+executeMessage (NamedDrawing nameDrw drw)   (NamedMessage nameMsg f) = when (nameDrw == nameMsg) (f drw)
+executeMessage _                            (NamedMessage _ _)       = return ()
 executeMessage drw (MSG f) = f drw
-executeMessage _ (NamedMessage _ _) = return ()
