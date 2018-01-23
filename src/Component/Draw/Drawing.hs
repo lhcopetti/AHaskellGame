@@ -7,16 +7,15 @@ module Component.Draw.Drawing
 
 import Control.Monad (when)
 
-import SFML.Graphics.Types (CircleShape, RectangleShape, ConvexShape, Text)
 import SFML.Graphics.RenderWindow (drawCircle, drawRectangle, drawConvexShape, drawText, drawSprite)
-import SFML.Graphics.CircleShape
-import SFML.Graphics.RectangleShape
-import SFML.Graphics.ConvexShape
-import SFML.Graphics.Text
-import SFML.Graphics.Sprite
-import SFML.Graphics.Texture
+import SFML.Graphics.CircleShape ()
+import SFML.Graphics.RectangleShape ()
+import SFML.Graphics.ConvexShape ()
+import SFML.Graphics.Text ()
+import SFML.Graphics.Sprite ()
+import SFML.Graphics.Texture ()
 import SFML.Graphics.SFTransformable
-import SFML.SFResource
+import SFML.SFResource (destroy)
 import SFML.System.Vector2 (Vec2f)
 
 import qualified Component.Position as Pos
@@ -44,12 +43,12 @@ setOriginDrawing (CompositeDrawing drws) pos = mapM_ (`setOriginDrawing` pos) dr
 
 
 updateDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
-updateDrawing (FlaggedDrawing draw flg) obj = updateDrawingTransformable draw obj (updatePosition, updateRotation)
+updateDrawing (FlaggedDrawing drw flg) obj = updateDrawingTransformable drw obj (updatePosition, updateRotation)
     where
         updatePosition = NoPositionUpdates `notElem` flg
         updateRotation = NoRotationUpdates `notElem` flg
 updateDrawing (CompositeDrawing drws)  obj  = mapM_ (`updateDrawing` obj) drws
-updateDrawing draw obj                      = updateAllTransformable draw obj
+updateDrawing drw obj                      = updateAllTransformable drw obj
 
 updateDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
 updateDrawingTransformable (CircleDrawing shape)    obj tuple = updateTransformable shape obj tuple
@@ -65,7 +64,7 @@ updateDrawingTransformableFlip :: (Pos.Position a, DrawingInbox a) => a -> (Bool
 updateDrawingTransformableFlip obj (pos, rot) drw = updateDrawingTransformable drw obj (pos, rot)
 
 updateAllTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
-updateAllTransformable draw obj = updateDrawingTransformable draw obj (True, True)
+updateAllTransformable drw obj = updateDrawingTransformable drw obj (True, True)
 
 updateTransformable :: (SFTransformable a, Pos.Position b) => a -> b -> (Bool, Bool) -> IO ()
 updateTransformable ptr obj (pos, rot) = do

@@ -35,9 +35,9 @@ wrapAroundPos (Vec2f px py) (Vec2u width height) = let
                 Vec2f nx ny
 
 wrapAroundFloat :: Float -> Word -> Float
-wrapAroundFloat value max = let 
+wrapAroundFloat value maxValue = let 
     iValue = round value
-    iMax = round . fromIntegral $ max
+    iMax = round . fromIntegral $ maxValue
     in 
         fromIntegral (wrapAroundValue iValue iMax)
 

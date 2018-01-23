@@ -17,7 +17,7 @@ data GameEnvironment = GameEnvironment { gameArea :: Vec2u
 
 
 createGameEnv :: Vec2u -> GameEnvironment
-createGameEnv gameArea = GameEnvironment gameArea 0 (MouseInput zero) 0
+createGameEnv screenArea = GameEnvironment screenArea initialScore (MouseInput zero) 0
 
 initialScore :: Integer
 initialScore = 0
