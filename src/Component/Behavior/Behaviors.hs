@@ -13,6 +13,7 @@ module Component.Behavior.Behaviors
     , deathByHitsOnWallB
     , updateTextWithMousePositionB
     , behaveOnceB
+    , behaveBothB
     , addChildB
     ) where
 
@@ -20,13 +21,13 @@ import GameObject.GameObjectTypes (GameObjectCreation)
 
 import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
-import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer)
+import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer, followPointingMouse)
 import Component.Behavior.RotationalBehavior (rotate)
 import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMousePosition)
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
-import Component.Behavior.HigherOrderBehavior (behaveOnce)
+import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth)
 
 encloseToBoxB :: Behavior
 encloseToBoxB = Behavior encloseToBox
@@ -53,7 +54,7 @@ mousePointerB :: Behavior
 mousePointerB = Behavior mousePointer
 
 followPointingMouseB :: Behavior
-followPointingMouseB = Behavior $ (mousePointer =<< ) . mouseFollower
+followPointingMouseB = Behavior followPointingMouse
 
 updatePromptForGOCountB :: String -> Behavior
 updatePromptForGOCountB prompt = Behavior (updatePromptForGOCount prompt)
@@ -69,6 +70,9 @@ updateTextWithMousePositionB = Behavior updateTextWithMousePosition
 
 behaveOnceB :: Behavior -> Behavior
 behaveOnceB (Behavior behType) = Behavior (behaveOnce behType)
+
+behaveBothB :: Behavior -> Behavior -> Behavior
+behaveBothB (Behavior fst) (Behavior snd) = Behavior (behaveBoth fst snd)
 
 addChildB :: GameObjectCreation -> Behavior
 addChildB child = Behavior (addChildBehavior child)

@@ -2,6 +2,7 @@ module GameObject.GameObjectTypes
     ( GameObject (..)
     , BehaviorType
     , Behavior (..)
+    , Creation
     , GameObjectCreation
     ) where
 
@@ -28,7 +29,8 @@ data GameObject = GameObject { drawComp     :: Drawing
 
 type BehaviorType = GameObject -> Reader GameEnvironment GameObject
 
-type GameObjectCreation = MaybeT IO GameObject
+type Creation a = MaybeT IO a
+type GameObjectCreation = Creation GameObject
 
 data Behavior = Behavior {  behave :: BehaviorType
                          }
