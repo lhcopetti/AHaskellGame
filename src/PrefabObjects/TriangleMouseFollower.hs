@@ -20,9 +20,8 @@ import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Draw.CompositeDrawing (createComposite)
 import Component.Draw.TextDrawing (createText)
 import Component.Draw.FlaggedDrawing (createSingleFlagDrawing)
-import Component.Behavior.Behavior (setBehaviorT)
 import Component.Behavior.MousePointerBehavior (followPointingMouse, mouseDistance)
-import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveBoth)
+import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveOnceAndThen)
 import Component.Behavior.TextBehavior (updateTextDrawing)
 import Command.MessageCommand (sendDrwMsgCommand)
 import Vec2.Vec2Math (zero)
@@ -58,14 +57,12 @@ followsAndDiesCloseToMouse :: Int -> BehaviorType
 followsAndDiesCloseToMouse counter obj = do
     newObj <- followPointingMouse obj
     distanceToMouse <- mouseDistance newObj
-    behaviorPred (distanceToMouse < 5.0) (giveBirthBeforeDying counter) (followsAndDiesCloseToMouse counter) newObj
+    behaviorPred (distanceToMouse < 5.0) (resetAndAddScore counter) (followsAndDiesCloseToMouse counter) newObj
 
-giveBirthBeforeDying :: Int -> BehaviorType
-giveBirthBeforeDying counter = let
-    fstBeh = resetBehavior (counter)
-    sndBeh = followsAndDiesCloseToMouse (counter + 1)
-    in
-        behaveBoth fstBeh sndBeh
+resetAndAddScore :: Int -> BehaviorType
+resetAndAddScore score = do
+    let newScore = score + 1
+    behaveOnceAndThen (resetBehavior newScore) (followsAndDiesCloseToMouse newScore)
 
 resetBehavior :: Int -> BehaviorType
 resetBehavior counter obj = do

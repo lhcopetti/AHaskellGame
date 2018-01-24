@@ -1,5 +1,6 @@
 module Component.Behavior.HigherOrderBehavior
     ( behaviorPred
+    , behaveOnceAndThen
     , behaveOnce
     , behaveBoth
     ) where
@@ -18,8 +19,11 @@ behaviorPred bool first second obj = let
     in
         return $ setBehaviorT chosenBehavior obj
 
+behaveOnceAndThen :: BehaviorType -> BehaviorType -> BehaviorType
+behaveOnceAndThen first second obj = liftM (setBehaviorT second) (first obj)
+
 behaveOnce :: BehaviorType -> BehaviorType
-behaveOnce beh obj = liftM (setBehaviorT noopBehavior) (beh obj)
+behaveOnce beh = behaveOnceAndThen beh noopBehavior
 
 behaveBoth :: BehaviorType -> BehaviorType -> BehaviorType
 behaveBoth first second = (second =<<) . first
