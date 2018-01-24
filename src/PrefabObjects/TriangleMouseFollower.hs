@@ -11,8 +11,10 @@ import Control.Monad.IO.Class (liftIO)
 import GameObjectFactory (createGameObject)
 import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation, Creation, Command (..))
 import GameObject.GameObject (addCommand)
+import System.Messaging.DrawingMessage (DrawingMessage (..))
 import Component.Draw.DrawingData (DrawingFlag (..))
 import Component.Draw.Drawing (Drawing, setOriginDrawing)
+import Component.Draw.NamedDrawing (createNamedDrawing)
 import Component.Draw.CircleDrawing (createCenteredCircle)
 import Component.Draw.TriangleDrawing (createEqTriangle)
 import Component.Draw.CompositeDrawing (createComposite)
@@ -20,6 +22,8 @@ import Component.Draw.TextDrawing (createText)
 import Component.Draw.FlaggedDrawing (createSingleFlagDrawing)
 import Component.Behavior.MousePointerBehavior (followPointingMouse, mouseDistance)
 import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveBoth)
+import Component.Behavior.TextBehavior (updateTextDrawing)
+import Command.MessageCommand (sendDrwMsgCommand)
 import Vec2.Vec2Math (zero)
 
 import Command.ResetCommand (resetCommand)
@@ -45,8 +49,9 @@ createMouseFollowerEqTriangle = do
 createTextDrawing :: Creation Drawing
 createTextDrawing = do
     text <- createText 15 "EqTriangle death counter"
+    let namedText = createNamedDrawing "counter" text
     liftIO $ setOriginDrawing text (Vec2f 0 (-20))
-    return $ createSingleFlagDrawing text NoRotationUpdates
+    return $ createSingleFlagDrawing namedText NoRotationUpdates
 
 followsAndDiesCloseToMouse :: BehaviorType
 followsAndDiesCloseToMouse obj = do
@@ -55,11 +60,16 @@ followsAndDiesCloseToMouse obj = do
     behaviorPred (distanceToMouse < 5.0) giveBirthBeforeDying followsAndDiesCloseToMouse newObj
 
 giveBirthBeforeDying :: BehaviorType
-giveBirthBeforeDying = let 
+giveBirthBeforeDying = let
     fstBeh = followsAndDiesCloseToMouse
     sndBeh = resetBehavior
     in
         behaveBoth fstBeh sndBeh
 
 resetBehavior :: BehaviorType
-resetBehavior obj = return $ addCommand (Command resetCommand) obj
+resetBehavior obj = do
+    let newObj = addCommand (Command resetCommand) obj
+    let drawingMessage = updateTextDrawing "Whatever. Just to show that the system works!"
+    let namedMsg = NamedMessage "counter" drawingMessage
+    let newObj' = addCommand (Command $ sendDrwMsgCommand namedMsg) newObj
+    return newObj'
