@@ -4,6 +4,8 @@ module GameObject.GameObjectTypes
     , Behavior (..)
     , Creation
     , GameObjectCreation
+    , CommandType
+    , Command (..)
     ) where
 
 
@@ -24,6 +26,7 @@ data GameObject = GameObject { drawComp     :: Drawing
                              , rotation     :: Float
                              , inbox        :: [DrawingMessage]
                              , childObjects :: [GameObjectCreation]
+                             , commands     :: [Command]
                              , alive        :: Bool
                              }
 
@@ -35,3 +38,7 @@ type GameObjectCreation = Creation GameObject
 data Behavior = Behavior {  behave :: BehaviorType
                          }
 
+
+type CommandType = GameObject -> GameObject
+
+data Command = Command CommandType

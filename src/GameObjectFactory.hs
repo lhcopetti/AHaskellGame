@@ -21,7 +21,8 @@ createGameObjectWithChildren drw beh pos vel children = let
     live = True
     physics = newSimplePhysics vel
     initialRotation = 0.0
-    in GameObject drw beh physics pos initialRotation [] children live
+    noCommands = []
+    in GameObject drw beh physics pos initialRotation [] children noCommands live
 
 createGameObject :: Drawing -> Behavior -> Vec2f -> Vec2f -> GameObject
 createGameObject drw beh pos vel = let
@@ -29,7 +30,8 @@ createGameObject drw beh pos vel = let
     physics = newSimplePhysics vel
     initialRotation = 0.0
     children = []
-    in GameObject drw beh physics pos initialRotation [] children live
+    noCommands = []
+    in GameObject drw beh physics pos initialRotation [] children noCommands live
 
 createStaticGameObjectB :: Drawing -> Vec2f -> Behavior -> GameObject
 createStaticGameObjectB drw pos beh = let 

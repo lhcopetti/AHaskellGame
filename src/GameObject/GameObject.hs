@@ -4,6 +4,7 @@ module GameObject.GameObject
     , draw
     , update
     , synchronize
+    , addCommand
     ) where
 
 import Updatable
@@ -18,11 +19,14 @@ import Component.Draw.Drawing
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes
+import Command.Command (runCommands)
 
 instance Updatable GameObject where
     update go@GameObject { behavior } = do 
         let updatedBall = updatePhysics go
-        behave behavior updatedBall
+        updatedObj' <- behave behavior updatedBall
+        return (runCommands updatedObj') 
+
 
 instance Synchronizable GameObject where
     synchronize go = updateDrawing (drawComp go) go
@@ -57,3 +61,6 @@ instance ChildBearer GameObject where
     getChildren = childObjects
     removeChildren obj = obj { childObjects = [] }
     addChild child obj@GameObject { childObjects } = obj { childObjects = child : childObjects }
+
+addCommand :: Command -> GameObject -> GameObject
+addCommand comm obj@GameObject { commands } = obj { commands = comm : commands }

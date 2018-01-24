@@ -9,7 +9,8 @@ import SFML.Graphics.Color (yellow, white)
 import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject)
-import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation, Creation)
+import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation, Creation, Command (..))
+import GameObject.GameObject (addCommand)
 import Component.Draw.DrawingData (DrawingFlag (..))
 import Component.Draw.Drawing (Drawing, setOriginDrawing)
 import Component.Draw.CircleDrawing (createCenteredCircle)
@@ -18,10 +19,10 @@ import Component.Draw.CompositeDrawing (createComposite)
 import Component.Draw.TextDrawing (createText)
 import Component.Draw.FlaggedDrawing (createSingleFlagDrawing)
 import Component.Behavior.MousePointerBehavior (followPointingMouse, mouseDistance)
-import Component.Behavior.DeathBehavior (dieBehavior)
 import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveBoth)
-import Component.Behavior.ChildBearerBehavior (addChildBehavior)
 import Vec2.Vec2Math (zero)
+
+import Command.ResetCommand (resetCommand)
 
 
 createMouseFollowerEqTriangle :: GameObjectCreation
@@ -55,7 +56,10 @@ followsAndDiesCloseToMouse obj = do
 
 giveBirthBeforeDying :: BehaviorType
 giveBirthBeforeDying = let 
-    fstBeh = addChildBehavior createMouseFollowerEqTriangle
-    sndBeh = dieBehavior
+    fstBeh = followsAndDiesCloseToMouse
+    sndBeh = resetBehavior
     in
         behaveBoth fstBeh sndBeh
+
+resetBehavior :: BehaviorType
+resetBehavior obj = return $ addCommand (Command resetCommand) obj
