@@ -23,8 +23,9 @@ import Command.Command (runCommands)
 
 instance Updatable GameObject where
     update go@GameObject { behavior } = do 
-        let updatedBall = updatePhysics go
-        updatedObj' <- behave behavior updatedBall
+        let noDrawingMsgs = clearInbox go
+        let updatedPhysics = updatePhysics noDrawingMsgs
+        updatedObj' <- behave behavior updatedPhysics
         return (runCommands updatedObj') 
 
 
@@ -52,6 +53,7 @@ instance Killable GameObject where
 instance DrawingInbox GameObject where
     getInbox = inbox
     setInbox newMsgs g = g { inbox = newMsgs }
+    clearInbox g = g { inbox = [] }
 
 instance Behavioral GameObject where
     setBehavior behav g = g { behavior = behav }

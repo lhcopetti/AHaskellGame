@@ -43,7 +43,7 @@ loop world@(GameWorld wnd objs) env = do
 
 
 gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop world@(GameWorld wnd _) env = do 
+gameLoop world@(GameWorld wnd _) env = do
     threadDelay (10 * 10^3)
     clearRenderWindow wnd black
 

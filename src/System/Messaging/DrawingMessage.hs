@@ -4,6 +4,7 @@ module System.Messaging.DrawingMessage
     , DrawingInbox
     , getInbox
     , setInbox
+    , clearInbox
     ) where
 
 import Component.Draw.DrawingData (Drawing)
@@ -15,3 +16,4 @@ data DrawingMessage = MSG DrawingMessageType
 class DrawingInbox a where
     getInbox :: a -> [DrawingMessage]
     setInbox :: [DrawingMessage] -> a -> a
+    clearInbox :: a -> a
