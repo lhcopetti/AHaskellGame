@@ -7,4 +7,4 @@ import GameObject.GameObjectTypes (CommandType)
 import GameObject.GameObject ()
 
 sendDrwMsgCommand :: DrawingMessage -> CommandType
-sendDrwMsgCommand msg = setInbox [msg]
+sendDrwMsgCommand msg = return . setInbox [msg]

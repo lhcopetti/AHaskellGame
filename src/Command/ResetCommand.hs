@@ -16,4 +16,4 @@ resetCommand obj = let
     newObj' = setVelocity newObj zero
     newObj'' = setRotation 0.0 newObj'
     in
-        newObj''
+        return newObj''

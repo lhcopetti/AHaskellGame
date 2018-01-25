@@ -18,6 +18,7 @@ import Control.Monad.Trans.Maybe (MaybeT)
 import Component.Draw.Drawing
 import Component.Physics.Physics
 import GameEnv
+import Updatable (UpdateType)
 
 data GameObject = GameObject { drawComp     :: Drawing
                              , behavior     :: Behavior
@@ -39,6 +40,6 @@ data Behavior = Behavior {  behave :: BehaviorType
                          }
 
 
-type CommandType = GameObject -> GameObject
+type CommandType = UpdateType GameObject
 
 data Command = Command CommandType

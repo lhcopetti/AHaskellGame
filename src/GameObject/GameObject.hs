@@ -22,11 +22,11 @@ import GameObject.GameObjectTypes
 import Command.Command (runCommands)
 
 instance Updatable GameObject where
-    update go@GameObject { behavior } = do 
+    update go = do 
         let noDrawingMsgs = clearInbox go
         let updatedPhysics = updatePhysics noDrawingMsgs
-        updatedObj' <- behave behavior updatedPhysics
-        return (runCommands updatedObj') 
+        updatedObj' <- behave (behavior go) updatedPhysics
+        runCommands updatedObj'
 
 
 instance Synchronizable GameObject where
