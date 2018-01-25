@@ -16,6 +16,7 @@ import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes (GameObjectCreation)
 import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
+import PrefabObjects.BallInputAware (createBallInputAware)
 import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
@@ -74,6 +75,7 @@ createObjects gen env = do
     triangles <- createTriangles
     hex <- createSimpleHexagon (Vec2f 200 200)
     eqT <- createMouseFollowerEqTriangle
+    inputAware <- createBallInputAware (Vec2f 50 400)
     mousePointer <- createMousePositionCopier
     mousePrinter <- createMousePositionPrinter (Vec2f 500 0)
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
@@ -85,7 +87,7 @@ createObjects gen env = do
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
     namedObjects <- createNamedMessagesDemo (Vec2f 468 300)
     behavesAll <- createUsesBehaveAll
-    return ( behavesAll : namedObjects : behaveOnce : multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+    return ( inputAware : behavesAll : namedObjects : behaveOnce : multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do

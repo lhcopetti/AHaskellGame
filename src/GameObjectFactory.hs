@@ -11,6 +11,7 @@ import Component.Draw.Drawing
 import Component.Behavior.Behavior
 import Component.Behavior.Behaviors (noopB)
 import Component.Physics.PhysicsFactory (newSimplePhysics)
+import Component.Input.Input (emptyInput)
 import Vec2.Vec2Math (zero)
 
 import GameObject.GameObject
@@ -22,7 +23,8 @@ createGameObjectWithChildren drw beh pos vel children = let
     physics = newSimplePhysics vel
     initialRotation = 0.0
     noCommands = []
-    in GameObject drw beh physics pos initialRotation [] children noCommands live
+    input = emptyInput
+    in GameObject drw beh physics input pos initialRotation [] children noCommands live
 
 createGameObject :: Drawing -> Behavior -> Vec2f -> Vec2f -> GameObject
 createGameObject drw beh pos vel = let
@@ -31,7 +33,8 @@ createGameObject drw beh pos vel = let
     initialRotation = 0.0
     children = []
     noCommands = []
-    in GameObject drw beh physics pos initialRotation [] children noCommands live
+    input = emptyInput
+    in GameObject drw beh physics input pos initialRotation [] children noCommands live    
 
 createStaticGameObjectB :: Drawing -> Vec2f -> Behavior -> GameObject
 createStaticGameObjectB drw pos beh = let 
