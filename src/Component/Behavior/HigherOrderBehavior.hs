@@ -3,6 +3,7 @@ module Component.Behavior.HigherOrderBehavior
     , behaveOnceAndThen
     , behaveOnce
     , behaveBoth
+    , behaveAll
     ) where
 
 import Control.Monad (liftM)
@@ -27,3 +28,7 @@ behaveOnce beh = behaveOnceAndThen beh noopBehavior
 
 behaveBoth :: BehaviorType -> BehaviorType -> BehaviorType
 behaveBoth first second = (second =<<) . first
+
+behaveAll :: [BehaviorType] -> BehaviorType
+behaveAll [] obj = noopBehavior obj
+behaveAll (beh:behs) obj = liftM (setBehaviorT (behaveAll behs)) (beh obj)

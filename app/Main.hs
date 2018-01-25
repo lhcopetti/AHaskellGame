@@ -84,7 +84,8 @@ createObjects gen env = do
     sprites <- createSprites
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
     namedObjects <- createNamedMessagesDemo (Vec2f 468 300)
-    return ( namedObjects: behaveOnce : multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+    behavesAll <- createUsesBehaveAll
+    return ( behavesAll : namedObjects : behaveOnce : multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do

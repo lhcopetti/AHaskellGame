@@ -7,7 +7,7 @@ import SFML.Graphics.Color
 import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createGameObjectWithChildren, createStaticGameObject, createStaticGameObjectB)
-import GameObject.GameObjectTypes (GameObjectCreation)
+import GameObject.GameObjectTypes (GameObjectCreation, Command (..))
 import Component.Draw.Drawing (setOriginDrawing)
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
@@ -18,6 +18,9 @@ import Component.Draw.SpriteDrawing (createSpriteDrawing)
 import Component.Draw.NamedDrawing (createNamedDrawing)
 import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
+import Component.Behavior.CommandBehavior (addCommandBehavior)
+import Component.Behavior.NoopBehavior (noopBehavior)
+import Command.PositionCommand
 import Vec2.Vec2Math (zero)
 
 createMiniBall :: Vec2f -> Vec2f -> GameObjectCreation
@@ -153,3 +156,17 @@ createNamedMessagesDemo pos = do
         setOriginDrawing subtitle (Vec2f 0 30)
     let behavior = updateMultipleTextsB
     return (createGameObject allTogether behavior pos zero )
+
+createUsesBehaveAll :: GameObjectCreation
+createUsesBehaveAll = do
+    liftIO $ putStrLn "Creates object that blinks in the four regions of the screen"
+    drw <- createCenteredCircle 15 green
+    let commands = map (addCommandBehavior . Command)   [ positionTopLeftCommand
+                                                        , positionTopRightCommand
+                                                        , positionBottomRightCommand
+                                                        , positionBottomLeftCommand
+                                                        ]
+    let breaks = replicate (length commands) . replicate 50 $ noopBehavior
+    let behaviors = concat $ zipWith (:) commands breaks
+    let allTogether = behaveAllB (cycle behaviors)
+    return (createGameObject drw allTogether (Vec2f 200 200) zero)

@@ -16,9 +16,11 @@ module Component.Behavior.Behaviors
     , behaveBothB
     , addChildB
     , updateMultipleTextsB
+    , behaveAllB
+    , addCommandBehaviorB
     ) where
 
-import GameObject.GameObjectTypes (GameObjectCreation)
+import GameObject.GameObjectTypes (GameObjectCreation, Command)
 
 import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
@@ -28,7 +30,8 @@ import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMo
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
-import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth)
+import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveAll)
+import Component.Behavior.CommandBehavior (addCommandBehavior)
 
 encloseToBoxB :: Behavior
 encloseToBoxB = Behavior encloseToBox
@@ -80,3 +83,9 @@ addChildB child = Behavior (addChildBehavior child)
 
 updateMultipleTextsB :: Behavior
 updateMultipleTextsB = Behavior (updateMultipleTexts 0)
+
+behaveAllB :: [BehaviorType] -> Behavior
+behaveAllB xs = Behavior (behaveAll xs)
+
+addCommandBehaviorB :: Command -> Behavior
+addCommandBehaviorB comm = Behavior (addCommandBehavior comm)
