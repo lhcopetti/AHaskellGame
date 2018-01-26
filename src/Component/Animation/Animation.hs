@@ -7,15 +7,16 @@ module Component.Animation.Animation
     ) where
 
 import GameObject.GameObjectTypes (GameObject (..), Animation (..))
-import Component.Animation.SpriteSheet (SpriteSheet (..), spriteCount, spriteByIndex)
+import Component.Animation.SpriteSheet (SpriteSheet (..), spriteByIndex)
 import Component.Draw.DrawingData (Drawing (..))
 
-createAnimation :: SpriteSheet -> Float -> (Drawing -> Drawing) -> Animation
-createAnimation ss i create = Animation { createDrawing = create 
+createAnimation :: SpriteSheet -> Float -> (Drawing -> Drawing) -> [Int] -> Animation
+createAnimation ss i create loop = Animation { createDrawing = create 
                                         , interval = i
                                         , counter = 0
                                         , spriteIndex = 0
                                         , spriteSheet = ss
+                                        , spriteLoop = loop
                                         }
 
 
@@ -24,10 +25,10 @@ incrementCounter :: Float -> Animation -> Animation
 incrementCounter f anim @ Animation { counter } = anim { counter = counter + f }
 
 checkInterval :: Animation -> (Animation, Bool)
-checkInterval anim @ Animation { counter , interval, spriteIndex, spriteSheet } = 
+checkInterval anim @ Animation { counter , interval, spriteIndex } = 
     if counter < interval then (anim, False) else (newAnim, True)
     where
-        newAnim = anim { counter = 0, spriteIndex = (spriteIndex + 1) `mod` spriteCount spriteSheet }
+        newAnim = anim { counter = 0, spriteIndex = (spriteIndex + 1) `mod` length (spriteLoop anim) }
 
 updateAnimation :: GameObject -> GameObject
 updateAnimation go = case animationComp go of
@@ -44,6 +45,6 @@ runAnimation anim go = let
         in go { animationComp = Just newAnim, drawComp = newDrawing }
 
 createNewDrawing :: Animation -> Drawing
-createNewDrawing Animation { createDrawing, spriteSheet, spriteIndex } = let
-    newSprite = spriteByIndex spriteIndex spriteSheet
+createNewDrawing Animation { createDrawing, spriteSheet, spriteIndex, spriteLoop } = let
+    newSprite = spriteByIndex (spriteLoop !! spriteIndex) spriteSheet
     in createDrawing (AnimationDrawing newSprite)

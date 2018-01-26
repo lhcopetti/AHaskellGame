@@ -22,7 +22,7 @@ createAnimatedBlueBird pos vel = do
     ss <- loadSpriteSheet spriteSheetName (4, 2)
     liftIO $ putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ ss)
 
-    let animated = createAnimation ss 15 id
+    let animated = createAnimation ss 15 id [0..3]
     
     let drw = createNewDrawing animated
     

@@ -59,4 +59,5 @@ data Animation = Animation  { createDrawing :: Drawing -> Drawing
                             , counter       :: Float
                             , spriteIndex   :: Int
                             , spriteSheet   :: SpriteSheet
+                            , spriteLoop    :: [Int]
                             }
