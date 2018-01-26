@@ -89,6 +89,12 @@
 	OK! Make another diary entry on the README
 
 23/01/2018
+	...
+25/01/2018
+	OK! (Simple) Input Component!
+	
+26/01/2018
+
 	TODO: Add the Vec2Instances.hs to another module that also reexports the following:
 		import SFML.System.Vec2 (Vec2f (..).
 
