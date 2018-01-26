@@ -8,6 +8,7 @@ module GameObject.GameObjectTypes
     , Command (..)
     , InputType
     , Input (..)
+    , Animation (..)
     ) where
 
 
@@ -18,6 +19,7 @@ import Control.Monad.Reader (Reader)
 import Control.Monad.Trans.Maybe (MaybeT)
 
 import Component.Draw.Drawing
+import Component.Animation.SpriteSheet (SpriteSheet)
 import Component.Physics.Physics
 import GameEnv
 import Updatable (UpdateType)
@@ -26,6 +28,7 @@ data GameObject = GameObject { drawComp     :: Drawing
                              , behavior     :: Behavior
                              , physicsComp  :: Physics
                              , inputComp    :: Input
+                             , animationComp:: Maybe Animation
                              , position     :: Vec2f
                              , rotation     :: Float
                              , inbox        :: [DrawingMessage]
@@ -50,3 +53,10 @@ data Command = Command CommandType
 
 data Input = Input { runInput :: InputType GameObject
                    }
+
+data Animation = Animation  { createDrawing :: Drawing -> Drawing
+                            , interval      :: Float
+                            , counter       :: Float
+                            , spriteIndex   :: Int
+                            , spriteSheet   :: SpriteSheet
+                            }
