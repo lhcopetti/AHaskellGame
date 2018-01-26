@@ -28,6 +28,7 @@ instance Drawable Drawing where
     draw wnd (ConvexDrawing ptr) = drawConvexShape wnd ptr Nothing
     draw wnd (TextDrawing ptr) = drawText wnd ptr Nothing
     draw wnd (SpriteDrawing sprite _) = drawSprite wnd sprite Nothing
+    draw wnd (AnimationDrawing sprite) = drawSprite wnd sprite Nothing
     draw wnd (FlaggedDrawing drawing _) = draw wnd drawing
     draw wnd (CompositeDrawing drws) = mapM_ (draw wnd) drws
     draw wnd (NamedDrawing _ drw) = draw wnd drw
@@ -38,6 +39,7 @@ setOriginDrawing (RectangleDrawing  ptr) pos = setOrigin ptr pos
 setOriginDrawing (ConvexDrawing     ptr) pos = setOrigin ptr pos
 setOriginDrawing (TextDrawing       ptr) pos = setOrigin ptr pos
 setOriginDrawing (SpriteDrawing   ptr _) pos = setOrigin ptr pos
+setOriginDrawing (AnimationDrawing  ptr) pos = setOrigin ptr pos
 setOriginDrawing (FlaggedDrawing  ptr _) pos = setOriginDrawing ptr pos
 setOriginDrawing (NamedDrawing   _  drw) pos = setOriginDrawing drw pos
 setOriginDrawing (CompositeDrawing drws) pos = mapM_ (`setOriginDrawing` pos) drws
@@ -56,6 +58,9 @@ destroyDrawing (RectangleDrawing    ptr ) = destroy ptr
 destroyDrawing (ConvexDrawing       ptr ) = destroy ptr
 destroyDrawing (TextDrawing         ptr ) = destroy ptr
 destroyDrawing (SpriteDrawing   spr tex ) = destroy spr >> destroy tex
+destroyDrawing (AnimationDrawing    _   ) = return ()
+        -- The sprite destruction for animations should not be handled here, as it is destroyed
+        -- by the gameObject itself.
 destroyDrawing (CompositeDrawing    drws) = mapM_ destroyDrawing drws
 destroyDrawing (FlaggedDrawing    ptr _ ) = destroyDrawing ptr
 destroyDrawing (NamedDrawing      _ ptr ) = destroyDrawing ptr

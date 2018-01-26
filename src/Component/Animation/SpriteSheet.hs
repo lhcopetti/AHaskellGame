@@ -4,6 +4,8 @@ module Component.Animation.SpriteSheet
     , Ratio
     , getIntRect
     , loadSpriteSheet
+    , spriteCount
+    , spriteByIndex
     ) where
 
 import SFML.Graphics.Types (Sprite, Texture)
@@ -38,7 +40,15 @@ createSprites tex (texWidth, texHeight) (countX, countY) = do
     forM [0..countX * countY -1] (createSpriteTextureRect tex . localIntRect)
 
 getIntRect :: Size -> Ratio -> Int -> IntRect
-getIntRect (w, h) (wRatio, hRatio) index = let
+getIntRect (w, h) (wRatio, _) index = let
     (rectW, rectH) = (index `mod` wRatio, index `div` wRatio)
     in
         IntRect (rectW * w) (rectH * h) w h
+
+spriteCount :: SpriteSheet -> Int
+spriteCount = length . sprites
+
+spriteByIndex :: Int -> SpriteSheet -> Sprite
+spriteByIndex index spriteSheet = sps !! (index `mod` spriteCount spriteSheet)
+        where
+            sps = sprites spriteSheet
