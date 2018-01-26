@@ -53,7 +53,7 @@ instance Killable GameObject where
 
 instance DrawingInbox GameObject where
     getInbox = inbox
-    setInbox newMsgs g = g { inbox = newMsgs }
+    addInbox msg obj@GameObject { inbox } = obj { inbox = msg : inbox }
     clearInbox g = g { inbox = [] }
 
 instance Behavioral GameObject where

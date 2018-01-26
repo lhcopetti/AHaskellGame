@@ -3,7 +3,7 @@ module System.Messaging.DrawingMessage
     , DrawingMessage (..)
     , DrawingInbox
     , getInbox
-    , setInbox
+    , addInbox
     , clearInbox
     ) where
 
@@ -15,5 +15,5 @@ data DrawingMessage = MSG DrawingMessageType
 
 class DrawingInbox a where
     getInbox :: a -> [DrawingMessage]
-    setInbox :: [DrawingMessage] -> a -> a
+    addInbox :: DrawingMessage -> a -> a
     clearInbox :: a -> a
