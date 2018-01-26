@@ -3,6 +3,7 @@ module Component.Animation.Animation
     ( Animation (..)
     , createAnimation
     , updateAnimation
+    , createNewDrawing
     ) where
 
 import GameObject.GameObjectTypes (GameObject (..), Animation (..))

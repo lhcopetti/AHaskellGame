@@ -17,6 +17,7 @@ import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes (GameObjectCreation)
 import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
+import PrefabObjects.AnimatedBlueBird (createAnimatedBlueBird)
 import PrefabObjects.BallInputAware (createBallInputAware)
 import ObjectsFactory
 import System.GameSystem (startGame)
@@ -99,7 +100,8 @@ createObjects gen env = do
 createSprites :: MaybeT IO [GameObject]
 createSprites = do
     blueBird <- createSpriteFromFile "resources/sprites/blue-bird/blue-bird-0-resized.png" (Vec2f 400 100) (Vec2f 1.0 0)
-    return [blueBird]
+    animatedBlueBird <- createAnimatedBlueBird (Vec2f 400 150) (Vec2f 1.0 0)
+    return [blueBird, animatedBlueBird]
 
 createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation
 createSpriteFromFile path pos vel = do
