@@ -10,9 +10,9 @@ import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject)
 import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation, Creation, Command (..))
-import GameObject.GameObject (addCommand)
-import System.Messaging.DrawingMessage (DrawingMessage (..))
+import GameObject.GameObject (addCommandM)
 import System.Messaging.TextDrawingMessage (setTextMsg)
+import System.Messaging.MessageHelper (pushNamedMessage)
 import Component.Draw.DrawingData (DrawingFlag (..))
 import Component.Draw.Drawing (Drawing, setOriginDrawing)
 import Component.Draw.NamedDrawing (createNamedDrawing)
@@ -23,7 +23,6 @@ import Component.Draw.TextDrawing (createText)
 import Component.Draw.FlaggedDrawing (createSingleFlagDrawing)
 import Component.Behavior.MousePointerBehavior (followPointingMouse, mouseDistance)
 import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveOnceAndThen)
-import Command.MessageCommand (sendDrwMsgCommand)
 import Vec2.Vec2Math (zero)
 
 import Command.ResetCommand (resetCommand)
@@ -65,9 +64,6 @@ resetAndAddScore score = do
     behaveOnceAndThen (resetBehavior newScore) (followsAndDiesCloseToMouse newScore)
 
 resetBehavior :: Int -> BehaviorType
-resetBehavior counter obj = do
-    let newObj = addCommand (Command resetCommand) obj
-    let drawingMessage = setTextMsg ("Score: " ++ show counter)
-    let namedMsg = NamedMessage "counter" drawingMessage
-    let newObj' = addCommand (Command $ sendDrwMsgCommand namedMsg) newObj
-    return newObj'
+resetBehavior counter obj = 
+    addCommandM (Command resetCommand) obj >>=
+    pushNamedMessage "counter" (setTextMsg ("Score: " ++ show counter))

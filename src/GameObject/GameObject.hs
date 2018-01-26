@@ -5,6 +5,7 @@ module GameObject.GameObject
     , update
     , synchronize
     , addCommand
+    , addCommandM
     ) where
 
 import Updatable
@@ -67,3 +68,6 @@ instance ChildBearer GameObject where
 
 addCommand :: Command -> GameObject -> GameObject
 addCommand comm obj@GameObject { commands } = obj { commands = comm : commands }
+
+addCommandM :: Command -> CommandType
+addCommandM comm obj = return (addCommand comm obj)
