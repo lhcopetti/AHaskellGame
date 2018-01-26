@@ -10,6 +10,7 @@ import Control.Monad.Trans.State
 import Control.Monad.Trans.Class
 import Control.Monad.IO.Class (liftIO)
 import System.Random (StdGen)
+import Component.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
@@ -51,6 +52,12 @@ main = do
 #else
     gen <- newGeneratorFromString "1458194910 1"
 #endif
+
+    spriteSheetName <- getDataFileName "resources/sprites/blue-bird/blue-bird-10%-resized.png"
+    spriteSheet <- runMaybeT $ loadSpriteSheet spriteSheetName (2, 4)
+    case spriteSheet of
+        (Just s) -> putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ s)
+        _ -> return ()
 
     objects  <- runMaybeT (createObjects gen gameEnv)
     case objects of 

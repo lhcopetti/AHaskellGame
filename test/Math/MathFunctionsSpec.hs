@@ -1,5 +1,5 @@
 module Math.MathFunctionsSpec
-    (main
+    ( main
     , spec
     ) where
 
