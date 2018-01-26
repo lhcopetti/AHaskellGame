@@ -2,6 +2,7 @@
 module Component.Animation.Animation
     ( Animation (..)
     , createAnimation
+    , updateAnimation
     ) where
 
 import GameObject.GameObjectTypes (GameObject (..), Animation (..))
@@ -44,4 +45,4 @@ runAnimation anim go = let
 createNewDrawing :: Animation -> Drawing
 createNewDrawing Animation { createDrawing, spriteSheet, spriteIndex } = let
     newSprite = spriteByIndex spriteIndex spriteSheet
-    in AnimationDrawing newSprite
+    in createDrawing (AnimationDrawing newSprite)

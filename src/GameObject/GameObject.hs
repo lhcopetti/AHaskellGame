@@ -17,6 +17,7 @@ import qualified Component.Position as Pos
 import Component.Physics.PhysicsClass
 import Component.Physics.Physics
 import Component.Draw.Drawing
+import Component.Animation.Animation (updateAnimation)
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes
@@ -28,7 +29,8 @@ instance Updatable GameObject where
         let updatedPhysics = updatePhysics noDrawingMsgs
         updatedObj <- runInput (inputComp go) updatedPhysics
         updatedObj' <- behave (behavior updatedObj) updatedObj
-        runCommands updatedObj'
+        updatedObj'' <- runCommands updatedObj'
+        return (updateAnimation updatedObj'')
 
 
 instance Synchronizable GameObject where
