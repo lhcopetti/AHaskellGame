@@ -25,7 +25,8 @@ instance Updatable GameObject where
     update go = do 
         let noDrawingMsgs = clearInbox go
         let updatedPhysics = updatePhysics noDrawingMsgs
-        updatedObj' <- behave (behavior go) updatedPhysics
+        updatedObj <- runInput (inputComp go) updatedPhysics
+        updatedObj' <- behave (behavior updatedObj) updatedObj
         runCommands updatedObj'
 
 

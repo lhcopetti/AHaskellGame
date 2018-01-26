@@ -7,13 +7,13 @@ module System.GameSystem
 import SFML.Graphics.RenderWindow (display, clearRenderWindow, destroy)
 import SFML.Graphics.Color (black)
 
-import Control.Monad (forM, forM_)
+import Control.Monad (forM, forM_, when)
 import Control.Monad.Reader (runReader)
-import Control.Monad.Trans.Maybe (runMaybeT)
 import Control.Concurrent (threadDelay)
 
 import System.GameWorld (GameWorld (..), adoptChildren)
-import System.EventSystem (pollClosingEvent)
+import System.EventSystem (pollAllEvents, shouldCloseWindow)
+import System.InputSnapshot (createSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
 import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject)
@@ -32,14 +32,27 @@ synchronizeObjects (GameWorld _ objs) = forM_ objs synchronizeGameObject
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop world@(GameWorld wnd objs) env = do 
 
-    mouse <- getMouseInput wnd
-    let liveGameObjects = fromIntegral . length $ objs
-    updatedWorld <- gameLoop world env { input = mouse, countGOs = liveGameObjects }
+    evts <- pollAllEvents wnd
 
-    evt <- runMaybeT (pollClosingEvent wnd)
-    case evt of 
-        Nothing -> loop updatedWorld env
-        (Just event) -> putStrLn ("Closing event: " ++ show event)
+    mouse <- getMouseInput wnd
+
+    let snapshot = createSnapshot evts
+    let liveGameObjects = fromIntegral . length $ objs
+    let newEnv = env    { input = mouse, 
+                        countGOs = liveGameObjects,
+                        inputSnapshot = snapshot
+                        }
+
+    when (length evts > 0) (do 
+        putStrLn $ "These are the events: " ++ (show evts)
+        putStrLn $ "This is the snapshot: " ++ (show (inputSnapshot newEnv)))
+
+    updatedWorld <- gameLoop world newEnv
+
+    if any shouldCloseWindow evts then
+        putStrLn ("Closing event: " ++ show evts)
+    else
+        loop updatedWorld env
 
 
 gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld

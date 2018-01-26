@@ -12,6 +12,7 @@ import GameObjectFactory (createGameObject)
 import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation, Creation, Command (..))
 import GameObject.GameObject (addCommand)
 import System.Messaging.DrawingMessage (DrawingMessage (..))
+import System.Messaging.TextDrawingMessage (setTextMsg)
 import Component.Draw.DrawingData (DrawingFlag (..))
 import Component.Draw.Drawing (Drawing, setOriginDrawing)
 import Component.Draw.NamedDrawing (createNamedDrawing)
@@ -22,7 +23,6 @@ import Component.Draw.TextDrawing (createText)
 import Component.Draw.FlaggedDrawing (createSingleFlagDrawing)
 import Component.Behavior.MousePointerBehavior (followPointingMouse, mouseDistance)
 import Component.Behavior.HigherOrderBehavior (behaviorPred, behaveOnceAndThen)
-import Component.Behavior.TextBehavior (updateTextDrawing)
 import Command.MessageCommand (sendDrwMsgCommand)
 import Vec2.Vec2Math (zero)
 
@@ -67,7 +67,7 @@ resetAndAddScore score = do
 resetBehavior :: Int -> BehaviorType
 resetBehavior counter obj = do
     let newObj = addCommand (Command resetCommand) obj
-    let drawingMessage = updateTextDrawing ("Score: " ++ show counter)
+    let drawingMessage = setTextMsg ("Score: " ++ show counter)
     let namedMsg = NamedMessage "counter" drawingMessage
     let newObj' = addCommand (Command $ sendDrwMsgCommand namedMsg) newObj
     return newObj'

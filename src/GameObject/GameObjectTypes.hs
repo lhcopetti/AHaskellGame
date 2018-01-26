@@ -6,6 +6,8 @@ module GameObject.GameObjectTypes
     , GameObjectCreation
     , CommandType
     , Command (..)
+    , InputType
+    , Input (..)
     ) where
 
 
@@ -23,6 +25,7 @@ import Updatable (UpdateType)
 data GameObject = GameObject { drawComp     :: Drawing
                              , behavior     :: Behavior
                              , physicsComp  :: Physics
+                             , inputComp    :: Input
                              , position     :: Vec2f
                              , rotation     :: Float
                              , inbox        :: [DrawingMessage]
@@ -40,6 +43,10 @@ data Behavior = Behavior {  behave :: BehaviorType
                          }
 
 
-type CommandType = UpdateType GameObject
+type CommandType    = UpdateType GameObject
+type InputType a    = GameObject -> Reader GameEnvironment a
 
 data Command = Command CommandType
+
+data Input = Input { runInput :: InputType GameObject
+                   }
