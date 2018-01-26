@@ -7,7 +7,7 @@ import Test.Hspec
 import Test.Hspec.Runner
 
 import SFML.System.Vector2 (Vec2f (..))
-import Vec2.Vec2Instances
+import ExtSFML.SFMLInstances ()
 
 import Vec2.Vec2Math
     

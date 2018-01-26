@@ -11,7 +11,7 @@ import Test.Hspec.Runner
 
 import Vec2.Vec2Behavior
 import Vec2.Vec2Math (zero)
-import Vec2.Vec2Instances
+import ExtSFML.SFMLInstances ()
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True } spec

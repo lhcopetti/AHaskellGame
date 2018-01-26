@@ -10,7 +10,7 @@ import Component.Behavior.EnclosedBehavior (encloseToBox)
 import Component.Behavior.HigherOrderBehavior (behaviorPred)
 
 import Component.Physics.PhysicsClass
-import Vec2.Vec2Instances ()
+import ExtSFML.SFMLInstances ()
 
 import Killable (die)
 
