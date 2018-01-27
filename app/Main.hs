@@ -20,6 +20,7 @@ import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
 import PrefabObjects.AnimatedBlueBird (createAnimatedBlueBird)
 import PrefabObjects.BallInputAware (createBallInputAware)
 import PrefabObjects.AnimatedRunningCat (createAnimatedRunningCat)
+import PrefabObjects.AnimatedSpinningCoin (createSpinningCoin)
 import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
@@ -103,7 +104,8 @@ createSprites = do
     blueBird <- createSpriteFromFile "resources/sprites/blue-bird/blue-bird-0-resized.png" (Vec2f 400 100) (Vec2f 1.0 0)
     bird <- createAnimatedBlueBird (Vec2f 400 150) (Vec2f 1.0 0)
     cat <- createAnimatedRunningCat (Vec2f 400 200) (Vec2f 2.0 0)
-    return [blueBird, bird, cat]
+    coin <- createSpinningCoin (Vec2f 36 300) (Vec2f 0 0)
+    return [blueBird, bird, cat, coin]
 
 createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation
 createSpriteFromFile path pos vel = do

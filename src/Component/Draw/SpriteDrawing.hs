@@ -2,11 +2,13 @@ module Component.Draw.SpriteDrawing
     ( createSpriteTexture
     , createSpriteDrawing
     , createSpriteTextureRect
+    , setScaleSprite
     ) where
 
-import SFML.Graphics.Sprite (createSprite, setTexture, setTextureRect)
+import SFML.Graphics.Sprite (setScale, createSprite, setTexture, setTextureRect)
 import SFML.Graphics.Types (Texture, Sprite)
 import SFML.Graphics.Rect (IntRect)
+import SFML.System.Vector2 (Vec2f)
 
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
@@ -32,3 +34,6 @@ createSpriteTextureRect tex rect = do
     sprite <- createSpriteTexture tex
     liftIO $ setTextureRect sprite rect
     return sprite
+
+setScaleSprite :: Vec2f -> Sprite -> IO ()
+setScaleSprite = flip setScale

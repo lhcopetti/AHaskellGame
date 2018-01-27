@@ -6,16 +6,18 @@ module Component.Animation.SpriteSheet
     , loadSpriteSheet
     , spriteCount
     , spriteByIndex
+    , setScaleSpriteSheet
     ) where
 
 import SFML.Graphics.Types (Sprite, Texture)
 import SFML.Graphics.Rect (IntRect (..))
+import SFML.System.Vector2 (Vec2f)
 
 import Control.Monad.Trans.Maybe (MaybeT)
-import Control.Monad (forM)
+import Control.Monad (forM, forM_)
 
 import Component.Draw.TextureDrawing (createTextureDrawing, getTextureSize)
-import Component.Draw.SpriteDrawing (createSpriteTextureRect)
+import Component.Draw.SpriteDrawing (setScaleSprite, createSpriteTextureRect)
 
 type Size   = (Int, Int)
 type Ratio  = (Int, Int)
@@ -52,3 +54,6 @@ spriteByIndex :: Int -> SpriteSheet -> Sprite
 spriteByIndex index spriteSheet = sps !! (index `mod` spriteCount spriteSheet)
         where
             sps = sprites spriteSheet
+
+setScaleSpriteSheet :: SpriteSheet -> Vec2f -> IO ()
+setScaleSpriteSheet spr scale = forM_ (sprites spr) (setScaleSprite scale)
