@@ -1,4 +1,4 @@
-module System.Messaging.TextDrawingMessage
+module System.Messaging.Messages.TextDrawingMessage
     ( setTextMsg
     ) where
 
