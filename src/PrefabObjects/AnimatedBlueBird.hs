@@ -7,8 +7,8 @@ import SFML.System.Vector2
 import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject)
-import GameObject.GameObjectTypes (GameObjectCreation, GameObject (..), Ratio (..))
-import Component.Animation.Animation (createNewDrawing, createAnimation)
+import GameObject.GameObjectTypes (GameObjectCreation, Ratio (..))
+import Component.Animation.AnimationDrawing (createAnimation)
 import Component.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet, setScaleSpriteSheet)
 import Component.Behavior.Behaviors (encloseByWrapAroundB)
 
@@ -23,9 +23,7 @@ createAnimatedBlueBird pos vel = do
     liftIO $ setScaleSpriteSheet ss (Vec2f 0.1 0.1)
     liftIO $ putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ ss)
 
-    let animated = createAnimation ss 25 id [4..7]
-
-    let drw = createNewDrawing animated
+    let drw = createAnimation ss 25 id [4..7]
 
     let go = (createGameObject drw encloseByWrapAroundB pos vel)
-    return go { animationComp = Just animated }
+    return go

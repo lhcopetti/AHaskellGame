@@ -75,8 +75,7 @@ data Drawing    = CircleDrawing CircleShape
                 | CompositeDrawing [Drawing]
                 | FlaggedDrawing Drawing [DrawingFlag]
                 | NamedDrawing String Drawing
-                | AnimationDrawing Sprite
-                | NewAnimationDrawing Animation Sprite
+                | AnimationDrawing Animation Sprite
 
 data DrawingFlag 
     = NoRotationUpdates

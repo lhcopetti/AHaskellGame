@@ -4,7 +4,6 @@ module Component.Animation.AnimationDrawing
     ( Animation (..)
     , createAnimation
     , updateAnimation
-    , createNewDrawing
     , destroyAnimation
     ) where
 
@@ -38,13 +37,13 @@ updateAnimation :: Animation -> Sprite -> Drawing
 updateAnimation anim spr = let
     anim' = incrementCounter 1.0 anim
     (newAnim, res) = checkInterval anim'
-    in if not res then NewAnimationDrawing newAnim spr
+    in if not res then AnimationDrawing newAnim spr
     else createNewDrawing newAnim
 
 createNewDrawing :: Animation -> Drawing
 createNewDrawing anim@Animation{..} = let
     newSprite = spriteByIndex (spriteLoop !! spriteIndex) spriteSheet
-    in createDrawing (NewAnimationDrawing anim newSprite)
+    in createDrawing (AnimationDrawing anim newSprite)
 
 destroyAnimation :: Animation -> IO ()
 destroyAnimation Animation{..} = destroySpriteSheet spriteSheet
