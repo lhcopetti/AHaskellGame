@@ -20,6 +20,7 @@ setOriginMsg pos (ConvexDrawing     ptr) = setOrigin    ptr pos
 setOriginMsg pos (TextDrawing       ptr) = setOrigin    ptr pos
 setOriginMsg pos (SpriteDrawing   ptr _) = setOrigin    ptr pos
 setOriginMsg pos (AnimationDrawing  ptr) = setOrigin    ptr pos
+setOriginMsg pos (NewAnimationDrawing _ ptr) = setOrigin    ptr pos
 setOriginMsg pos (FlaggedDrawing  ptr _) = setOriginMsg pos ptr
 setOriginMsg pos (NamedDrawing   _  drw) = setOriginMsg pos drw
 setOriginMsg pos (CompositeDrawing drws) = mapM_ (pos `setOriginMsg`) drws

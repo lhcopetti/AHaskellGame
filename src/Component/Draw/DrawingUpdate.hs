@@ -29,6 +29,7 @@ syncDrawingTransformable (RectangleDrawing shape) obj tuple = updateTransformabl
 syncDrawingTransformable (ConvexDrawing shape)    obj tuple = updateTransformable shape obj tuple
 syncDrawingTransformable (SpriteDrawing shape _)  obj tuple = updateTransformable shape obj tuple
 syncDrawingTransformable (AnimationDrawing spr)   obj tuple = updateTransformable spr   obj tuple
+syncDrawingTransformable (NewAnimationDrawing _ spr) obj tuple = updateTransformable spr   obj tuple
 syncDrawingTransformable (TextDrawing text)       obj tuple = updateTransformable text  obj tuple
 syncDrawingTransformable (NamedDrawing _ drw)     obj tuple = syncDrawingTransformable drw obj tuple
 syncDrawingTransformable (CompositeDrawing _) _ _ = error "This pattern should not happen as the CompositeDrawing is unwrapped on the 'syncDrawing'"
