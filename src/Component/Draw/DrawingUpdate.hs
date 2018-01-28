@@ -15,11 +15,12 @@ import SFML.Graphics.SFTransformable
 import qualified Component.Position as Pos
 import Component.Draw.DrawingData
 import System.Messaging.DrawingMessage
+import System.Messaging.Handler.RunMessageHandler (runMessages)
 
 executeUpdateOnDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
 executeUpdateOnDrawing drw obj tuple = do
     syncDrawingTransformable drw obj tuple
-    executeMessages drw (getInbox obj)
+    runMessages drw (getInbox obj)
 
 
 syncDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
@@ -37,11 +38,3 @@ updateTransformable :: (SFTransformable a, Pos.Position b) => a -> b -> (Bool, B
 updateTransformable ptr obj (pos, rot) = do
     when pos (setPosition ptr (Pos.getPosition obj))
     when rot (setRotation ptr (Pos.getRotation obj))
-
-executeMessages :: Drawing -> [DrawingMessage] -> IO ()
-executeMessages drw = mapM_ (executeMessage drw)
-
-executeMessage :: Drawing -> DrawingMessage -> IO ()
-executeMessage (NamedDrawing nameDrw drw)   (NamedMessage nameMsg f) = when (nameDrw == nameMsg) (f drw)
-executeMessage _                            (NamedMessage _ _)       = return ()
-executeMessage drw (MSG f) = f drw
