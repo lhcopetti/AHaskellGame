@@ -33,7 +33,6 @@ data GameObject = GameObject { drawComp     :: Drawing
                              , behavior     :: Behavior
                              , physicsComp  :: Physics
                              , inputComp    :: Input
-                             , animationComp:: Maybe Animation
                              , position     :: Vec2f
                              , rotation     :: Float
                              , inbox        :: [DrawingMessage]
