@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 module Component.Animation.SpriteSheet
     ( SpriteSheet (..)
     , Size
@@ -7,11 +8,13 @@ module Component.Animation.SpriteSheet
     , spriteCount
     , spriteByIndex
     , setScaleSpriteSheet
+    , destroySpriteSheet
     ) where
 
 import SFML.Graphics.Types (Sprite, Texture)
 import SFML.Graphics.Rect (IntRect (..))
 import SFML.System.Vector2 (Vec2f)
+import SFML.SFResource (destroy)
 
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad (forM, forM_)
@@ -57,3 +60,6 @@ spriteByIndex index spriteSheet = sps !! (index `mod` spriteCount spriteSheet)
 
 setScaleSpriteSheet :: SpriteSheet -> Vec2f -> IO ()
 setScaleSpriteSheet spr scale = forM_ (sprites spr) (setScaleSprite scale)
+
+destroySpriteSheet :: SpriteSheet -> IO ()
+destroySpriteSheet SpriteSheet {..} = mapM_ destroy sprites >> destroy texture

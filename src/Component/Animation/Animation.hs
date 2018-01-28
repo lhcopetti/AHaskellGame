@@ -5,10 +5,11 @@ module Component.Animation.Animation
     , createAnimation
     , updateAnimation
     , createNewDrawing
+    , destroyAnimation
     ) where
 
 import GameObject.GameObjectTypes (GameObject (..), Animation (..))
-import Component.Animation.SpriteSheet (SpriteSheet (..), spriteByIndex)
+import Component.Animation.SpriteSheet (SpriteSheet (..), spriteByIndex, destroySpriteSheet)
 import Component.Draw.DrawingData (Drawing (..))
 
 createAnimation :: SpriteSheet -> Float -> (Drawing -> Drawing) -> [Int] -> Animation
@@ -49,3 +50,6 @@ createNewDrawing :: Animation -> Drawing
 createNewDrawing Animation{..} = let
     newSprite = spriteByIndex (spriteLoop !! spriteIndex) spriteSheet
     in createDrawing (AnimationDrawing newSprite)
+
+destroyAnimation :: Animation -> IO ()
+destroyAnimation Animation{..} = destroySpriteSheet spriteSheet
