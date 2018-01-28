@@ -8,8 +8,8 @@ module GameObject.GameObjectTypes
     , Command (..)
     , InputType
     , Input (..)
-    , Size
-    , Ratio
+    , Size (..)
+    , Ratio (..)
     , SpriteSheet (..)
     , Animation (..)
     , DrawingFlag (..)
@@ -82,8 +82,8 @@ data DrawingFlag
     | NoPositionUpdates
         deriving (Eq)
 
-type Size   = (Int, Int)
-type Ratio  = (Int, Int)
+data Size   = Size Int Int
+data Ratio  = Ratio Int Int
 
 data SpriteSheet = SpriteSheet  { sprites   :: [Sprite]
                                 , texture   :: Texture

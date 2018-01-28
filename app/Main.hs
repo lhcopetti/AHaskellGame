@@ -15,7 +15,7 @@ import Component.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
-import GameObject.GameObjectTypes (GameObjectCreation)
+import GameObject.GameObjectTypes (GameObjectCreation, Ratio (..))
 import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
 import PrefabObjects.AnimatedBlueBird (createAnimatedBlueBird)
 import PrefabObjects.BallInputAware (createBallInputAware)
@@ -57,7 +57,7 @@ main = do
 #endif
 
     spriteSheetName <- getDataFileName "resources/sprites/blue-bird/blue-bird-10%-resized.png"
-    spriteSheet <- runMaybeT $ loadSpriteSheet spriteSheetName (2, 4)
+    spriteSheet <- runMaybeT $ loadSpriteSheet spriteSheetName (Ratio 2 4)
     case spriteSheet of
         (Just s) -> putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ s)
         _ -> return ()
