@@ -1,4 +1,4 @@
-module Component.Draw.DrawingUpdate
+module Component.Draw.DrawingSync
     ( executeUpdateOnDrawing
     ) where
 

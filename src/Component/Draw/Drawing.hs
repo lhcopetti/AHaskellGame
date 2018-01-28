@@ -10,7 +10,7 @@ import SFML.Graphics.RenderWindow (drawCircle, drawRectangle, drawConvexShape, d
 import SFML.SFResource (destroy)
 
 import qualified Component.Position as Pos
-import Component.Draw.DrawingUpdate (executeUpdateOnDrawing)
+import Component.Draw.DrawingSync (executeUpdateOnDrawing)
 import Drawable
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes (GameObject (..), Drawing (..), DrawingFlag (..))
