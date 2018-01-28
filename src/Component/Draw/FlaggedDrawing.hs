@@ -2,7 +2,7 @@ module Component.Draw.FlaggedDrawing
     ( createSingleFlagDrawing
     ) where
 
-import Component.Draw.DrawingData (Drawing (..), DrawingFlag (..))
+import GameObject.GameObjectTypes (Drawing (..), DrawingFlag (..))
 
 createSingleFlagDrawing :: Drawing -> DrawingFlag -> Drawing
 createSingleFlagDrawing drw flag = FlaggedDrawing drw [flag]

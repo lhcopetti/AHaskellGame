@@ -13,6 +13,8 @@ import Control.Monad.IO.Class (liftIO)
 
 import Component.Draw.Drawing
 import Component.Draw.DrawingHelper (createShapeT)
+import System.Messaging.Handler.RunMessageHandler (runMessageT)
+import System.Messaging.Messages.TransformableMessage (setOriginMsg)
 
 createCircle :: Float -> Color -> MaybeT IO Drawing
 createCircle radius color = do 
@@ -26,7 +28,5 @@ createCircle radius color = do
 createCenteredCircle :: Float -> Color -> MaybeT IO Drawing
 createCenteredCircle radius color = do 
     circleDrawing <- createCircle radius color
-    liftIO $ setOriginDrawing circleDrawing newOrigin
+    liftIO $ runMessageT (setOriginMsg (Vec2f radius radius)) circleDrawing
     return circleDrawing
-        where
-            newOrigin = Vec2f radius radius

@@ -24,7 +24,7 @@ createGameObjectWithChildren drw beh pos vel children = let
     initialRotation = 0.0
     noCommands = []
     input = emptyInput
-    in GameObject drw beh physics input Nothing pos initialRotation [] children noCommands live
+    in GameObject drw beh physics input pos initialRotation [] children noCommands live
 
 createGameObject :: Drawing -> Behavior -> Vec2f -> Vec2f -> GameObject
 createGameObject drw beh pos vel = let
@@ -34,7 +34,7 @@ createGameObject drw beh pos vel = let
     children = []
     noCommands = []
     input = emptyInput
-    in GameObject drw beh physics input Nothing pos initialRotation [] children noCommands live    
+    in GameObject drw beh physics input pos initialRotation [] children noCommands live    
 
 createStaticGameObjectB :: Drawing -> Vec2f -> Behavior -> GameObject
 createStaticGameObjectB drw pos beh = let 

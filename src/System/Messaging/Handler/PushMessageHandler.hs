@@ -1,11 +1,10 @@
-module System.Messaging.MessageHelper
+module System.Messaging.Handler.PushMessageHandler
     ( pushMessage
     , pushNamedMessage
     ) where
 
-import GameObject.GameObjectTypes (Command (..), CommandType)
+import GameObject.GameObjectTypes (Command (..), CommandType, DrawingMessage (..), DrawingMessageType)
 import GameObject.GameObject (addCommand)
-import System.Messaging.DrawingMessage (DrawingMessage (..), DrawingMessageType)
 
 import Command.MessageCommand (sendDrwMsgCommand)
 

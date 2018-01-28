@@ -12,6 +12,7 @@ import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 
 import Component.Draw.DrawingHelper (createShapeT)
+import GameObject.GameObjectTypes (Size (..))
 
 
 createTextureDrawing :: FilePath -> Maybe IntRect -> MaybeT IO Texture
@@ -19,7 +20,7 @@ createTextureDrawing path rect = do
     liftIO $ putStrLn $ "Loading Texture from file: " ++ path
     createShapeT (textureFromFile path rect)
 
-getTextureSize :: Num a => Texture -> MaybeT IO (a, a)
+getTextureSize :: Texture -> MaybeT IO Size
 getTextureSize tex = do
     (Vec2u x y) <- liftIO (textureSize tex)
-    return (fromIntegral x, fromIntegral y)
+    return $ Size (fromIntegral x) (fromIntegral y)

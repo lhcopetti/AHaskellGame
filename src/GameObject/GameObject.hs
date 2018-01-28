@@ -17,7 +17,6 @@ import qualified Component.Position as Pos
 import Component.Physics.PhysicsClass
 import Component.Physics.Physics
 import Component.Draw.Drawing
-import Component.Animation.Animation (updateAnimation)
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes
@@ -30,11 +29,11 @@ instance Updatable GameObject where
         updatedObj <- runInput (inputComp go) updatedPhysics
         updatedObj' <- behave (behavior updatedObj) updatedObj
         updatedObj'' <- runCommands updatedObj'
-        return (updateAnimation updatedObj'')
+        return (updateDrawing updatedObj'')
 
 
 instance Synchronizable GameObject where
-    synchronize go = updateDrawing (drawComp go) go
+    synchronize go = syncDrawing (drawComp go) go
 
 instance Drawable GameObject where 
     draw wnd GameObject { drawComp } = draw wnd drawComp

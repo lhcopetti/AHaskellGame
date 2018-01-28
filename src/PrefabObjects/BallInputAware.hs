@@ -10,7 +10,9 @@ import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject)
 import GameObject.GameObjectTypes
-import Component.Draw.Drawing (setOriginDrawing)
+import System.Messaging.Handler.RunMessageHandler (runMessageT)
+import System.Messaging.Messages.TransformableMessage (setOriginMsg)
+import Component.Draw.Drawing ()
 import Component.Draw.CircleDrawing (createCenteredCircle)
 import Component.Draw.CompositeDrawing (createComposite)
 import Component.Draw.TextDrawing (createText)
@@ -24,7 +26,7 @@ createBallInputAware pos = do
     liftIO $ putStrLn "Creating a ball input aware"
     circle <- createCenteredCircle 10 green
     text <- createText 15 "Dies when 'q' is pressed"
-    liftIO $ setOriginDrawing text (Vec2f 10 0)
+    liftIO $ runMessageT (setOriginMsg (Vec2f 10 0)) text
     drw <- createComposite [circle, text]
     let input = Input (dieOnKeyPressing KeyQ)
     let go = createGameObject drw noopB pos zero 

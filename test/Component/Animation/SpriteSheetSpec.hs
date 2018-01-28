@@ -1,4 +1,4 @@
-module Component.Animation.SpriteSheetSpec
+module Component.Draw.Animation.SpriteSheetSpec
     ( main
     , spec
     ) where
@@ -8,7 +8,7 @@ import SFML.Graphics.Rect (IntRect (..))
 import Test.Hspec
 import Test.Hspec.Runner
 
-import Component.Animation.SpriteSheet (Size, Ratio, getIntRect)
+import Component.Draw.Animation.SpriteSheet (Size, Ratio, getIntRect)
 import ExtSFML.SFMLInstances ()
     
 main :: IO ()

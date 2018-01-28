@@ -1,17 +1,11 @@
 module System.Messaging.DrawingMessage
-    ( DrawingMessageType 
-    , DrawingMessage (..)
-    , DrawingInbox
+    ( DrawingInbox
     , getInbox
     , addInbox
     , clearInbox
     ) where
 
-import Component.Draw.DrawingData (Drawing)
-
-type DrawingMessageType = Drawing -> IO ()
-data DrawingMessage = MSG DrawingMessageType
-                    | NamedMessage String DrawingMessageType
+import GameObject.GameObjectTypes (DrawingMessage)
 
 class DrawingInbox a where
     getInbox :: a -> [DrawingMessage]

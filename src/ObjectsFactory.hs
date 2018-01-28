@@ -8,7 +8,9 @@ import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createGameObjectWithChildren, createStaticGameObject, createStaticGameObjectB)
 import GameObject.GameObjectTypes (GameObjectCreation, Command (..))
-import Component.Draw.Drawing (setOriginDrawing)
+import System.Messaging.Handler.RunMessageHandler (runMessageT)
+import System.Messaging.Messages.TransformableMessage (setOriginMsg)
+import Component.Draw.Drawing ()
 import Component.Draw.CircleDrawing (createCircle, createCenteredCircle)
 import Component.Draw.RectangleDrawing (createSquare)
 import Component.Draw.ConvexDrawing (createConvex)
@@ -152,8 +154,8 @@ createNamedMessagesDemo pos = do
     subtitle <- createText 15 "that was it!"
     allTogether <- createComposite [circle, createNamedDrawing "title" title, createNamedDrawing "subtitle" subtitle]
     liftIO $ do
-        setOriginDrawing title (Vec2f 0 15)
-        setOriginDrawing subtitle (Vec2f 0 30)
+        runMessageT (setOriginMsg (Vec2f 0 15)) title
+        runMessageT (setOriginMsg (Vec2f 0 30)) subtitle
     let behavior = updateMultipleTextsB
     return (createGameObject allTogether behavior pos zero )
 
