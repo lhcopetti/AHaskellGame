@@ -18,20 +18,20 @@ import System.Messaging.DrawingMessage
 
 executeUpdateOnDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
 executeUpdateOnDrawing drw obj tuple = do
-    updateDrawingTransformable drw obj tuple
+    syncDrawingTransformable drw obj tuple
     executeMessages drw (getInbox obj)
 
 
-updateDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
-updateDrawingTransformable (CircleDrawing shape)    obj tuple = updateTransformable shape obj tuple
-updateDrawingTransformable (RectangleDrawing shape) obj tuple = updateTransformable shape obj tuple
-updateDrawingTransformable (ConvexDrawing shape)    obj tuple = updateTransformable shape obj tuple
-updateDrawingTransformable (SpriteDrawing shape _)  obj tuple = updateTransformable shape obj tuple
-updateDrawingTransformable (AnimationDrawing spr)   obj tuple = updateTransformable spr   obj tuple
-updateDrawingTransformable (TextDrawing text)       obj tuple = updateTransformable text  obj tuple
-updateDrawingTransformable (NamedDrawing _ drw)     obj tuple = updateDrawingTransformable drw obj tuple
-updateDrawingTransformable (CompositeDrawing _) _ _ = error "This pattern should not happen as the CompositeDrawing is unwrapped on the 'updateDrawing'"
-updateDrawingTransformable (FlaggedDrawing _ _) _ _ = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'updateDrawing'"
+syncDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
+syncDrawingTransformable (CircleDrawing shape)    obj tuple = updateTransformable shape obj tuple
+syncDrawingTransformable (RectangleDrawing shape) obj tuple = updateTransformable shape obj tuple
+syncDrawingTransformable (ConvexDrawing shape)    obj tuple = updateTransformable shape obj tuple
+syncDrawingTransformable (SpriteDrawing shape _)  obj tuple = updateTransformable shape obj tuple
+syncDrawingTransformable (AnimationDrawing spr)   obj tuple = updateTransformable spr   obj tuple
+syncDrawingTransformable (TextDrawing text)       obj tuple = updateTransformable text  obj tuple
+syncDrawingTransformable (NamedDrawing _ drw)     obj tuple = syncDrawingTransformable drw obj tuple
+syncDrawingTransformable (CompositeDrawing _) _ _ = error "This pattern should not happen as the CompositeDrawing is unwrapped on the 'syncDrawing'"
+syncDrawingTransformable (FlaggedDrawing _ _) _ _ = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'syncDrawing'"
 
 updateTransformable :: (SFTransformable a, Pos.Position b) => a -> b -> (Bool, Bool) -> IO ()
 updateTransformable ptr obj (pos, rot) = do

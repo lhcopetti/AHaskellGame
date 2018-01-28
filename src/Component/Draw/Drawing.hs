@@ -1,7 +1,7 @@
 module Component.Draw.Drawing
     ( Drawing (..)
     , setOriginDrawing
-    , updateDrawing
+    , syncDrawing
     , destroyDrawing
     ) where
 
@@ -44,13 +44,13 @@ setOriginDrawing (FlaggedDrawing  ptr _) pos = setOriginDrawing ptr pos
 setOriginDrawing (NamedDrawing   _  drw) pos = setOriginDrawing drw pos
 setOriginDrawing (CompositeDrawing drws) pos = mapM_ (`setOriginDrawing` pos) drws
 
-updateDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
-updateDrawing (FlaggedDrawing drw flg) obj  = executeUpdateOnDrawing drw obj (updatePosition, updateRotation)
+syncDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
+syncDrawing (FlaggedDrawing drw flg) obj  = executeUpdateOnDrawing drw obj (updatePosition, updateRotation)
     where
         updatePosition = NoPositionUpdates `notElem` flg
         updateRotation = NoRotationUpdates `notElem` flg
-updateDrawing (CompositeDrawing drws)  obj  = mapM_ (`updateDrawing` obj) drws
-updateDrawing drw obj                       = executeUpdateOnDrawing drw obj (True, True)
+syncDrawing (CompositeDrawing drws)  obj  = mapM_ (`syncDrawing` obj) drws
+syncDrawing drw obj                       = executeUpdateOnDrawing drw obj (True, True)
 
 destroyDrawing :: Drawing -> IO ()
 destroyDrawing (CircleDrawing       ptr ) = destroy ptr

@@ -34,7 +34,7 @@ instance Updatable GameObject where
 
 
 instance Synchronizable GameObject where
-    synchronize go = updateDrawing (drawComp go) go
+    synchronize go = syncDrawing (drawComp go) go
 
 instance Drawable GameObject where 
     draw wnd GameObject { drawComp } = draw wnd drawComp
