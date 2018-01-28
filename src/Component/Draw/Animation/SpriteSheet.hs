@@ -1,5 +1,5 @@
 {-# LANGUAGE RecordWildCards #-}
-module Component.Animation.SpriteSheet
+module Component.Draw.Animation.SpriteSheet
     ( SpriteSheet (..)
     , Size
     , Ratio

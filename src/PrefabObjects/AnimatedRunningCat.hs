@@ -9,8 +9,8 @@ import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject)
 import GameObject.GameObjectTypes (GameObjectCreation, Ratio (..))
-import Component.Animation.AnimationDrawing (createAnimation)
-import Component.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
+import Component.Draw.Animation.AnimationDrawing (createAnimation)
+import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 import Component.Behavior.Behaviors (encloseByWrapAroundB)
 
 import Paths_AHaskellGame

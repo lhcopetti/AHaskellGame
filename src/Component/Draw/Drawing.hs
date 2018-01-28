@@ -14,7 +14,7 @@ import Component.Draw.DrawingUpdate (executeUpdateOnDrawing)
 import Drawable
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes (GameObject (..), Drawing (..), DrawingFlag (..))
-import Component.Animation.AnimationDrawing (updateAnimation, destroyAnimation)
+import Component.Draw.Animation.AnimationDrawing (updateAnimation, destroyAnimation)
 
 instance Drawable Drawing where
     draw wnd (CircleDrawing ptr) = drawCircle wnd ptr Nothing

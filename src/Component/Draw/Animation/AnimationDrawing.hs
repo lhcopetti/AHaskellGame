@@ -1,6 +1,6 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE RecordWildCards #-}
-module Component.Animation.AnimationDrawing
+module Component.Draw.Animation.AnimationDrawing
     ( Animation (..)
     , createAnimation
     , updateAnimation
@@ -10,7 +10,7 @@ module Component.Animation.AnimationDrawing
 import SFML.Graphics.Types (Sprite)
 
 import GameObject.GameObjectTypes (Animation (..), Drawing (..))
-import Component.Animation.SpriteSheet (SpriteSheet (..), spriteByIndex, destroySpriteSheet)
+import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), spriteByIndex, destroySpriteSheet)
 
 createAnimation :: SpriteSheet -> Float -> (Drawing -> Drawing) -> [Int] -> Drawing
 createAnimation ss i create loop =

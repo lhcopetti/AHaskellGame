@@ -10,7 +10,7 @@ import Control.Monad.Trans.State
 import Control.Monad.Trans.Class
 import Control.Monad.IO.Class (liftIO)
 import System.Random (StdGen)
-import Component.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
+import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
