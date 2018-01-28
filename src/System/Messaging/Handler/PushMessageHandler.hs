@@ -1,4 +1,4 @@
-module System.Messaging.MessageHelper
+module System.Messaging.Handler.PushMessageHandler
     ( pushMessage
     , pushNamedMessage
     ) where

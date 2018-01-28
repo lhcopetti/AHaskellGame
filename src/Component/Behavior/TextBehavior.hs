@@ -12,7 +12,7 @@ import Control.Monad.Reader (asks)
 
 import GameObject.GameObject ()
 import Component.Behavior.Behavior
-import System.Messaging.MessageHelper (pushMessage, pushNamedMessage)
+import System.Messaging.Handler.PushMessageHandler (pushMessage, pushNamedMessage)
 import GameEnv (GameEnvironment (..))
 import Input.Mouse (mousePos)
 import System.Messaging.Messages.TextDrawingMessage (setTextMsg)
