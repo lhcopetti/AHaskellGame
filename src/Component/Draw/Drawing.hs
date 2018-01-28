@@ -1,6 +1,7 @@
 module Component.Draw.Drawing
     ( Drawing (..)
     , setOriginDrawing
+    , updateDrawing
     , syncDrawing
     , destroyDrawing
     ) where
@@ -43,6 +44,9 @@ setOriginDrawing (AnimationDrawing  ptr) pos = setOrigin ptr pos
 setOriginDrawing (FlaggedDrawing  ptr _) pos = setOriginDrawing ptr pos
 setOriginDrawing (NamedDrawing   _  drw) pos = setOriginDrawing drw pos
 setOriginDrawing (CompositeDrawing drws) pos = mapM_ (`setOriginDrawing` pos) drws
+
+-- updateDrawing :: GameObject -> GameObject
+updateDrawing = id
 
 syncDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
 syncDrawing (FlaggedDrawing drw flg) obj  = executeUpdateOnDrawing drw obj (updatePosition, updateRotation)

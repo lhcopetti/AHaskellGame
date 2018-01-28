@@ -30,7 +30,8 @@ instance Updatable GameObject where
         updatedObj <- runInput (inputComp go) updatedPhysics
         updatedObj' <- behave (behavior updatedObj) updatedObj
         updatedObj'' <- runCommands updatedObj'
-        return (updateAnimation updatedObj'')
+        let newUpdatedObj = updateAnimation updatedObj''
+        return (updateDrawing newUpdatedObj)
 
 
 instance Synchronizable GameObject where
