@@ -20,7 +20,7 @@ import System.Messaging.Handler.RunMessageHandler (runMessages)
 executeUpdateOnDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
 executeUpdateOnDrawing drw obj tuple = do
     syncDrawingTransformable drw obj tuple
-    runMessages drw (getInbox obj)
+    runMessages (getInbox obj) drw
 
 
 syncDrawingTransformable :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()

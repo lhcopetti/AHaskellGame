@@ -8,12 +8,12 @@ import Control.Monad (when)
 import Component.Draw.DrawingData
 import System.Messaging.DrawingMessage
 
-runMessages :: Drawing -> [DrawingMessage] -> IO ()
-runMessages drw = mapM_ (runMessage drw)
+runMessages :: [DrawingMessage] -> Drawing -> IO ()
+runMessages msgs drw = mapM_ (`runMessage` drw) msgs
 
-runMessage :: Drawing -> DrawingMessage -> IO ()
-runMessage  (NamedDrawing nameDrw drw)   
-            (NamedMessage nameMsg f)   =
+runMessage :: DrawingMessage -> Drawing -> IO ()
+runMessage  (NamedMessage nameMsg f)
+            (NamedDrawing nameDrw drw)   =
             when (nameDrw == nameMsg) (f drw)
-runMessage drw (MSG f) = f drw
-runMessage _ (NamedMessage _ _) = return ()
+runMessage (MSG f)              drw = f drw
+runMessage (NamedMessage _ _)   _   = return ()
