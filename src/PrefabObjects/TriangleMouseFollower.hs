@@ -13,8 +13,10 @@ import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreati
 import GameObject.GameObject (addCommandM)
 import System.Messaging.Messages.TextDrawingMessage (setTextMsg)
 import System.Messaging.Handler.PushMessageHandler (pushNamedMessage)
+import System.Messaging.Handler.RunMessageHandler (runMessageT)
+import System.Messaging.Messages.TransformableMessage (setOriginMsg)
 import Component.Draw.DrawingData (DrawingFlag (..))
-import Component.Draw.Drawing (Drawing, setOriginDrawing)
+import Component.Draw.Drawing (Drawing)
 import Component.Draw.NamedDrawing (createNamedDrawing)
 import Component.Draw.CircleDrawing (createCenteredCircle)
 import Component.Draw.TriangleDrawing (createEqTriangle)
@@ -39,8 +41,8 @@ createMouseFollowerEqTriangle = do
     let triOriginY1 = 1/2 * factor + 5
     let triOriginY2 = -1/2 * factor + 5
     liftIO $ do
-        setOriginDrawing miniBall1 (Vec2f triOriginX triOriginY1)
-        setOriginDrawing miniBall2 (Vec2f triOriginX triOriginY2)
+        runMessageT (setOriginMsg (Vec2f triOriginX triOriginY1)) miniBall1
+        runMessageT (setOriginMsg (Vec2f triOriginX triOriginY2)) miniBall2
     text <- createTextDrawing
     drw <- createComposite [drawComponent, miniBall1, miniBall2, text]
     return (createGameObject drw (Behavior (followsAndDiesCloseToMouse 0)) zero zero)
@@ -49,7 +51,7 @@ createTextDrawing :: Creation Drawing
 createTextDrawing = do
     text <- createText 15 "EqTriangle death counter"
     let namedText = createNamedDrawing "counter" text
-    liftIO $ setOriginDrawing text (Vec2f 0 (-20))
+    liftIO $ runMessageT (setOriginMsg (Vec2f 0 (-20))) text
     return $ createSingleFlagDrawing namedText NoRotationUpdates
 
 followsAndDiesCloseToMouse :: Int -> BehaviorType
