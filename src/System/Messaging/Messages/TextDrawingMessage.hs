@@ -4,8 +4,7 @@ module System.Messaging.Messages.TextDrawingMessage
 
 import SFML.Graphics.Text (setTextString)
 
-import Component.Draw.DrawingData (Drawing (..))
-import System.Messaging.DrawingMessage (DrawingMessageType)
+import GameObject.GameObjectTypes (DrawingMessageType, Drawing (..))
 
 setTextMsg :: String -> DrawingMessageType
 setTextMsg text (TextDrawing ptr) = setTextString ptr text

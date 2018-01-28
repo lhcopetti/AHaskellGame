@@ -8,18 +8,23 @@ module GameObject.GameObjectTypes
     , Command (..)
     , InputType
     , Input (..)
+    , Size
+    , Ratio
+    , SpriteSheet (..)
     , Animation (..)
+    , DrawingFlag (..)
+    , Drawing (..)
+    , DrawingMessageType
+    , DrawingMessage (..)
     ) where
 
 
+import SFML.Graphics.Types (CircleShape, RectangleShape, ConvexShape, Text, Sprite, Texture)
 import SFML.System.Vector2 (Vec2f)
-import System.Messaging.DrawingMessage
 
 import Control.Monad.Reader (Reader)
 import Control.Monad.Trans.Maybe (MaybeT)
 
-import Component.Draw.Drawing
-import Component.Animation.SpriteSheet (SpriteSheet)
 import Component.Physics.Physics
 import GameEnv
 import Updatable (UpdateType)
@@ -61,3 +66,31 @@ data Animation = Animation  { createDrawing :: Drawing -> Drawing
                             , spriteSheet   :: SpriteSheet
                             , spriteLoop    :: [Int]
                             }
+
+data Drawing    = CircleDrawing CircleShape
+                | RectangleDrawing RectangleShape
+                | ConvexDrawing ConvexShape
+                | TextDrawing Text
+                | SpriteDrawing Sprite Texture
+                | CompositeDrawing [Drawing]
+                | FlaggedDrawing Drawing [DrawingFlag]
+                | NamedDrawing String Drawing
+                | AnimationDrawing Sprite
+
+data DrawingFlag 
+    = NoRotationUpdates
+    | NoPositionUpdates
+        deriving (Eq)
+
+type Size   = (Int, Int)
+type Ratio  = (Int, Int)
+
+data SpriteSheet = SpriteSheet  { sprites   :: [Sprite]
+                                , texture   :: Texture
+                                , texSize   :: Size
+                                , ratio     :: Ratio
+                                }
+
+type DrawingMessageType = Drawing -> IO ()
+data DrawingMessage = MSG DrawingMessageType
+                    | NamedMessage String DrawingMessageType

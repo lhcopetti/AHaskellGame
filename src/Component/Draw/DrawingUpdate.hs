@@ -13,9 +13,9 @@ import SFML.Graphics.Texture ()
 import SFML.Graphics.SFTransformable
 
 import qualified Component.Position as Pos
-import Component.Draw.DrawingData
 import System.Messaging.DrawingMessage
 import System.Messaging.Handler.RunMessageHandler (runMessages)
+import GameObject.GameObjectTypes (Drawing (..))
 
 executeUpdateOnDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> (Bool, Bool) -> IO ()
 executeUpdateOnDrawing drw obj tuple = do

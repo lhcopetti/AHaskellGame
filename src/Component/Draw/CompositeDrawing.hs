@@ -3,8 +3,7 @@ module Component.Draw.CompositeDrawing
     ) where
 
 import Control.Monad.Trans.Maybe (MaybeT)
-
-import Component.Draw.DrawingData
+import GameObject.GameObjectTypes (Drawing (..))
 
 createComposite :: [Drawing] -> MaybeT IO Drawing
 createComposite drw = return $ CompositeDrawing drw

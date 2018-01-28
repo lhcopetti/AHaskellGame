@@ -13,9 +13,10 @@ import SFML.System.Vector2 (Vec2f)
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 
-import Component.Draw.Drawing
 import Component.Draw.DrawingHelper (createShapeT)
 import Component.Draw.TextureDrawing (createTextureDrawing)
+
+import GameObject.GameObjectTypes (Drawing (..))
 
 createSpriteDrawing :: FilePath -> MaybeT IO Drawing
 createSpriteDrawing path = do

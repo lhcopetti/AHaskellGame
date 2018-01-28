@@ -11,9 +11,7 @@ import SFML.Graphics.Sprite ()
 import SFML.Graphics.Texture ()
 import SFML.Graphics.SFTransformable (setOrigin)
 
-
-import Component.Draw.DrawingData (Drawing (..))
-import System.Messaging.DrawingMessage (DrawingMessageType)
+import GameObject.GameObjectTypes (Drawing (..), DrawingMessageType)
 
 setOriginMsg :: Vec2f -> DrawingMessageType
 setOriginMsg pos (CircleDrawing     ptr) = setOrigin    ptr pos

@@ -9,10 +9,10 @@ import SFML.Graphics.RenderWindow (drawCircle, drawRectangle, drawConvexShape, d
 import SFML.SFResource (destroy)
 
 import qualified Component.Position as Pos
-import Component.Draw.DrawingData
 import Component.Draw.DrawingUpdate (executeUpdateOnDrawing)
 import Drawable
 import System.Messaging.DrawingMessage
+import GameObject.GameObjectTypes (Drawing (..), DrawingFlag (..))
 
 instance Drawable Drawing where
     draw wnd (CircleDrawing ptr) = drawCircle wnd ptr Nothing

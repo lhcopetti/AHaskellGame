@@ -8,9 +8,8 @@ module Component.Animation.Animation
     , destroyAnimation
     ) where
 
-import GameObject.GameObjectTypes (GameObject (..), Animation (..))
+import GameObject.GameObjectTypes (GameObject (..), Animation (..), Drawing (..))
 import Component.Animation.SpriteSheet (SpriteSheet (..), spriteByIndex, destroySpriteSheet)
-import Component.Draw.DrawingData (Drawing (..))
 
 createAnimation :: SpriteSheet -> Float -> (Drawing -> Drawing) -> [Int] -> Animation
 createAnimation ss i create loop = 

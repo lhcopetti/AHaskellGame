@@ -19,17 +19,9 @@ import SFML.SFResource (destroy)
 import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad (forM, forM_)
 
+import GameObject.GameObjectTypes (SpriteSheet (..), Size, Ratio)
 import Component.Draw.TextureDrawing (createTextureDrawing, getTextureSize)
 import Component.Draw.SpriteDrawing (setScaleSprite, createSpriteTextureRect)
-
-type Size   = (Int, Int)
-type Ratio  = (Int, Int)
-
-data SpriteSheet = SpriteSheet  { sprites   :: [Sprite]
-                                , texture   :: Texture
-                                , texSize   :: Size
-                                , ratio     :: Ratio
-                                }
 
 loadSpriteSheet :: FilePath -> Ratio -> MaybeT IO SpriteSheet
 loadSpriteSheet path ratio = do
