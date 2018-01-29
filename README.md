@@ -55,7 +55,7 @@ Other honorable mentions are:
   - Added the first sprite to the game. (It was about time, right)?
   - The last meaningful change was the added ability that gameobjects have to create child objects (The three messy "This is ..." were created that way). I still haven't created a behavior to actually trigger the creation of a child, though.
 
-### 28/01/2018 - Animations and named messages
+### 28/01/2018 - Animations and Named Messages
 
 ![alt text][diary-03]
 
@@ -64,12 +64,15 @@ It is time for another recap! Yay!
 I will try to keep these more minimalistic, I got carried away in the last one and endeup writing a wall of text by enumerating everything I had done. 
 
 - Primitive input system
+
   This was just an experiment see how I would pack input handling in the current 'architecture'. The ball that 'dies' after pressing the 'q' key is using this feature.
 
 - Named messages for composite drawings
+
   All drawings have the ability to receive messages `Drawing -> IO ()`, the difference is that for composite drawings the messages would be sent to all of the underlying drawings, sometimes this is desired behavior but more often than not, counter-intuitive. The pair 'title' and 'subtitle' uses these kind of messages to update their texts individually even though they are part of the same GameObject entity.
 
 - Animation
+
   Handling for animated drawings and automatic spritesheet cutting. There is still a lot of ground to cover but still, it looks good. One of the last refactorings I did this week was moving this animation behavior to fit inside a DrawingComponent which was really nice (It wasn't born this way).
 
 ## Development
