@@ -75,6 +75,26 @@ I will try to keep these more minimalistic, I got carried away in the last one a
 
   Handling for animated drawings and automatic spritesheet cutting. There is still a lot of ground to cover but still, it looks good. One of the last refactorings I did this week was moving this animation behavior to fit inside a DrawingComponent which was really nice (It wasn't born this way).
 
+### 04/02/2018 - A sabbatical week
+
+I decided to take a week-long break from coding into the repository. I'm using the free time instead to expand my current knowledge on some of the not so trivial haskell topics.
+
+- StateVar
+
+A simple [package](https://hackage.haskell.org/package/StateVar-1.1.0.4/docs/Data-StateVar.html) that is used to encapsulate getters and setters references in the IO monad. I came across StateVar while playing around with the [Hipmunk Playground](https://hackage.haskell.org/package/HipmunkPlayground). [Hipmunk](https://hackage.haskell.org/package/Hipmunk) is a physics library based upon [Chipmunk](https://chipmunk-physics.net/). As I'm inclined to integrate it into the codebase learning more about it certainly won't hurt.
+
+- Lens library
+
+I also used some of the new spare time to delve into the [Lens library](https://hackage.haskell.org/package/lens), which is a lot simpler to use than to understand how it works. I decided to keep my first toy program in a [Gist](https://gist.github.com/lhcopetti/ec27f86c54cc31b3c5e9bf98817ec962) (implementing a monadic version of the Vigenere Cipher, an exercise inspired by one of the exercises on the "Programming in Haskell" book) for future reference.
+
+- Arrows
+
+The Arrows have come to my attention after reading [this introduction](http://www.haskellforall.com/2014/03/introductions-to-advanced-haskell-topics.html) into some advanced haskell topics where it suggests reading this [paper](http://www.cse.chalmers.se/~rjmh/afp-arrows.pdf). Even though I am still far from the end I really liked the abstraction and I may rewrite some routines to make use of it.
+
+- Book: Haskell Programming
+
+I recently purchased [Haskell Programming](http://haskellbook.com/) and some of the time was also invested into going further into the book. Currently at Chapter 13, I have learned some interesting things, even though the content is still quite beginnerish.
+
 ## Development
 
 ### Setting up dependencies
