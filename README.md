@@ -113,9 +113,13 @@ I have not bothered trying installation on Windows as I have been running Linux 
 
 To compile the executable, use: 
 
+After upgrading my stack resolver to lts-10.4, I have to explicitly mention the '--extra-include-dirs' and '--extra-lib-dirs'. Don't ask me why!
+
 `
-stack build
+stack build --extra-include-dirs="/home/lhcopetti/Documents/Dev/Tools/CSFML-2.3/include" --extra-lib-dirs="/home/lhcopetti/Documents/Dev/Tools/CSFML-2.3/lib"
 `
+
+The directory '/home/lhcopetti/Documents/Dev/Tools/CSFML-2.3/' is where I cloned the CSFML git repository.
 
 ### Testing
 

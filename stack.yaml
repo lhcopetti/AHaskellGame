@@ -15,7 +15,7 @@
 # resolver:
 #  name: custom-snapshot
 #  location: "./custom-snapshot.yaml"
-resolver: lts-9.19
+resolver: lts-10.4
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -42,7 +42,9 @@ packages:
 extra-deps: [ SFML-2.3.2.4 
             , transformers-0.5.2.0
             , mtl-2.2.1
-            , random-1.1 ]
+            , random-1.1 
+            , Hipmunk-5.2.0.17 
+            ]
 
 # Override default flag values for local packages and extra-deps
 flags: {}
