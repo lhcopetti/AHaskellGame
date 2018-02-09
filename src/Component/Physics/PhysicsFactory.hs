@@ -13,10 +13,10 @@ defaultMaxVelocity :: Float
 defaultMaxVelocity = 5.0
 
 newEmptyPhysics :: Physics
-newEmptyPhysics = Physics zero defaultMaxVelocity
+newEmptyPhysics = SimplePhy zero defaultMaxVelocity
 
 newPhysics :: Vec2f -> Float -> Physics
-newPhysics = Physics
+newPhysics = SimplePhy
 
 newSimplePhysics :: Vec2f -> Physics
-newSimplePhysics vec = Physics vec defaultMaxVelocity
+newSimplePhysics vec = SimplePhy vec defaultMaxVelocity

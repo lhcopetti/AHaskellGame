@@ -5,17 +5,21 @@ module Component.Physics.Physics
 
 import SFML.System.Vector2 (Vec2f (..))
 
+import qualified Physics.Hipmunk as H
+
 import Vec2.Vec2Math (minVec2f, addVec2f)
 import Component.Physics.PhysicsClass
 import Component.Position
 
-data Physics = Physics  { velocity :: Vec2f
-                        , maxVelocity :: Float
-                        }
+data Physics = SimplePhy Vec2f Float
+             | HipPhy H.Body H.Shape H.ShapeType
 
 instance PhysicsClass Physics where
-    getVelocity = velocity
-    setVelocity phy vel = phy { velocity = minVec2f vel (maxVelocity phy) }
+    getVelocity (SimplePhy v _) = v
+    getVelocity _ = Vec2f 0 0
+
+    setVelocity (SimplePhy _ f) v' = SimplePhy (minVec2f v' f) f
+    setVelocity p _ = p
 
 updatePhysics :: (Position a, PhysicsClass a) => a -> a
 updatePhysics obj = let

@@ -45,7 +45,7 @@ instance Pos.Position GameObject where
     setRotation newRotation go = go { rotation = newRotation }
 
 instance PhysicsClass GameObject where
-    getVelocity = velocity . physicsComp
+    getVelocity = getVelocity . physicsComp
     setVelocity go@GameObject { physicsComp } newVel = go { physicsComp = setVelocity physicsComp newVel }
 
 instance Killable GameObject where 
