@@ -25,6 +25,11 @@ dependencies:
 - transformers
 - mtl
 - random
+- Hipmunk
+- OpenGL
+- containers
+- StateVar
+- GLFW
 
 library:
   source-dirs: src

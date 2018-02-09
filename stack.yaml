@@ -44,6 +44,7 @@ extra-deps: [ SFML-2.3.2.4
             , mtl-2.2.1
             , random-1.1 
             , Hipmunk-5.2.0.17 
+            , GLFW-0.5.2.5
             ]
 
 # Override default flag values for local packages and extra-deps

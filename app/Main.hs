@@ -4,6 +4,8 @@ module Main where
 import SFML.Window
 import SFML.Graphics.RenderWindow
 
+import qualified Physics.Hipmunk as H
+
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
@@ -25,6 +27,8 @@ import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..))
 import Random.Random
+import qualified Data.StateVar as SV
+import qualified SFML.Graphics as SF
 
 import Paths_AHaskellGame
 
@@ -32,6 +36,7 @@ import Paths_AHaskellGame
 
 main :: IO ()
 main = do
+    H.initChipmunk
     desktopMode <- getDesktopMode
     fsModes <- getFullscreenModes
 
@@ -120,6 +125,36 @@ createRandomMiniBalls = do
 
 ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation GameObject
 ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
+
+createPhysicsObject :: H.Space -> H.Position -> IO (H.Shape, (SF.RenderWindow -> IO (), IO ()))
+createPhysicsObject space pos = do
+    let mass   = 20
+        radius = 20
+        t = H.Circle radius
+    b <- H.newBody mass $ H.momentForCircle mass (0, radius) 0
+    s <- H.newShape b t 0
+    ----
+    H.position   b SV.$= pos
+    H.friction   s SV.$= 0.5
+    H.elasticity s SV.$= 0.9
+
+    H.spaceAdd space b
+    H.spaceAdd space s
+    let draw = do
+            drawMyShape s t
+    let remove = do
+            H.spaceRemove space b
+            H.spaceRemove space s
+    return (s, (draw, remove))
+
+-- | Draws a shape (assuming zero offset)
+drawMyShape :: H.Shape -> H.ShapeType -> SF.RenderWindow -> IO ()
+drawMyShape shape (H.Circle _) _ = do
+  H.Vector _ _ <- SV.get $ H.position $ H.body shape
+  _          <- SV.get $ H.angle    $ H.body shape
+
+  undefined
+drawMyShape _ _ _ = undefined
 
 createGameBalls :: MaybeT IO [GameObject]
 createGameBalls = do
