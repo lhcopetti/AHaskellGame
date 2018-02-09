@@ -9,9 +9,10 @@ module GameObject.AnyGameObject
     , removeDeadAnyGameObjects
     , getChildrenAnyGameObjects
     , removeChildrenAnyGameObject
+    , updatePhysicsAnyGameObjects
     ) where
 
-import Control.Monad (forM_, forM)
+import Control.Monad (forM_, forM, liftM)
 import Data.List (partition)
 import Control.Monad.Trans.Maybe (runMaybeT)
 
@@ -22,12 +23,14 @@ import Updatable
 import Synchronizable
 import Killable
 import ChildBearer
+import Component.Physics.PhysicsClass
 
 data AnyGameObject = forall a. ( Updatable a
                                , Drawable a
                                , Synchronizable a
                                , Killable a
-                               , ChildBearer a) 
+                               , ChildBearer a
+                               , PhysicsClass a)
                                => AGO a
 
 updateAnyGameObject :: UpdateType AnyGameObject
@@ -66,3 +69,8 @@ removeDeadAnyGameObjects objs = do
     let (alive, dead) = partition isAliveAnyGameObject objs
     forM_ dead (\(AGO a) -> destroyResource a)
     return alive
+
+updatePhysicsAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
+updatePhysicsAnyGameObjects = (`forM` updateAGO)
+    where
+        updateAGO (AGO a) = liftM AGO (updatePhysics a)

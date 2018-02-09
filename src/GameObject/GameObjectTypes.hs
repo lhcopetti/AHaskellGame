@@ -16,16 +16,18 @@ module GameObject.GameObjectTypes
     , Drawing (..)
     , DrawingMessageType
     , DrawingMessage (..)
+    , Physics (..)
     ) where
 
 
 import SFML.Graphics.Types (CircleShape, RectangleShape, ConvexShape, Text, Sprite, Texture)
 import SFML.System.Vector2 (Vec2f)
 
+import qualified Physics.Hipmunk as H
+
 import Control.Monad.Reader (Reader)
 import Control.Monad.Trans.Maybe (MaybeT)
 
-import Component.Physics.Physics
 import GameEnv
 import Updatable (UpdateType)
 
@@ -93,3 +95,6 @@ data SpriteSheet = SpriteSheet  { sprites   :: [Sprite]
 type DrawingMessageType = Drawing -> IO ()
 data DrawingMessage = MSG DrawingMessageType
                     | NamedMessage String DrawingMessageType
+
+data Physics = SimplePhy Vec2f Float
+             | HipPhy H.Body H.Shape H.ShapeType

@@ -25,8 +25,7 @@ import Command.Command (runCommands)
 instance Updatable GameObject where
     update go = do 
         let noDrawingMsgs = clearInbox go
-        let updatedPhysics = updatePhysics noDrawingMsgs
-        updatedObj <- runInput (inputComp go) updatedPhysics
+        updatedObj <- runInput (inputComp go) noDrawingMsgs
         updatedObj' <- behave (behavior updatedObj) updatedObj
         updatedObj'' <- runCommands updatedObj'
         return (updateDrawing updatedObj'')
@@ -47,6 +46,7 @@ instance Pos.Position GameObject where
 instance PhysicsClass GameObject where
     getVelocity = getVelocity . physicsComp
     setVelocity go@GameObject { physicsComp } newVel = go { physicsComp = setVelocity physicsComp newVel }
+    updatePhysics = updatePhysicsComponent
 
 instance Killable GameObject where 
     isAlive = alive
@@ -72,3 +72,8 @@ addCommand comm obj@GameObject { commands } = obj { commands = comm : commands }
 
 addCommandM :: Command -> CommandType
 addCommandM comm obj = return (addCommand comm obj)
+
+updatePhysicsComponent :: GameObject -> IO GameObject
+updatePhysicsComponent go = case physicsComp go of
+    (SimplePhy _ _) -> return . updatePosition $ go
+    _ -> return go
