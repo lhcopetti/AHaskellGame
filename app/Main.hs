@@ -85,7 +85,6 @@ runBallCreation gen env eval = runStateT (runReaderT eval env) gen
 createObjects :: StdGen -> GameEnvironment -> MaybeT IO [GameObject]
 createObjects gen env = do 
     balls <- createGameBalls
-    multiplier <- createMultiplier (Vec2f 5 5)
     dots <- createDots
     triangles <- createTriangles
     hex <- createSimpleHexagon (Vec2f 200 200)
@@ -102,7 +101,7 @@ createObjects gen env = do
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
     namedObjects <- createNamedMessagesDemo (Vec2f 468 300)
     behavesAll <- createUsesBehaveAll
-    return ( inputAware : behavesAll : namedObjects : behaveOnce : multiplier : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+    return ( inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do

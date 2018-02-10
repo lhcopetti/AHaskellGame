@@ -1,6 +1,5 @@
 module GameObjectFactory
     ( createGameObject
-    , createGameObjectWithChildren
     , createStaticGameObject
     , createStaticGameObjectB
     ) where
@@ -15,16 +14,6 @@ import Component.Input.Input (emptyInput)
 import Vec2.Vec2Math (zero)
 
 import GameObject.GameObject
-import GameObject.GameObjectTypes (GameObjectCreation)
-
-createGameObjectWithChildren :: Drawing -> Behavior -> Vec2f -> Vec2f -> [GameObjectCreation] -> GameObject
-createGameObjectWithChildren drw beh pos vel children = let
-    live = True
-    physics = newSimplePhysics vel
-    initialRotation = 0.0
-    noCommands = []
-    input = emptyInput
-    in GameObject drw beh physics input pos initialRotation [] children noCommands live
 
 createGameObject :: Drawing -> Behavior -> Vec2f -> Vec2f -> GameObject
 createGameObject drw beh pos vel = let
