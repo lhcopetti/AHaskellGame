@@ -13,6 +13,7 @@ import Control.Monad.Trans.Class
 import Control.Monad.IO.Class (liftIO)
 import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
+import Component.Physics.HipMunk.HipmunkWorld (createSpace)
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
@@ -37,6 +38,7 @@ import Paths_AHaskellGame
 main :: IO ()
 main = do
     H.initChipmunk
+    space <- createSpace
     desktopMode <- getDesktopMode
     fsModes <- getFullscreenModes
 
@@ -67,7 +69,7 @@ main = do
         (Just s) -> putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ s)
         _ -> return ()
 
-    objects  <- runMaybeT (createObjects gen gameEnv)
+    objects  <- runMaybeT (createObjects gen gameEnv space)
     case objects of 
         Nothing -> putStrLn "Error creating game objects"
         Just balls -> do
@@ -82,8 +84,8 @@ type BallCreation a = ReaderT GameEnvironment (StateT StdGen (MaybeT IO)) a
 runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> MaybeT IO (a, StdGen)
 runBallCreation gen env eval = runStateT (runReaderT eval env) gen
 
-createObjects :: StdGen -> GameEnvironment -> MaybeT IO [GameObject]
-createObjects gen env = do 
+createObjects :: StdGen -> GameEnvironment -> H.Space -> MaybeT IO [GameObject]
+createObjects gen env space = do 
     balls <- createGameBalls
     dots <- createDots
     triangles <- createTriangles
@@ -101,7 +103,8 @@ createObjects gen env = do
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
     namedObjects <- createNamedMessagesDemo (Vec2f 468 300)
     behavesAll <- createUsesBehaveAll
-    return ( inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+    hipmunkObject <- createHipPhysicsBall (Vec2f 391 143) space
+    return ( hipmunkObject : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do

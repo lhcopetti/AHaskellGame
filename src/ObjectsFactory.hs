@@ -4,9 +4,11 @@ module ObjectsFactory
 import SFML.System.Vector2
 import SFML.Graphics.Color
 
+import qualified Physics.Hipmunk as H
+
 import Control.Monad.IO.Class (liftIO)
 
-import GameObjectFactory (createSimplePhysicsGO, createStaticGameObject, createStaticGameObjectB)
+import GameObjectFactory (createGameObject, createSimplePhysicsGO, createStaticGameObject, createStaticGameObjectB)
 import GameObject.GameObjectTypes (GameObjectCreation, Command (..))
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Messages.TransformableMessage (setOriginMsg)
@@ -22,6 +24,7 @@ import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.NoopBehavior (noopBehavior)
+import Component.Physics.SFML.SFHipmunkCircle (mkCirclePhysics)
 import Command.PositionCommand
 import Vec2.Vec2Math (zero)
 
@@ -161,3 +164,12 @@ createUsesBehaveAll = do
     let behaviors = concat $ zipWith (:) commands breaks
     let allTogether = behaveAllB (cycle behaviors)
     return (createSimplePhysicsGO drw allTogether (Vec2f 200 200) zero)
+
+createHipPhysicsBall :: Vec2f -> H.Space -> GameObjectCreation
+createHipPhysicsBall pos space = do
+    liftIO $ putStrLn "Creating Hipmunk physics ball"
+    let color = yellow
+        radius = 10
+    drw <- createCenteredCircle radius color
+    physics <- liftIO $ mkCirclePhysics radius pos space
+    return (createGameObject drw noopB physics pos)
