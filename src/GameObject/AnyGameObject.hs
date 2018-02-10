@@ -24,6 +24,7 @@ import Synchronizable
 import Killable
 import ChildBearer
 import Component.Physics.PhysicsClass
+import Component.Physics.Physics ()
 
 data AnyGameObject = forall a. ( Updatable a
                                , Drawable a

@@ -14,8 +14,6 @@ import Drawable
 import Killable
 import ChildBearer
 import qualified Component.Position as Pos
-import Component.Physics.PhysicsClass
-import Component.Physics.Physics
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
@@ -43,11 +41,6 @@ instance Pos.Position GameObject where
     getRotation = rotation
     setRotation newRotation go = go { rotation = newRotation }
 
-instance PhysicsClass GameObject where
-    getVelocity = getVelocity . physicsComp
-    setVelocity go@GameObject { physicsComp } newVel = go { physicsComp = setVelocity physicsComp newVel }
-    updatePhysics = updatePhysicsComponent
-
 instance Killable GameObject where 
     isAlive = alive
     die g = g { alive = False }
@@ -72,8 +65,3 @@ addCommand comm obj@GameObject { commands } = obj { commands = comm : commands }
 
 addCommandM :: Command -> CommandType
 addCommandM comm obj = return (addCommand comm obj)
-
-updatePhysicsComponent :: GameObject -> IO GameObject
-updatePhysicsComponent go = case physicsComp go of
-    (SimplePhy _ _) -> return . updatePosition $ go
-    _ -> return go

@@ -7,6 +7,7 @@ import GameObject.GameObject ()
 
 import Component.Position (setPosition, setRotation)
 import Component.Physics.PhysicsClass (setVelocity)
+import Component.Physics.Physics ()
 
 import Vec2.Vec2Math (zero)
 
