@@ -1,4 +1,4 @@
-module Physics.Hipmunk.VectorConversion
+module Physics.Library.Hipmunk.VectorConversion
     ( hVectorToVec2f
     , vec2fToHVector
     ) where

@@ -4,8 +4,6 @@ module Main where
 import SFML.Window
 import SFML.Graphics.RenderWindow
 
-import qualified Physics.Hipmunk as H
-
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
@@ -13,7 +11,8 @@ import Control.Monad.Trans.Class
 import Control.Monad.IO.Class (liftIO)
 import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
-import Physics.Hipmunk.HipmunkWorld (createSpace)
+import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
+import Physics.PhysicsTypes (PhysicsWorld)
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
@@ -33,10 +32,13 @@ import Paths_AHaskellGame
 
 #define USE_RANDOM_GENERATOR
 
+defaultGravity :: Float
+defaultGravity = 30
+
 main :: IO ()
 main = do
-    H.initChipmunk
-    space <- createSpace
+    initPhysicsLibrary
+    physicsWorld <- createWorld defaultGravity
     desktopMode <- getDesktopMode
     fsModes <- getFullscreenModes
 
@@ -67,12 +69,12 @@ main = do
         (Just s) -> putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ s)
         _ -> return ()
 
-    objects  <- runMaybeT (createObjects gen gameEnv space)
+    objects  <- runMaybeT (createObjects gen gameEnv physicsWorld)
     case objects of 
         Nothing -> putStrLn "Error creating game objects"
         Just balls -> do
             let anyBalls = map AGO balls
-            let world = GameWorld space wnd anyBalls
+            let world = GameWorld physicsWorld wnd anyBalls
             startGame world gameEnv
             putStrLn "This is the End!"
 
@@ -82,7 +84,7 @@ type BallCreation a = ReaderT GameEnvironment (StateT StdGen (MaybeT IO)) a
 runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> MaybeT IO (a, StdGen)
 runBallCreation gen env eval = runStateT (runReaderT eval env) gen
 
-createObjects :: StdGen -> GameEnvironment -> H.Space -> MaybeT IO [GameObject]
+createObjects :: StdGen -> GameEnvironment -> PhysicsWorld -> MaybeT IO [GameObject]
 createObjects gen env space = do 
     balls <- createGameBalls
     dots <- createDots

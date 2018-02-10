@@ -1,13 +1,14 @@
-module Physics.Hipmunk.HipmunkCircle
+module Physics.Library.Hipmunk.HipmunkCircle
     ( mkCirclePhysics
     ) where
 
 import qualified Physics.Hipmunk as H
 import Data.StateVar
 import GameObject.GameObjectTypes (Physics (..))
+import Physics.PhysicsTypes (PhysicsWorld (..))
 
-mkCirclePhysics :: Double -> H.Vector -> H.Space -> IO Physics
-mkCirclePhysics radius pos space = do
+mkCirclePhysics :: Double -> H.Vector -> PhysicsWorld -> IO Physics
+mkCirclePhysics radius pos (PhysicsWorld space) = do
     let mass = 20
         t = H.Circle radius
     body <- newCircleBody mass radius
