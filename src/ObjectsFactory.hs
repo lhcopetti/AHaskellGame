@@ -24,7 +24,7 @@ import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.NoopBehavior (noopBehavior)
-import Component.Physics.SFML.SFHipmunkCircle (mkCirclePhysics)
+import Physics.CirclePhysics (mkCirclePhysics)
 import Command.PositionCommand
 import Vec2.Vec2Math (zero)
 

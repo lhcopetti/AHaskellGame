@@ -1,4 +1,4 @@
-module Component.Physics.HipMunk.HipmunkWorld
+module Physics.Hipmunk.HipmunkWorld
     ( createSpace
 
     ) where

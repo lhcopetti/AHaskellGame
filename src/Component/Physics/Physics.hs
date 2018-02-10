@@ -14,7 +14,7 @@ import GameObject.GameObjectTypes
 import GameObject.GameObject ()
 import Vec2.Vec2Math (minVec2f, addVec2f)
 import Component.Physics.PhysicsClass
-import Component.Physics.HipMunk.VectorConversion (hVectorToVec2f)
+import Physics.Hipmunk.VectorConversion (hVectorToVec2f)
 import Component.Position
 import Data.StateVar
 

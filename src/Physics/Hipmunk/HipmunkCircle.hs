@@ -1,4 +1,4 @@
-module Component.Physics.HipMunk.HipmunkCircle
+module Physics.Hipmunk.HipmunkCircle
     ( mkCirclePhysics
     ) where
 

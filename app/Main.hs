@@ -13,7 +13,7 @@ import Control.Monad.Trans.Class
 import Control.Monad.IO.Class (liftIO)
 import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
-import Component.Physics.HipMunk.HipmunkWorld (createSpace)
+import Physics.Hipmunk.HipmunkWorld (createSpace)
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
