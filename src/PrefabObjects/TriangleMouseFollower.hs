@@ -8,7 +8,7 @@ import SFML.Graphics.Color (yellow, white)
 
 import Control.Monad.IO.Class (liftIO)
 
-import GameObjectFactory (createGameObject)
+import GameObjectFactory (createSimplePhysicsGO)
 import GameObject.GameObjectTypes (Behavior (..), BehaviorType, GameObjectCreation, Creation, Command (..), DrawingFlag (..))
 import GameObject.GameObject (addCommandM)
 import System.Messaging.Messages.TextDrawingMessage (setTextMsg)
@@ -44,7 +44,7 @@ createMouseFollowerEqTriangle = do
         runMessageT (setOriginMsg (Vec2f triOriginX triOriginY2)) miniBall2
     text <- createTextDrawing
     drw <- createComposite [drawComponent, miniBall1, miniBall2, text]
-    return (createGameObject drw (Behavior (followsAndDiesCloseToMouse 0)) zero zero)
+    return (createSimplePhysicsGO drw (Behavior (followsAndDiesCloseToMouse 0)) zero zero)
 
 createTextDrawing :: Creation Drawing
 createTextDrawing = do

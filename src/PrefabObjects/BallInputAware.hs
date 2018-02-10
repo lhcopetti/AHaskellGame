@@ -8,7 +8,7 @@ import SFML.Window.Keyboard
 
 import Control.Monad.IO.Class (liftIO)
 
-import GameObjectFactory (createGameObject)
+import GameObjectFactory (createSimplePhysicsGO)
 import GameObject.GameObjectTypes
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Messages.TransformableMessage (setOriginMsg)
@@ -29,5 +29,5 @@ createBallInputAware pos = do
     liftIO $ runMessageT (setOriginMsg (Vec2f 10 0)) text
     drw <- createComposite [circle, text]
     let input = Input (dieOnKeyPressing KeyQ)
-    let go = createGameObject drw noopB pos zero 
+    let go = createSimplePhysicsGO drw noopB pos zero
     return (go { inputComp = input })

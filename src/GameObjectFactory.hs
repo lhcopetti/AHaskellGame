@@ -1,11 +1,13 @@
 module GameObjectFactory
     ( createGameObject
+    , createSimplePhysicsGO
     , createStaticGameObject
     , createStaticGameObjectB
     ) where
 
 import SFML.System.Vector2 (Vec2f)
 
+import GameObject.GameObjectTypes (Physics)
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
 import Component.Behavior.Behaviors (noopB)
@@ -15,21 +17,26 @@ import Vec2.Vec2Math (zero)
 
 import GameObject.GameObject
 
-createGameObject :: Drawing -> Behavior -> Vec2f -> Vec2f -> GameObject
-createGameObject drw beh pos vel = let
+createGameObject :: Drawing -> Behavior -> Physics -> Vec2f -> GameObject
+createGameObject drw beh physics pos = let
     live = True
-    physics = newSimplePhysics vel
     initialRotation = 0.0
     children = []
     noCommands = []
     input = emptyInput
-    in GameObject drw beh physics input pos initialRotation [] children noCommands live    
+    emptyInbox = []
+    in GameObject drw beh physics input pos initialRotation emptyInbox children noCommands live
+
+createSimplePhysicsGO :: Drawing -> Behavior -> Vec2f -> Vec2f -> GameObject
+createSimplePhysicsGO drw beh pos vel = 
+    createGameObject drw beh physics pos
+        where physics = newSimplePhysics vel
 
 createStaticGameObjectB :: Drawing -> Vec2f -> Behavior -> GameObject
 createStaticGameObjectB drw pos beh = let 
     velocity = zero
     in
-        createGameObject drw beh pos velocity
+        createSimplePhysicsGO drw beh pos velocity
 
 createStaticGameObject :: Drawing -> Vec2f -> GameObject
 createStaticGameObject drw pos = let
