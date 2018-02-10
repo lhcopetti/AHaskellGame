@@ -7,7 +7,9 @@ module System.GameSystem
 import SFML.Graphics.RenderWindow (display, clearRenderWindow, destroy)
 import SFML.Graphics.Color (black)
 
-import Control.Monad (forM, forM_, when)
+import qualified Physics.Hipmunk as H
+
+import Control.Monad (forM, forM_, unless)
 import Control.Monad.Reader (runReader)
 import Control.Concurrent (threadDelay)
 
@@ -16,7 +18,8 @@ import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject)
+import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject, updatePhysicsAnyGameObjects)
+import Component.Physics.Physics ()
 
 startGame :: GameWorld -> GameEnvironment -> IO ()
 startGame world gameEnv = do
@@ -24,13 +27,13 @@ startGame world gameEnv = do
     destroy (window world)
 
 drawObjects :: GameWorld -> IO ()
-drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
+drawObjects GameWorld { window, gameObjects } = forM_ gameObjects (drawAnyGameObject window)
 
 synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects (GameWorld _ objs) = forM_ objs synchronizeGameObject
+synchronizeObjects GameWorld { gameObjects } = forM_ gameObjects synchronizeGameObject
 
 loop :: GameWorld -> GameEnvironment -> IO ()
-loop world@(GameWorld wnd objs) env = do 
+loop world@(GameWorld _ wnd objs) env = do 
 
     evts <- pollAllEvents wnd
 
@@ -43,9 +46,9 @@ loop world@(GameWorld wnd objs) env = do
                         inputSnapshot = snapshot
                         }
 
-    when (length evts > 0) (do 
-        putStrLn $ "These are the events: " ++ (show evts)
-        putStrLn $ "This is the snapshot: " ++ (show (inputSnapshot newEnv)))
+    unless (null evts) $ do 
+        putStrLn $ "These are the events: " ++ show evts
+        putStrLn $ "This is the snapshot: " ++ show (inputSnapshot newEnv)
 
     updatedWorld <- gameLoop world newEnv
 
@@ -56,9 +59,8 @@ loop world@(GameWorld wnd objs) env = do
 
 
 gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop world@(GameWorld wnd _) env = do
+gameLoop world env = do
     threadDelay (10 * 10^3)
-    clearRenderWindow wnd black
 
     (newWorld, orphanChildren) <- updateGameWorld world env
     updateScreen newWorld
@@ -66,14 +68,17 @@ gameLoop world@(GameWorld wnd _) env = do
 
 updateScreen :: GameWorld -> IO ()
 updateScreen world @ GameWorld { window } = do
+    clearRenderWindow window black
     synchronizeObjects world
     drawObjects world
     display window
 
 updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
-updateGameWorld (GameWorld wnd objs) env = do
-    let newObjs = runReader (forM objs updateAnyGameObject) env
+updateGameWorld (GameWorld space wnd objs) env = do
+    objs' <- updatePhysicsAnyGameObjects objs
+    let newObjs = runReader (forM objs' updateAnyGameObject) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
     let newObjs'' = map removeChildrenAnyGameObject newObjs'
-    return (GameWorld wnd newObjs'', childrenObj)
+    H.step space (1 / 60)
+    return (GameWorld space wnd newObjs'', childrenObj)

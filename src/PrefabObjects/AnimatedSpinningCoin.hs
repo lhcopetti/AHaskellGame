@@ -6,7 +6,7 @@ import SFML.System.Vector2
 
 import Control.Monad.IO.Class (liftIO)
 
-import GameObjectFactory (createGameObject)
+import GameObjectFactory (createSimplePhysicsGO)
 import GameObject.GameObjectTypes (GameObjectCreation, Ratio (..))
 import Component.Draw.Animation.AnimationDrawing (createAnimation)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
@@ -25,5 +25,5 @@ createSpinningCoin pos vel = do
     let animated = createAnimation ss 15 id [0..6]
     -- let drw = createNewDrawing animated
     
-    let go = (createGameObject animated encloseByWrapAroundB pos vel)
+    let go = (createSimplePhysicsGO animated encloseByWrapAroundB pos vel)
     return go

@@ -7,6 +7,7 @@ import Control.Monad.Reader (asks)
 
 import Behavior.BoxedBehavior (boundToDimension, wrapAround)
 import Component.Behavior.Behavior
+import Component.Physics.Physics ()
 import GameObject.GameObject ()
 import GameEnv
 

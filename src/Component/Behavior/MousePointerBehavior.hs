@@ -15,6 +15,7 @@ import GameEnv (GameEnvironment (..))
 
 import Component.Position (setPosition, getPosition, setRotation)
 import Component.Physics.PhysicsClass (setVelocity)
+import Component.Physics.Physics ()
 import Input.Mouse (MouseInput (..))
 import Vec2.Vec2Behavior (direction, orientation)
 import Vec2.Vec2Math (subtractVec2f, distanceVec2f)

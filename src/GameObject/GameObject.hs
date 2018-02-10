@@ -14,8 +14,6 @@ import Drawable
 import Killable
 import ChildBearer
 import qualified Component.Position as Pos
-import Component.Physics.PhysicsClass
-import Component.Physics.Physics
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
@@ -25,8 +23,7 @@ import Command.Command (runCommands)
 instance Updatable GameObject where
     update go = do 
         let noDrawingMsgs = clearInbox go
-        let updatedPhysics = updatePhysics noDrawingMsgs
-        updatedObj <- runInput (inputComp go) updatedPhysics
+        updatedObj <- runInput (inputComp go) noDrawingMsgs
         updatedObj' <- behave (behavior updatedObj) updatedObj
         updatedObj'' <- runCommands updatedObj'
         return (updateDrawing updatedObj'')
@@ -43,10 +40,6 @@ instance Pos.Position GameObject where
     setPosition go newPosition = go { position = newPosition } 
     getRotation = rotation
     setRotation newRotation go = go { rotation = newRotation }
-
-instance PhysicsClass GameObject where
-    getVelocity = velocity . physicsComp
-    setVelocity go@GameObject { physicsComp } newVel = go { physicsComp = setVelocity physicsComp newVel }
 
 instance Killable GameObject where 
     isAlive = alive
