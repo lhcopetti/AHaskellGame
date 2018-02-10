@@ -25,13 +25,13 @@ startGame world gameEnv = do
     destroy (window world)
 
 drawObjects :: GameWorld -> IO ()
-drawObjects (GameWorld wnd objs) = forM_ objs (drawAnyGameObject wnd)
+drawObjects GameWorld { window, gameObjects } = forM_ gameObjects (drawAnyGameObject window)
 
 synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects (GameWorld _ objs) = forM_ objs synchronizeGameObject
+synchronizeObjects GameWorld { gameObjects } = forM_ gameObjects synchronizeGameObject
 
 loop :: GameWorld -> GameEnvironment -> IO ()
-loop world@(GameWorld wnd objs) env = do 
+loop world@(GameWorld _ wnd objs) env = do 
 
     evts <- pollAllEvents wnd
 
@@ -57,9 +57,8 @@ loop world@(GameWorld wnd objs) env = do
 
 
 gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop world@(GameWorld wnd _) env = do
+gameLoop world env = do
     threadDelay (10 * 10^3)
-    clearRenderWindow wnd black
 
     (newWorld, orphanChildren) <- updateGameWorld world env
     updateScreen newWorld
@@ -67,15 +66,16 @@ gameLoop world@(GameWorld wnd _) env = do
 
 updateScreen :: GameWorld -> IO ()
 updateScreen world @ GameWorld { window } = do
+    clearRenderWindow window black
     synchronizeObjects world
     drawObjects world
     display window
 
 updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
-updateGameWorld (GameWorld wnd objs) env = do
+updateGameWorld (GameWorld space wnd objs) env = do
     objs' <- updatePhysicsAnyGameObjects objs
     let newObjs = runReader (forM objs' updateAnyGameObject) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
     let newObjs'' = map removeChildrenAnyGameObject newObjs'
-    return (GameWorld wnd newObjs'', childrenObj)
+    return (GameWorld space wnd newObjs'', childrenObj)
