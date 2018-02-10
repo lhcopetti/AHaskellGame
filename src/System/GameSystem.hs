@@ -7,8 +7,6 @@ module System.GameSystem
 import SFML.Graphics.RenderWindow (display, clearRenderWindow, destroy)
 import SFML.Graphics.Color (black)
 
-import qualified Physics.Hipmunk as H
-
 import Control.Monad (forM, forM_, unless)
 import Control.Monad.Reader (runReader)
 import Control.Concurrent (threadDelay)
@@ -20,6 +18,7 @@ import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
 import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject, updatePhysicsAnyGameObjects)
 import Component.Physics.Physics ()
+import Physics.PhysicsWorld (stepWorld)
 
 startGame :: GameWorld -> GameEnvironment -> IO ()
 startGame world gameEnv = do
@@ -74,11 +73,11 @@ updateScreen world @ GameWorld { window } = do
     display window
 
 updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
-updateGameWorld (GameWorld space wnd objs) env = do
+updateGameWorld (GameWorld physicsWorld wnd objs) env = do
     objs' <- updatePhysicsAnyGameObjects objs
     let newObjs = runReader (forM objs' updateAnyGameObject) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
     let newObjs'' = map removeChildrenAnyGameObject newObjs'
-    H.step space (1 / 60)
-    return (GameWorld space wnd newObjs'', childrenObj)
+    stepWorld (1 / 60) physicsWorld
+    return (GameWorld physicsWorld wnd newObjs'', childrenObj)

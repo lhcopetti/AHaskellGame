@@ -4,13 +4,13 @@ module Physics.CirclePhysics
 
 import SFML.System.Vector2 (Vec2f)
 
-import qualified Physics.Hipmunk.HipmunkCircle as Hip
-import qualified Physics.Hipmunk as H
+import qualified Physics.Library.Hipmunk.HipmunkCircle as HMP
 import GameObject.GameObjectTypes (Physics (..))
-import Physics.Hipmunk.VectorConversion (vec2fToHVector)
+import Physics.PhysicsTypes (PhysicsWorld)
+import Physics.Library.Hipmunk.VectorConversion (vec2fToHVector)
 
-mkCirclePhysics :: Float -> Vec2f -> H.Space -> IO Physics
-mkCirclePhysics radius pos = Hip.mkCirclePhysics hRadius hPos
+mkCirclePhysics :: Float -> Vec2f -> PhysicsWorld -> IO Physics
+mkCirclePhysics radius pos = HMP.mkCirclePhysics hRadius hPos
     where
         hRadius = realToFrac radius
         hPos    = vec2fToHVector pos

@@ -4,8 +4,6 @@ module ObjectsFactory
 import SFML.System.Vector2
 import SFML.Graphics.Color
 
-import qualified Physics.Hipmunk as H
-
 import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createSimplePhysicsGO, createStaticGameObject, createStaticGameObjectB)
@@ -25,6 +23,7 @@ import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Physics.CirclePhysics (mkCirclePhysics)
+import Physics.PhysicsTypes (PhysicsWorld)
 import Command.PositionCommand
 import Vec2.Vec2Math (zero)
 
@@ -165,7 +164,7 @@ createUsesBehaveAll = do
     let allTogether = behaveAllB (cycle behaviors)
     return (createSimplePhysicsGO drw allTogether (Vec2f 200 200) zero)
 
-createHipPhysicsBall :: Vec2f -> H.Space -> GameObjectCreation
+createHipPhysicsBall :: Vec2f -> PhysicsWorld -> GameObjectCreation
 createHipPhysicsBall pos space = do
     liftIO $ putStrLn "Creating Hipmunk physics ball"
     let color = yellow

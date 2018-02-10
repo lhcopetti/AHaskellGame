@@ -5,13 +5,12 @@ module System.GameWorld
     ) where
 
 import SFML.Graphics.Types (RenderWindow)
-
-import qualified Physics.Hipmunk as H
+import Physics.PhysicsTypes (PhysicsWorld)
 
 import GameObject.AnyGameObject
 
 
-data GameWorld = GameWorld  { space :: H.Space
+data GameWorld = GameWorld  { physicsWorld :: PhysicsWorld
                             , window :: RenderWindow
                             , gameObjects :: [AnyGameObject]
                             }
