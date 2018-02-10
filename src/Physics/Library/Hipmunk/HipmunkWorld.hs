@@ -1,5 +1,6 @@
 module Physics.Library.Hipmunk.HipmunkWorld
-    ( createWorld
+    ( initPhysicsLibrary
+    , createWorld
     , stepWorld
     ) where
 
@@ -7,6 +8,9 @@ import qualified Physics.Hipmunk as H
 
 import Physics.PhysicsTypes (PhysicsWorld (..))
 import Data.StateVar
+
+initPhysicsLibrary :: IO ()
+initPhysicsLibrary = H.initChipmunk
 
 createWorld :: Float -> IO PhysicsWorld
 createWorld gravity = do

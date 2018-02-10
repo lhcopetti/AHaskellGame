@@ -4,8 +4,6 @@ module Main where
 import SFML.Window
 import SFML.Graphics.RenderWindow
 
-import qualified Physics.Hipmunk as H
-
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
@@ -13,7 +11,7 @@ import Control.Monad.Trans.Class
 import Control.Monad.IO.Class (liftIO)
 import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
-import Physics.PhysicsWorld (createWorld)
+import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
 
 import GameEnv (GameEnvironment (..), createGameEnv)
@@ -39,7 +37,7 @@ defaultGravity = 30
 
 main :: IO ()
 main = do
-    H.initChipmunk
+    initPhysicsLibrary
     physicsWorld <- createWorld defaultGravity
     desktopMode <- getDesktopMode
     fsModes <- getFullscreenModes
