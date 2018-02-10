@@ -101,7 +101,7 @@ createObjects gen env space = do
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
     namedObjects <- createNamedMessagesDemo (Vec2f 468 300)
     behavesAll <- createUsesBehaveAll
-    hipmunkObject <- createHipPhysicsBall (Vec2f 391 143) space
+    hipmunkObject <- createHipPhysicsBall (Vec2f 391 0) space
     return ( hipmunkObject : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]

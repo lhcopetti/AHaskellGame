@@ -172,4 +172,4 @@ createHipPhysicsBall pos space = do
         radius = 10
     drw <- createCenteredCircle radius color
     physics <- liftIO $ mkCirclePhysics radius pos space
-    return (createGameObject drw noopB physics pos)
+    return (createGameObject drw encloseByWrapAroundB physics pos)

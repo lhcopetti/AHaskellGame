@@ -7,7 +7,9 @@ module System.GameSystem
 import SFML.Graphics.RenderWindow (display, clearRenderWindow, destroy)
 import SFML.Graphics.Color (black)
 
-import Control.Monad (forM, forM_, when)
+import qualified Physics.Hipmunk as H
+
+import Control.Monad (forM, forM_, unless)
 import Control.Monad.Reader (runReader)
 import Control.Concurrent (threadDelay)
 
@@ -44,9 +46,9 @@ loop world@(GameWorld _ wnd objs) env = do
                         inputSnapshot = snapshot
                         }
 
-    when (length evts > 0) (do 
-        putStrLn $ "These are the events: " ++ (show evts)
-        putStrLn $ "This is the snapshot: " ++ (show (inputSnapshot newEnv)))
+    unless (null evts) $ do 
+        putStrLn $ "These are the events: " ++ show evts
+        putStrLn $ "This is the snapshot: " ++ show (inputSnapshot newEnv)
 
     updatedWorld <- gameLoop world newEnv
 
@@ -78,4 +80,5 @@ updateGameWorld (GameWorld space wnd objs) env = do
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
     let newObjs'' = map removeChildrenAnyGameObject newObjs'
+    H.step space (1 / 60)
     return (GameWorld space wnd newObjs'', childrenObj)
