@@ -6,11 +6,17 @@ module Component.Physics.Physics
 
 import SFML.System.Vector2 (Vec2f (..))
 
+import qualified Physics.Hipmunk as H
+
+import Control.Monad (liftM)
+
 import GameObject.GameObjectTypes
 import GameObject.GameObject ()
 import Vec2.Vec2Math (minVec2f, addVec2f)
 import Component.Physics.PhysicsClass
+import Component.Physics.HipMunk.VectorConversion (hVectorToVec2f)
 import Component.Position
+import Data.StateVar
 
 instance PhysicsClass Physics where
     getVelocity (SimplePhy v _) = v
@@ -35,5 +41,16 @@ updatePosition obj = let
 
 updatePhysicsComponent :: GameObject -> IO GameObject
 updatePhysicsComponent go = case physicsComp go of
-    (SimplePhy _ _) -> return . updatePosition $ go
-    _ -> return go
+    (SimplePhy _ _) -> updateSimplePhysics go
+    _ -> updateHipPhy go
+
+updateSimplePhysics :: GameObject -> IO GameObject
+updateSimplePhysics = return . updatePosition
+
+updateHipPhy :: GameObject -> IO GameObject
+updateHipPhy go = case physicsComp go of
+        (HipPhy b _ _) -> do position <- liftM hVectorToVec2f   . get . H.position  $ b
+                             angle <-    liftM realToFrac       . get . H.angle     $ b
+                             putStrLn $ "This is the position" ++ show position ++ show angle
+                             liftM ((`setPosition` position) . setRotation angle) (return go)
+        _ -> return go
