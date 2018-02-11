@@ -103,8 +103,11 @@ createObjects gen env space = do
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
     namedObjects <- createNamedMessagesDemo (Vec2f 468 300)
     behavesAll <- createUsesBehaveAll
-    hipmunkObject <- createHipPhysicsBall (Vec2f 391 0) space
-    return ( hipmunkObject : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
+    hipmunkObject <- createHipPhysicsBall (Vec2f 370 (-50)) space
+    hipmunkObject' <- createHipPhysicsBall (Vec2f 380 0) space
+    hipmunkObject'' <- createHipPhysicsBall (Vec2f 360 0) space
+    hipmunkLine <- createPhysicsLine (Vec2f 0 400, Vec2f 640 400) space
+    return ( hipmunkLine : hipmunkObject : hipmunkObject' : hipmunkObject'' : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do
