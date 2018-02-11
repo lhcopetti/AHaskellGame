@@ -68,15 +68,16 @@ data Animation = Animation  { createDrawing :: Drawing -> Drawing
                             , spriteLoop    :: [Int]
                             }
 
-data Drawing    = CircleDrawing CircleShape
-                | RectangleDrawing RectangleShape
-                | ConvexDrawing ConvexShape
-                | TextDrawing Text
-                | SpriteDrawing Sprite Texture
-                | CompositeDrawing [Drawing]
-                | FlaggedDrawing Drawing [DrawingFlag]
-                | NamedDrawing String Drawing
-                | AnimationDrawing Animation Sprite
+data Drawing    = CircleDrawing         CircleShape
+                | RectangleDrawing      RectangleShape
+                | ConvexDrawing         ConvexShape
+                | TextDrawing           Text
+                | SpriteDrawing         Sprite Texture
+                | CompositeDrawing      [Drawing]
+                | FlaggedDrawing        Drawing [DrawingFlag]
+                | NamedDrawing          String Drawing
+                | AnimationDrawing      Animation Sprite
+                | PhysicsDebugDrawing   Drawing (IO ())
 
 data DrawingFlag 
     = NoRotationUpdates
