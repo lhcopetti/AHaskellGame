@@ -116,7 +116,9 @@ createObjects gen env space = do
         (Vec2f 540 20, Vec2f 550 40, 1),
         (Vec2f 550 20, Vec2f 560 40, 3),
         (Vec2f 560 20, Vec2f 570 40, 5)]
-    return ( hipmunkLine : hipmunkObject : hipmunkObject' : hipmunkObject'' : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines)
+    box1 <- createBox (Vec2f 40  350) 15 space
+    box2 <- createBox (Vec2f 600 350) 15 space
+    return (box1 : box2 : hipmunkLine : hipmunkObject : hipmunkObject' : hipmunkObject'' : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do

@@ -21,4 +21,3 @@ createConvex color points = do
         setPoints convex points
         setFillColor convex color
         return (ConvexDrawing convex)
-    

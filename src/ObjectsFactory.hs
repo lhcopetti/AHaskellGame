@@ -23,11 +23,13 @@ import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.NoopBehavior (noopBehavior)
-import Physics.CirclePhysics (mkCirclePhysicsD)
-import Physics.LinePhysics (mkLinePhysicsD)
+import Physics.CirclePhysics    (mkCirclePhysicsD)
+import Physics.LinePhysics      (mkLinePhysicsD)
+import Physics.PolygonPhysics   (mkPolygonPhysicsD)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Command.PositionCommand
 import Vec2.Vec2Math (zero)
+import Math.Square (unitSquarePointsScaled)
 
 createMiniBall :: Vec2f -> Vec2f -> GameObjectCreation
 createMiniBall pos vel = do
@@ -187,3 +189,9 @@ createLine' line thickness = do
 
 createLines :: [(Vec2f, Vec2f, Float)] -> GameObjectsCreation
 createLines = mapM (\(s, e, t) -> createLine' (s, e) t)
+
+createBox :: Vec2f -> Float -> PhysicsWorld -> GameObjectCreation
+createBox pos size world = do
+    liftIO $ putStrLn $ "Creating box S: " ++ show size ++ " at " ++ show pos
+    (physics, draw) <- mkPolygonPhysicsD pos (unitSquarePointsScaled size) world
+    return (createGameObject draw noopB physics pos)
