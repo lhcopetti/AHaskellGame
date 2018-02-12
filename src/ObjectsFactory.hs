@@ -22,7 +22,7 @@ import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.NoopBehavior (noopBehavior)
-import Physics.CirclePhysics (mkCirclePhysics)
+import Physics.CirclePhysics (mkCirclePhysicsD)
 import Physics.LinePhysics (mkLinePhysics)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Command.PositionCommand
@@ -168,10 +168,7 @@ createUsesBehaveAll = do
 createHipPhysicsBall :: Vec2f -> PhysicsWorld -> GameObjectCreation
 createHipPhysicsBall pos space = do
     liftIO $ putStrLn "Creating Hipmunk physics ball"
-    let color = yellow
-        radius = 10
-    drw <- createCenteredCircle radius color
-    physics <- liftIO $ mkCirclePhysics radius pos space
+    (physics, drw) <- mkCirclePhysicsD 10 pos space
     return (createGameObject drw encloseByWrapAroundB physics pos)
 
 createPhysicsLine :: (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation
