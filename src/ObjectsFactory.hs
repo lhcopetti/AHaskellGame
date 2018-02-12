@@ -174,11 +174,11 @@ createHipPhysicsBall pos space = do
     (physics, drw) <- mkCirclePhysicsD 10 pos space
     return (createGameObject drw encloseByWrapAroundB physics pos)
 
-createPhysicsLine :: (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation
-createPhysicsLine line space = do
+createPhysicsLine :: Float -> (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation
+createPhysicsLine thickness line space = do
     liftIO $ putStrLn $ "Creating Hipmunk physics line at: " ++ show line
-    (physics, draw) <- mkLinePhysicsD line 10.0 space
-    return (createGameObject draw noopB physics (Vec2f 320 0))
+    (physics, draw) <- mkLinePhysicsD line thickness space
+    return (createGameObject draw noopB physics (Vec2f 0 0))
 
 createLine' :: (Vec2f, Vec2f) -> Float -> GameObjectCreation
 createLine' line thickness = do

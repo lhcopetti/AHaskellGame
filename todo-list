@@ -95,12 +95,23 @@
 	
 26/01/2018
 
+11/02/2018
+	OK! Isolate the Hipmunk library in its own package, there shouldn't have any imports 
+	anywhere else in the code, meaning I have to wrap everything into my own types. I think 
+	a top-level Hipmunk folder is the best way to go, instead of using a hidden nested foder.
+
+12/02/2018
+	OK! Add a drawing for the line segment.
+	OK! Add debug draw for PhysicsObjects
+
+
+	Destroy physics objects (remove from space)
+	encloseByWrapAround should a physics version to actually update the underlying hipmunk library
+
 	TODO: Add the Vec2Instances.hs to another module that also reexports the following:
 		import SFML.System.Vec2 (Vec2f (..).
 
-	TODO: Isolate the Hipmunk library in its own package, there shouldn't have any imports 
-	anywhere else in the code, meaning I have to wrap everything into my own types. I think 
-	a top-level Hipmunk folder is the best way to go, instead of using a hidden nested foder.
+
 
 	TODO: Create a Scene object that will hold its own list of gameobjects
 	TODO: Create a demo for switching between scenes

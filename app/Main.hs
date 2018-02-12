@@ -106,7 +106,7 @@ createObjects gen env space = do
     hipmunkObject <- createHipPhysicsBall (Vec2f 370 (-50)) space
     hipmunkObject' <- createHipPhysicsBall (Vec2f 380 0) space
     hipmunkObject'' <- createHipPhysicsBall (Vec2f 360 0) space
-    hipmunkLine <- createPhysicsLine (Vec2f 0 400, Vec2f 640 400) space
+    hipmunkLine <- createPhysicsLine 2.0 (Vec2f 0 400, Vec2f 640 400) space
     hLines <- createLines [(Vec2f 400 20, Vec2f 500 20, 1), (Vec2f 400 30, Vec2f 500 30, 3), (Vec2f 400 40, Vec2f 500 40, 5)]
     vLines <- createLines [
         (Vec2f 510 20, Vec2f 510 40, 1), 

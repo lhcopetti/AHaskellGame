@@ -3,7 +3,6 @@ module Math.Line
     ) where
 
 import SFML.System.Vector2 (Vec2f)
-import SFML.Graphics.Rect (FloatRect (..))
 
 import Vec2.Vec2Math
 
