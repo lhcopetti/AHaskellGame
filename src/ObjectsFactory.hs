@@ -7,7 +7,7 @@ import SFML.Graphics.Color
 import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createSimplePhysicsGO, createStaticGameObject, createStaticGameObjectB)
-import GameObject.GameObjectTypes (GameObjectCreation, Command (..))
+import GameObject.GameObjectTypes
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Messages.TransformableMessage (setOriginMsg)
 import Component.Draw.Drawing ()
@@ -18,6 +18,7 @@ import Component.Draw.HexagonDrawing (createHexagon)
 import Component.Draw.TextDrawing (createEmptyText, createText)
 import Component.Draw.SpriteDrawing (createSpriteDrawing)
 import Component.Draw.NamedDrawing (createNamedDrawing)
+import Component.Draw.LineDrawing (createLine)
 import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
@@ -179,3 +180,13 @@ createPhysicsLine line space = do
     drw <- createCenteredCircle radius color
     physics <- liftIO $ mkLinePhysics line 10.0 space
     return (createGameObject drw noopB physics (Vec2f 320 0))
+
+createLine' :: (Vec2f, Vec2f) -> Float -> GameObjectCreation
+createLine' line thickness = do
+    liftIO $ putStrLn $ "Creating a line at: " ++ show line ++ " with T: " ++ show thickness
+    let color = white
+    drw <- createLine line thickness color
+    return (createStaticGameObject drw (Vec2f 0 0))
+
+createLines :: [(Vec2f, Vec2f, Float)] -> GameObjectsCreation
+createLines = mapM (\(s, e, t) -> createLine' (s, e) t)

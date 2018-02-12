@@ -4,6 +4,7 @@ module GameObject.GameObjectTypes
     , Behavior (..)
     , Creation
     , GameObjectCreation
+    , GameObjectsCreation
     , CommandType
     , Command (..)
     , InputType
@@ -46,7 +47,8 @@ data GameObject = GameObject { drawComp     :: Drawing
 type BehaviorType = GameObject -> Reader GameEnvironment GameObject
 
 type Creation a = MaybeT IO a
-type GameObjectCreation = Creation GameObject
+type GameObjectCreation  = Creation  GameObject
+type GameObjectsCreation = Creation [GameObject]
 
 data Behavior = Behavior {  behave :: BehaviorType
                          }
