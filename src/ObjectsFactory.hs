@@ -24,7 +24,7 @@ import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Physics.CirclePhysics (mkCirclePhysicsD)
-import Physics.LinePhysics (mkLinePhysics)
+import Physics.LinePhysics (mkLinePhysicsD)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Command.PositionCommand
 import Vec2.Vec2Math (zero)
@@ -175,11 +175,8 @@ createHipPhysicsBall pos space = do
 createPhysicsLine :: (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation
 createPhysicsLine line space = do
     liftIO $ putStrLn $ "Creating Hipmunk physics line at: " ++ show line
-    let color = yellow
-        radius = 10
-    drw <- createCenteredCircle radius color
-    physics <- liftIO $ mkLinePhysics line 10.0 space
-    return (createGameObject drw noopB physics (Vec2f 320 0))
+    (physics, draw) <- mkLinePhysicsD line 10.0 space
+    return (createGameObject draw noopB physics (Vec2f 320 0))
 
 createLine' :: (Vec2f, Vec2f) -> Float -> GameObjectCreation
 createLine' line thickness = do
