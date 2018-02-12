@@ -31,8 +31,9 @@ syncDrawingTransformable (SpriteDrawing shape _)  obj tuple = updateTransformabl
 syncDrawingTransformable (AnimationDrawing _ spr) obj tuple = updateTransformable spr   obj tuple
 syncDrawingTransformable (TextDrawing text)       obj tuple = updateTransformable text  obj tuple
 syncDrawingTransformable (NamedDrawing _ drw)     obj tuple = syncDrawingTransformable drw obj tuple
-syncDrawingTransformable (CompositeDrawing _) _ _ = error "This pattern should not happen as the CompositeDrawing is unwrapped on the 'syncDrawing'"
-syncDrawingTransformable (FlaggedDrawing _ _) _ _ = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'syncDrawing'"
+syncDrawingTransformable CompositeDrawing    {} _ _ = error "This pattern should not happen as the CompositeDrawing is unwrapped on the 'syncDrawing'"
+syncDrawingTransformable FlaggedDrawing      {} _ _ = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'syncDrawing'"
+syncDrawingTransformable PhysicsDebugDrawing {} _ _ = error "This pattern should not happen as the PhysicsDebugDrawing is unwrapped on the 'syncDrawing'"
 
 updateTransformable :: (SFTransformable a, Pos.Position b) => a -> b -> (Bool, Bool) -> IO ()
 updateTransformable ptr obj (pos, rot) = do

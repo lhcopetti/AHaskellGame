@@ -18,5 +18,6 @@ createEqTriangle size color = do
     liftIO $ putStrLn $ "Creating Equilateral triangle S: " ++ show size ++ "C: " ++ show color
     eqT <- createShapeT createConvexShape
     liftIO $ do 
-        setPoints eqT (getUnitEqPointsScaled size)
+        setPoints    eqT (getUnitEqPointsScaled size)
+        setFillColor eqT color
         return (ConvexDrawing eqT)

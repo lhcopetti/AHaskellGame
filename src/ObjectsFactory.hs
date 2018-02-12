@@ -7,7 +7,7 @@ import SFML.Graphics.Color
 import Control.Monad.IO.Class (liftIO)
 
 import GameObjectFactory (createGameObject, createSimplePhysicsGO, createStaticGameObject, createStaticGameObjectB)
-import GameObject.GameObjectTypes (GameObjectCreation, Command (..))
+import GameObject.GameObjectTypes
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Messages.TransformableMessage (setOriginMsg)
 import Component.Draw.Drawing ()
@@ -18,15 +18,18 @@ import Component.Draw.HexagonDrawing (createHexagon)
 import Component.Draw.TextDrawing (createEmptyText, createText)
 import Component.Draw.SpriteDrawing (createSpriteDrawing)
 import Component.Draw.NamedDrawing (createNamedDrawing)
+import Component.Draw.LineDrawing (createLine)
 import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.NoopBehavior (noopBehavior)
-import Physics.CirclePhysics (mkCirclePhysics)
-import Physics.LinePhysics (mkLinePhysics)
+import Physics.CirclePhysics    (mkCirclePhysicsD)
+import Physics.LinePhysics      (mkLinePhysicsD)
+import Physics.PolygonPhysics   (mkPolygonPhysicsD)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Command.PositionCommand
 import Vec2.Vec2Math (zero)
+import Math.Square (unitSquarePointsScaled)
 
 createMiniBall :: Vec2f -> Vec2f -> GameObjectCreation
 createMiniBall pos vel = do
@@ -168,17 +171,27 @@ createUsesBehaveAll = do
 createHipPhysicsBall :: Vec2f -> PhysicsWorld -> GameObjectCreation
 createHipPhysicsBall pos space = do
     liftIO $ putStrLn "Creating Hipmunk physics ball"
-    let color = yellow
-        radius = 10
-    drw <- createCenteredCircle radius color
-    physics <- liftIO $ mkCirclePhysics radius pos space
+    (physics, drw) <- mkCirclePhysicsD 10 pos space
     return (createGameObject drw encloseByWrapAroundB physics pos)
 
-createPhysicsLine :: (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation
-createPhysicsLine line space = do
+createPhysicsLine :: Float -> (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation
+createPhysicsLine thickness line space = do
     liftIO $ putStrLn $ "Creating Hipmunk physics line at: " ++ show line
-    let color = yellow
-        radius = 10
-    drw <- createCenteredCircle radius color
-    physics <- liftIO $ mkLinePhysics line 10.0 space
-    return (createGameObject drw noopB physics (Vec2f 320 0))
+    (physics, draw) <- mkLinePhysicsD line thickness space
+    return (createGameObject draw noopB physics (Vec2f 0 0))
+
+createLine' :: (Vec2f, Vec2f) -> Float -> GameObjectCreation
+createLine' line thickness = do
+    liftIO $ putStrLn $ "Creating a line at: " ++ show line ++ " with T: " ++ show thickness
+    let color = white
+    drw <- createLine line thickness color
+    return (createStaticGameObject drw (Vec2f 0 0))
+
+createLines :: [(Vec2f, Vec2f, Float)] -> GameObjectsCreation
+createLines = mapM (\(s, e, t) -> createLine' (s, e) t)
+
+createBox :: Vec2f -> Float -> PhysicsWorld -> GameObjectCreation
+createBox pos size world = do
+    liftIO $ putStrLn $ "Creating box S: " ++ show size ++ " at " ++ show pos
+    (physics, draw) <- mkPolygonPhysicsD pos (unitSquarePointsScaled size) world
+    return (createGameObject draw noopB physics pos)

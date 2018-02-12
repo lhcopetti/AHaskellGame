@@ -10,6 +10,7 @@ module Vec2.Vec2Math ( zero
                      , minVec2f
                      , angleVec2f
                      , distanceVec2f
+                     , getOrthoVec2f
                      ) where
 
 import SFML.System.Vector2
@@ -58,3 +59,6 @@ angleVec2f (Vec2f x y) = toDegree (atan2 y x)
 
 distanceVec2f :: Vec2f -> Vec2f -> Float
 distanceVec2f (Vec2f x y) (Vec2f x' y') = sqrt $ (x - x') ^ 2 + (y - y') ^ 2
+
+getOrthoVec2f :: Vec2f -> (Vec2f, Vec2f)
+getOrthoVec2f (Vec2f x y) = (Vec2f y (-x), Vec2f (-y) x)

@@ -26,6 +26,7 @@ instance Drawable Drawing where
     draw wnd (FlaggedDrawing drawing _) = draw wnd drawing
     draw wnd (CompositeDrawing drws) = mapM_ (draw wnd) drws
     draw wnd (NamedDrawing _ drw) = draw wnd drw
+    draw wnd (PhysicsDebugDrawing drw _) = draw wnd drw
 
 updateDrawing :: GameObject -> GameObject
 updateDrawing obj@GameObject{..} = obj { drawComp = update drawComp }
@@ -35,20 +36,22 @@ update (AnimationDrawing anim spr) = updateAnimation anim spr
 update d = d
 
 syncDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
-syncDrawing (FlaggedDrawing drw flg) obj  = executeUpdateOnDrawing drw obj (updatePosition, updateRotation)
+syncDrawing (PhysicsDebugDrawing _ act) _ = act
+syncDrawing (FlaggedDrawing drw flg) obj    = executeUpdateOnDrawing drw obj (updatePosition, updateRotation)
     where
         updatePosition = NoPositionUpdates `notElem` flg
         updateRotation = NoRotationUpdates `notElem` flg
-syncDrawing (CompositeDrawing drws)  obj  = mapM_ (`syncDrawing` obj) drws
-syncDrawing drw obj                       = executeUpdateOnDrawing drw obj (True, True)
+syncDrawing (CompositeDrawing drws)  obj    = mapM_ (`syncDrawing` obj) drws
+syncDrawing drw obj                         = executeUpdateOnDrawing drw obj (True, True)
 
 destroyDrawing :: Drawing -> IO ()
-destroyDrawing (CircleDrawing       ptr ) = destroy ptr
-destroyDrawing (RectangleDrawing    ptr ) = destroy ptr
-destroyDrawing (ConvexDrawing       ptr ) = destroy ptr
-destroyDrawing (TextDrawing         ptr ) = destroy ptr
-destroyDrawing (SpriteDrawing   spr tex ) = destroy spr >> destroy tex
-destroyDrawing (AnimationDrawing anim _)  = destroyAnimation anim
-destroyDrawing (CompositeDrawing    drws) = mapM_ destroyDrawing drws
-destroyDrawing (FlaggedDrawing    ptr _ ) = destroyDrawing ptr
-destroyDrawing (NamedDrawing      _ ptr ) = destroyDrawing ptr
+destroyDrawing (CircleDrawing       ptr )  = destroy ptr
+destroyDrawing (RectangleDrawing    ptr )  = destroy ptr
+destroyDrawing (ConvexDrawing       ptr )  = destroy ptr
+destroyDrawing (TextDrawing         ptr )  = destroy ptr
+destroyDrawing (SpriteDrawing   spr tex )  = destroy spr >> destroy tex
+destroyDrawing (AnimationDrawing anim _)   = destroyAnimation anim
+destroyDrawing (CompositeDrawing    drws)  = mapM_ destroyDrawing drws
+destroyDrawing (FlaggedDrawing    ptr _ )  = destroyDrawing ptr
+destroyDrawing (NamedDrawing      _ ptr )  = destroyDrawing ptr
+destroyDrawing (PhysicsDebugDrawing drw _) = destroyDrawing drw
