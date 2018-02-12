@@ -24,6 +24,9 @@ spec = describe "testVec2fMath" $ do
             map (uncurry divideVec2f . fst) divideTestCases `shouldBe` map snd divideTestCases
         it "should return the angle in relation to the x axis" $
             map (angleVec2f . fst) angleTestCases `shouldBe` map snd angleTestCases
+        it "should return both perperndicular vectors to the one supplied" $
+            map (getOrthoVec2f . fst) orthoTestCases `shouldBe` map snd orthoTestCases
+
 
 testCases :: [((Float, Float), Float)]
 testCases = [ ((1.0, 1.0), 1.4142135)
@@ -51,4 +54,10 @@ angleTestCases = [ (Vec2f 0 0, 0)
                  , (Vec2f (-5) 5, 135)
                  , (Vec2f (-5) (-5), -135)
                  , (Vec2f 5 (-5), -45)
+                 ]
+
+orthoTestCases :: [(Vec2f, (Vec2f, Vec2f))]
+orthoTestCases = [ (Vec2f 0  1, (Vec2f 1 0      , Vec2f (-1) 0  ))
+                 , (Vec2f 10 0, (Vec2f 0 (-10)  , Vec2f 0 10    ))
+                 , (Vec2f 5  5, (Vec2f 5 (-5)   , Vec2f (-5) 5   ))
                  ]
