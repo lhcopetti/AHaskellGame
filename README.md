@@ -95,6 +95,43 @@ The Arrows have come to my attention after reading [this introduction](http://ww
 
 I recently purchased [Haskell Programming](http://haskellbook.com/) and some of the time was also invested into going further into the book. Currently at Chapter 13, I have learned some interesting things, even though the content is still quite beginnerish.
 
+### 11/02/2018 - Did anyone say physics?
+
+![alt text][diary-04]
+
+I am proud to announce that AHaskellGame is now capable of handling physics using the [Hipmunk library](https://hackage.haskell.org/package/Hipmunk). It wasn't a particular productive week because the first four days were spent experimenting with Hipmunk by using the [Hipmunk Playground](https://hackage.haskell.org/package/HipmunkPlayground). Most of the work this week was done on the 3 days following that. The end result was pretty satisfying to watch considering in the beginning of the week I was quite terrified that I would to try to add another library, having to manage another set of pointers (C pointers) and unscapable IOs.
+
+Enough rant, let's go back to topic mode:
+
+- Physics
+
+I finally added a dedicated physics library as mentioned above. Of couse, it is embrionary still but I am excited nonetheless. An interesting thing that happened is that I was able to keep my old 'physics' version intact. I didn't even consider that at the beginning, but now it is possible to have a simple game object that will not be part of the physics world but will still obey to the position += velocity updates.
+
+```
+data Physics = SimplePhy Vec2f Float
+             | HipPhy H.Body H.Shape H.ShapeType
+```
+
+- Hipmunk
+
+One thing that I'm really striving for is the complete isolation of the Hipmunk library. I'm keeping it so that should I ever change the physics library, all I would have to do is reimplement the core interface and rename the imports to point to the specific library. Example:
+
+```
+import qualified Physics.Library.Hipmunk.HipmunkCircle as HMP
+
+mkCirclePhysics :: Float -> Vec2f -> PhysicsWorld -> IO Physics
+--                           The call to the library specific function using the qualified import
+mkCirclePhysics radius pos = HMP.mkCirclePhysics hRadius hPos
+    where
+        hRadius = realToFrac radius
+        hPos    = vec2fToHVector pos
+```
+I could even switch back and forth using CPP defines to decide which library should be used. 
+
+- Meta-Topic: The experience so far
+
+This will probably become one of the most interesting programming sprints I have done so far. I feel like I am learning a lot of things and I'm starting to feel like functionally thinking is becoming easier as time goes by. That becomes particular apparent when I have to reach out to code I wrote only a month ago. Also, this time next week will be past half the due date for this project, so we'd better be going fast enough!
+
 ## Development
 
 ### Setting up dependencies
@@ -189,3 +226,4 @@ This is also in honor for being the first logic bug on the project, and rightful
 [diary-01]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-13_AHaskellGame.gif "Diary 13/01/2018"
 [diary-02]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-21_AHaskellGame.gif "Diary 21/01/2018"
 [diary-03]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-28_AHaskellGame.gif "Diary 28/01/2018"
+[diary-04]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-02-11_AHaskellGame.gif "Diary 11/02/2018"
