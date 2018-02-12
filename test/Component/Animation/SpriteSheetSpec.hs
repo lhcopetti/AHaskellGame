@@ -1,4 +1,4 @@
-module Component.Draw.Animation.SpriteSheetSpec
+module Component.Animation.SpriteSheetSpec
     ( main
     , spec
     ) where
@@ -8,7 +8,8 @@ import SFML.Graphics.Rect (IntRect (..))
 import Test.Hspec
 import Test.Hspec.Runner
 
-import Component.Draw.Animation.SpriteSheet (Size, Ratio, getIntRect)
+import Component.Draw.Animation.SpriteSheet (Size (..), Ratio (..), getIntRect)
+import GameObject.GameObjectTypes
 import ExtSFML.SFMLInstances ()
     
 main :: IO ()
@@ -24,8 +25,8 @@ uncurry3 :: (a -> b -> c -> d) -> (a, b, c) -> d
 uncurry3 f (x, y, z) = f x y z
 
 testCases :: [((Size, Ratio, Int), IntRect)]
-testCases = [ (((30, 20), (2, 5), 0), IntRect 0 0 30 20)
-            , (((30, 20), (2, 5), 1), IntRect 30 0 30 20)
-            , (((30, 20), (2, 5), 2), IntRect 0 20 30 20)
-            , (((30, 20), (2, 5), 9), IntRect 30 (20 * 4) 30 20)
+testCases = [ ((Size 30 20, Ratio 2 5, 0), IntRect 0 0 30 20)
+            , ((Size 30 20, Ratio 2 5, 1), IntRect 30 0 30 20)
+            , ((Size 30 20, Ratio 2 5, 2), IntRect 0 20 30 20)
+            , ((Size 30 20, Ratio 2 5, 9), IntRect 30 (20 * 4) 30 20)
             ]
