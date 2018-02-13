@@ -7,23 +7,18 @@ module System.GameSystem
 import SFML.Graphics.RenderWindow (display, clearRenderWindow, destroy)
 import SFML.Graphics.Color (black)
 
-import Control.Monad (forM, forM_, unless)
-import Control.Monad.Reader (runReader)
+import Control.Monad (forM_, unless)
 import Control.Concurrent (threadDelay)
 
 import System.GameWorld (GameWorld (..), adoptChildren)
 import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
+import System.GameStepper (stepPhysics, stepGameObjects)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject, removeDeadAnyGameObjects, getChildrenAnyGameObjects)
-import Updatable
+import GameObject.AnyGameObject (AnyGameObject)
 import Synchronizable
 import Drawable
-import ChildBearer
-import Component.Physics.PhysicsClass
-import Component.Physics.Physics ()
-import Physics.PhysicsWorld (stepWorld)
 
 startGame :: GameWorld -> GameEnvironment -> IO ()
 startGame world gameEnv = do
@@ -79,10 +74,6 @@ updateScreen world @ GameWorld { window } = do
 
 updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
 updateGameWorld (GameWorld physicsWorld wnd objs) env = do
-    objs' <- mapM updatePhysics objs
-    let newObjs = runReader (forM objs' update) env
-    childrenObj <- getChildrenAnyGameObjects newObjs
-    newObjs' <- removeDeadAnyGameObjects newObjs
-    let newObjs'' = map removeChildren newObjs'
-    stepWorld (1 / 60) physicsWorld
-    return (GameWorld physicsWorld wnd newObjs'', childrenObj)
+    objs' <- stepPhysics (1 / 60) physicsWorld objs
+    (newObjs, childrenObj) <- stepGameObjects env objs'
+    return (GameWorld physicsWorld wnd newObjs, childrenObj)

@@ -2,16 +2,11 @@
 
 module GameObject.AnyGameObject
     ( AnyGameObject (..)
-    , removeDeadAnyGameObjects
-    , getChildrenAnyGameObjects
     ) where
 
-import Control.Monad (forM_, forM, liftM)
-import Data.List (partition)
-import Control.Monad.Trans.Maybe (runMaybeT)
+import Control.Monad (liftM)
 
 import GameObject.GameObject ()
-import GameObject.GameObjectTypes (GameObjectCreation, GameObject)
 import Drawable
 import Updatable
 import Synchronizable
@@ -51,20 +46,3 @@ instance PhysicsClass AnyGameObject where
     getVelocity   (AGO go)   = getVelocity go
     setVelocity   (AGO go) v = AGO (setVelocity go v)
     updatePhysics (AGO go)   = liftM AGO (updatePhysics go)
-
-getChildrenAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
-getChildrenAnyGameObjects objs = do
-    let childrenCreation = concatMap getChildren objs
-    createdChildren <- createObjects childrenCreation
-    return $ maybe [] (map AGO) createdChildren
-
-createObjects :: [GameObjectCreation] -> IO (Maybe [GameObject])
-createObjects action = do
-    newObjs <- forM action runMaybeT
-    return (sequence newObjs)
-
-removeDeadAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
-removeDeadAnyGameObjects objs = do 
-    let (alive, dead) = partition isAlive objs
-    forM_ dead destroyResource
-    return alive
