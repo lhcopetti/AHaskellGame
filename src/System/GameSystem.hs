@@ -16,11 +16,12 @@ import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject, removeDeadAnyGameObjects, getChildrenAnyGameObjects, updatePhysicsAnyGameObjects)
+import GameObject.AnyGameObject (AnyGameObject, removeDeadAnyGameObjects, getChildrenAnyGameObjects)
 import Updatable
 import Synchronizable
 import Drawable
 import ChildBearer
+import Component.Physics.PhysicsClass
 import Component.Physics.Physics ()
 import Physics.PhysicsWorld (stepWorld)
 
@@ -78,7 +79,7 @@ updateScreen world @ GameWorld { window } = do
 
 updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
 updateGameWorld (GameWorld physicsWorld wnd objs) env = do
-    objs' <- updatePhysicsAnyGameObjects objs
+    objs' <- mapM updatePhysics objs
     let newObjs = runReader (forM objs' update) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs

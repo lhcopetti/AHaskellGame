@@ -4,7 +4,6 @@ module GameObject.AnyGameObject
     ( AnyGameObject (..)
     , removeDeadAnyGameObjects
     , getChildrenAnyGameObjects
-    , updatePhysicsAnyGameObjects
     ) where
 
 import Control.Monad (forM_, forM, liftM)
@@ -48,6 +47,11 @@ instance ChildBearer AnyGameObject where
     removeChildren  (AGO go) = AGO (removeChildren go)
     addChild child  (AGO go) = AGO (addChild child go)
 
+instance PhysicsClass AnyGameObject where
+    getVelocity   (AGO go)   = getVelocity go
+    setVelocity   (AGO go) v = AGO (setVelocity go v)
+    updatePhysics (AGO go)   = liftM AGO (updatePhysics go)
+
 getChildrenAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
 getChildrenAnyGameObjects objs = do
     let childrenCreation = concatMap getChildren objs
@@ -64,8 +68,3 @@ removeDeadAnyGameObjects objs = do
     let (alive, dead) = partition isAlive objs
     forM_ dead destroyResource
     return alive
-
-updatePhysicsAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
-updatePhysicsAnyGameObjects = (`forM` updateAGO)
-    where
-        updateAGO (AGO a) = liftM AGO (updatePhysics a)
