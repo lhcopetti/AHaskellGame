@@ -16,8 +16,10 @@ import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject, updatePhysicsAnyGameObjects)
+import GameObject.AnyGameObject (AnyGameObject, removeDeadAnyGameObjects, getChildrenAnyGameObjects, removeChildrenAnyGameObject, updatePhysicsAnyGameObjects)
 import Updatable
+import Synchronizable
+import Drawable
 import Component.Physics.Physics ()
 import Physics.PhysicsWorld (stepWorld)
 
@@ -27,10 +29,10 @@ startGame world gameEnv = do
     destroy (window world)
 
 drawObjects :: GameWorld -> IO ()
-drawObjects GameWorld { window, gameObjects } = forM_ gameObjects (drawAnyGameObject window)
+drawObjects GameWorld { window, gameObjects } = forM_ gameObjects (draw window)
 
 synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects GameWorld { gameObjects } = forM_ gameObjects synchronizeGameObject
+synchronizeObjects GameWorld { gameObjects } = forM_ gameObjects synchronize
 
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop world@(GameWorld _ wnd objs) env = do 

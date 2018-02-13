@@ -2,8 +2,6 @@
 
 module GameObject.AnyGameObject
     ( AnyGameObject (..)
-    , drawAnyGameObject
-    , synchronizeGameObject
     , isAliveAnyGameObject
     , removeDeadAnyGameObjects
     , getChildrenAnyGameObjects
@@ -36,11 +34,11 @@ data AnyGameObject = forall a. ( Updatable a
 instance Updatable AnyGameObject where
     update (AGO go) = liftM AGO (update go)
 
-synchronizeGameObject :: SynchronizableType AnyGameObject
-synchronizeGameObject (AGO obj) = synchronize obj
+instance Synchronizable AnyGameObject where
+    synchronize (AGO go) = synchronize go
 
-drawAnyGameObject :: DrawType AnyGameObject
-drawAnyGameObject window (AGO obj) = draw window obj
+instance Drawable AnyGameObject where
+    draw window (AGO go) = draw window go
 
 isAliveAnyGameObject :: AnyGameObject -> Bool
 isAliveAnyGameObject (AGO a) = isAlive a
