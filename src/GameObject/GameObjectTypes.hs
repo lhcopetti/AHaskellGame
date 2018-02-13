@@ -28,6 +28,7 @@ import qualified Physics.Hipmunk as H
 
 import Control.Monad.Reader (Reader)
 import Control.Monad.Trans.Maybe (MaybeT)
+import qualified Data.List.NonEmpty as LNE
 
 import GameEnv
 import Updatable (UpdateType)
@@ -75,7 +76,7 @@ data Drawing    = CircleDrawing         CircleShape
                 | ConvexDrawing         ConvexShape
                 | TextDrawing           Text
                 | SpriteDrawing         Sprite Texture
-                | CompositeDrawing      [Drawing]
+                | CompositeDrawing      (LNE.NonEmpty Drawing)
                 | FlaggedDrawing        Drawing [DrawingFlag]
                 | NamedDrawing          String Drawing
                 | AnimationDrawing      Animation Sprite

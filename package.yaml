@@ -30,6 +30,7 @@ dependencies:
 - containers
 - StateVar
 - GLFW
+- monadplus
 
 library:
   source-dirs: src
