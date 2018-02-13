@@ -16,7 +16,12 @@ import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject, updatePhysicsAnyGameObjects)
+import GameObject.AnyGameObject (AnyGameObject, removeDeadAnyGameObjects, getChildrenAnyGameObjects)
+import Updatable
+import Synchronizable
+import Drawable
+import ChildBearer
+import Component.Physics.PhysicsClass
 import Component.Physics.Physics ()
 import Physics.PhysicsWorld (stepWorld)
 
@@ -26,10 +31,10 @@ startGame world gameEnv = do
     destroy (window world)
 
 drawObjects :: GameWorld -> IO ()
-drawObjects GameWorld { window, gameObjects } = forM_ gameObjects (drawAnyGameObject window)
+drawObjects GameWorld { window, gameObjects } = forM_ gameObjects (draw window)
 
 synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects GameWorld { gameObjects } = forM_ gameObjects synchronizeGameObject
+synchronizeObjects GameWorld { gameObjects } = forM_ gameObjects synchronize
 
 loop :: GameWorld -> GameEnvironment -> IO ()
 loop world@(GameWorld _ wnd objs) env = do 
@@ -74,10 +79,10 @@ updateScreen world @ GameWorld { window } = do
 
 updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
 updateGameWorld (GameWorld physicsWorld wnd objs) env = do
-    objs' <- updatePhysicsAnyGameObjects objs
-    let newObjs = runReader (forM objs' updateAnyGameObject) env
+    objs' <- mapM updatePhysics objs
+    let newObjs = runReader (forM objs' update) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
-    let newObjs'' = map removeChildrenAnyGameObject newObjs'
+    let newObjs'' = map removeChildren newObjs'
     stepWorld (1 / 60) physicsWorld
     return (GameWorld physicsWorld wnd newObjs'', childrenObj)

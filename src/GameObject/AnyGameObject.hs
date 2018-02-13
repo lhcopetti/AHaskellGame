@@ -2,14 +2,8 @@
 
 module GameObject.AnyGameObject
     ( AnyGameObject (..)
-    , updateAnyGameObject
-    , drawAnyGameObject
-    , synchronizeGameObject
-    , isAliveAnyGameObject
     , removeDeadAnyGameObjects
     , getChildrenAnyGameObjects
-    , removeChildrenAnyGameObject
-    , updatePhysicsAnyGameObjects
     ) where
 
 import Control.Monad (forM_, forM, liftM)
@@ -34,29 +28,33 @@ data AnyGameObject = forall a. ( Updatable a
                                , PhysicsClass a)
                                => AGO a
 
-updateAnyGameObject :: UpdateType AnyGameObject
-updateAnyGameObject (AGO obj) = do 
-    newObj <- update obj
-    return (AGO newObj)
+instance Updatable AnyGameObject where
+    update (AGO go) = liftM AGO (update go)
 
-synchronizeGameObject :: SynchronizableType AnyGameObject
-synchronizeGameObject (AGO obj) = synchronize obj
+instance Synchronizable AnyGameObject where
+    synchronize (AGO go) = synchronize go
 
-drawAnyGameObject :: DrawType AnyGameObject
-drawAnyGameObject window (AGO obj) = draw window obj
+instance Drawable AnyGameObject where
+    draw window (AGO go) = draw window go
 
-isAliveAnyGameObject :: AnyGameObject -> Bool
-isAliveAnyGameObject (AGO a) = isAlive a
+instance Killable AnyGameObject where
+    isAlive         (AGO go) = isAlive go
+    die             (AGO go) = AGO (die go)
+    destroyResource (AGO go) = destroyResource go
 
-getChildrenAnyGameObject :: AnyGameObject -> [GameObjectCreation]
-getChildrenAnyGameObject (AGO a) = getChildren a
+instance ChildBearer AnyGameObject where
+    getChildren     (AGO go) = getChildren go
+    removeChildren  (AGO go) = AGO (removeChildren go)
+    addChild child  (AGO go) = AGO (addChild child go)
 
-removeChildrenAnyGameObject :: AnyGameObject -> AnyGameObject
-removeChildrenAnyGameObject (AGO a) = AGO $ removeChildren a
+instance PhysicsClass AnyGameObject where
+    getVelocity   (AGO go)   = getVelocity go
+    setVelocity   (AGO go) v = AGO (setVelocity go v)
+    updatePhysics (AGO go)   = liftM AGO (updatePhysics go)
 
 getChildrenAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
 getChildrenAnyGameObjects objs = do
-    let childrenCreation = concatMap getChildrenAnyGameObject objs
+    let childrenCreation = concatMap getChildren objs
     createdChildren <- createObjects childrenCreation
     return $ maybe [] (map AGO) createdChildren
 
@@ -67,11 +65,6 @@ createObjects action = do
 
 removeDeadAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
 removeDeadAnyGameObjects objs = do 
-    let (alive, dead) = partition isAliveAnyGameObject objs
-    forM_ dead (\(AGO a) -> destroyResource a)
+    let (alive, dead) = partition isAlive objs
+    forM_ dead destroyResource
     return alive
-
-updatePhysicsAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
-updatePhysicsAnyGameObjects = (`forM` updateAGO)
-    where
-        updateAGO (AGO a) = liftM AGO (updatePhysics a)
