@@ -16,7 +16,8 @@ import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject, updateAnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject, updatePhysicsAnyGameObjects)
+import GameObject.AnyGameObject (AnyGameObject, drawAnyGameObject, removeDeadAnyGameObjects, synchronizeGameObject, getChildrenAnyGameObjects, removeChildrenAnyGameObject, updatePhysicsAnyGameObjects)
+import Updatable
 import Component.Physics.Physics ()
 import Physics.PhysicsWorld (stepWorld)
 
@@ -75,7 +76,7 @@ updateScreen world @ GameWorld { window } = do
 updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
 updateGameWorld (GameWorld physicsWorld wnd objs) env = do
     objs' <- updatePhysicsAnyGameObjects objs
-    let newObjs = runReader (forM objs' updateAnyGameObject) env
+    let newObjs = runReader (forM objs' update) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
     let newObjs'' = map removeChildrenAnyGameObject newObjs'

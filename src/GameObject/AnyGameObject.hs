@@ -2,7 +2,6 @@
 
 module GameObject.AnyGameObject
     ( AnyGameObject (..)
-    , updateAnyGameObject
     , drawAnyGameObject
     , synchronizeGameObject
     , isAliveAnyGameObject
@@ -34,10 +33,8 @@ data AnyGameObject = forall a. ( Updatable a
                                , PhysicsClass a)
                                => AGO a
 
-updateAnyGameObject :: UpdateType AnyGameObject
-updateAnyGameObject (AGO obj) = do 
-    newObj <- update obj
-    return (AGO newObj)
+instance Updatable AnyGameObject where
+    update (AGO go) = liftM AGO (update go)
 
 synchronizeGameObject :: SynchronizableType AnyGameObject
 synchronizeGameObject (AGO obj) = synchronize obj
