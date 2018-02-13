@@ -2,10 +2,8 @@
 
 module GameObject.AnyGameObject
     ( AnyGameObject (..)
-    , isAliveAnyGameObject
     , removeDeadAnyGameObjects
     , getChildrenAnyGameObjects
-    , removeChildrenAnyGameObject
     , updatePhysicsAnyGameObjects
     ) where
 
@@ -40,18 +38,19 @@ instance Synchronizable AnyGameObject where
 instance Drawable AnyGameObject where
     draw window (AGO go) = draw window go
 
-isAliveAnyGameObject :: AnyGameObject -> Bool
-isAliveAnyGameObject (AGO a) = isAlive a
+instance Killable AnyGameObject where
+    isAlive         (AGO go) = isAlive go
+    die             (AGO go) = AGO (die go)
+    destroyResource (AGO go) = destroyResource go
 
-getChildrenAnyGameObject :: AnyGameObject -> [GameObjectCreation]
-getChildrenAnyGameObject (AGO a) = getChildren a
-
-removeChildrenAnyGameObject :: AnyGameObject -> AnyGameObject
-removeChildrenAnyGameObject (AGO a) = AGO $ removeChildren a
+instance ChildBearer AnyGameObject where
+    getChildren     (AGO go) = getChildren go
+    removeChildren  (AGO go) = AGO (removeChildren go)
+    addChild child  (AGO go) = AGO (addChild child go)
 
 getChildrenAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
 getChildrenAnyGameObjects objs = do
-    let childrenCreation = concatMap getChildrenAnyGameObject objs
+    let childrenCreation = concatMap getChildren objs
     createdChildren <- createObjects childrenCreation
     return $ maybe [] (map AGO) createdChildren
 
@@ -62,8 +61,8 @@ createObjects action = do
 
 removeDeadAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
 removeDeadAnyGameObjects objs = do 
-    let (alive, dead) = partition isAliveAnyGameObject objs
-    forM_ dead (\(AGO a) -> destroyResource a)
+    let (alive, dead) = partition isAlive objs
+    forM_ dead destroyResource
     return alive
 
 updatePhysicsAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]

@@ -16,10 +16,11 @@ import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject, removeDeadAnyGameObjects, getChildrenAnyGameObjects, removeChildrenAnyGameObject, updatePhysicsAnyGameObjects)
+import GameObject.AnyGameObject (AnyGameObject, removeDeadAnyGameObjects, getChildrenAnyGameObjects, updatePhysicsAnyGameObjects)
 import Updatable
 import Synchronizable
 import Drawable
+import ChildBearer
 import Component.Physics.Physics ()
 import Physics.PhysicsWorld (stepWorld)
 
@@ -81,6 +82,6 @@ updateGameWorld (GameWorld physicsWorld wnd objs) env = do
     let newObjs = runReader (forM objs' update) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
-    let newObjs'' = map removeChildrenAnyGameObject newObjs'
+    let newObjs'' = map removeChildren newObjs'
     stepWorld (1 / 60) physicsWorld
     return (GameWorld physicsWorld wnd newObjs'', childrenObj)
