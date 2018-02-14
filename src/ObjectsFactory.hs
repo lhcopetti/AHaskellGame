@@ -3,6 +3,7 @@ module ObjectsFactory
 
 import SFML.System.Vector2
 import SFML.Graphics.Color
+import SFML.Window.Keyboard
 
 import Control.Monad.IO.Class (liftIO)
 
@@ -23,6 +24,7 @@ import Component.Draw.CompositeDrawing (createComposite)
 import Component.Behavior.Behaviors
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.NoopBehavior (noopBehavior)
+import Component.Input.Inputs (dieOnKeyPressing)
 import Physics.CirclePhysics    (mkCirclePhysicsD)
 import Physics.LinePhysics      (mkLinePhysicsD)
 import Physics.PolygonPhysics   (mkPolygonPhysicsD)
@@ -178,7 +180,9 @@ createPhysicsLine :: Float -> (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreati
 createPhysicsLine thickness line space = do
     liftIO $ putStrLn $ "Creating Hipmunk physics line at: " ++ show line
     (physics, draw) <- mkLinePhysicsD line thickness space
-    return (createGameObject draw noopB physics (Vec2f 0 0))
+    let input = Input (dieOnKeyPressing KeyW)
+        obj = createGameObject draw noopB physics (Vec2f 0 0)
+    return (obj { inputComp = input })
 
 createLine' :: (Vec2f, Vec2f) -> Float -> GameObjectCreation
 createLine' line thickness = do

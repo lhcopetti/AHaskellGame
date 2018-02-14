@@ -20,4 +20,6 @@ mkPolygonPhysics pos points (PhysicsWorld space) = do
     ----
     H.spaceAdd space body
     H.spaceAdd space shape
-    return (HipPhy body shape t)
+    ----
+    let remove = H.spaceRemove space body >> H.spaceRemove space shape
+    return (HipPhy body shape t remove)

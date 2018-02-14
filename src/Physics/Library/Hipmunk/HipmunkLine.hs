@@ -19,4 +19,8 @@ mkLinePhysics (start, end) thickness (PhysicsWorld space) = do
     -- H.spaceAdd space body
     -- Don't add the body for static shapes
     H.spaceAdd space (H.Static shape)
-    return (HipPhy body shape t)
+    ----
+    let remove = H.spaceRemove space (H.Static shape)
+                -- We don't need to remove the body because all line shapes are currently being
+                -- created as static objects
+    return (HipPhy body shape t remove)

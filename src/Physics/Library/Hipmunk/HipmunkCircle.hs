@@ -20,7 +20,9 @@ mkCirclePhysics radius pos (PhysicsWorld space) = do
     ----
     H.spaceAdd space body
     H.spaceAdd space shape
-    return (HipPhy body shape t)
+    ----
+    let remove = H.spaceRemove space body >> H.spaceRemove space shape
+    return (HipPhy body shape t remove)
 
 newCircleBody :: Double -> Double -> IO H.Body
 newCircleBody mass radius = H.newBody mass moment

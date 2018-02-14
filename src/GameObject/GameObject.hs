@@ -19,6 +19,7 @@ import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes
 import Command.Command (runCommands)
+import Physics.DestroyObject (destroyPhysics)
 
 instance Updatable GameObject where
     update go = do 
@@ -44,7 +45,8 @@ instance Pos.Position GameObject where
 instance Killable GameObject where 
     isAlive = alive
     die g = g { alive = False }
-    destroyResource GameObject { drawComp } = destroyDrawing drawComp
+    destroyResource GameObject { drawComp, physicsComp } = 
+        destroyDrawing drawComp >> destroyPhysics physicsComp
 
 instance DrawingInbox GameObject where
     getInbox = inbox
