@@ -12,7 +12,7 @@ import qualified Physics.Library.Hipmunk.HipmunkCircle as HMP
 import GameObject.GameObjectTypes
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.Library.Hipmunk.VectorConversion (vec2fToHVector)
-import Physics.Library.DebugDraw.DebugDraw (mkDebugDraw)
+import Physics.DebugDraw.DebugDraw (mkDebugDraw)
 
 mkCirclePhysics :: Float -> Vec2f -> PhysicsWorld -> IO Physics
 mkCirclePhysics radius pos = HMP.mkCirclePhysics hRadius hPos

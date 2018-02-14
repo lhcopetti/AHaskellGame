@@ -13,7 +13,7 @@ import Data.StateVar
 
 import GameObject.GameObjectTypes
 import Physics.Library.Hipmunk.VectorConversion (hVectorToVec2f)
-import Physics.Library.Hipmunk.DebugDraw.CircleDebugDraw (mkCircleDebugDraw)
+import Physics.DebugDraw.CircleDebugDraw (mkCircleDebugDraw)
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Messages.TransformableMessage
 import Component.Draw.ConvexDrawing (createConvex)

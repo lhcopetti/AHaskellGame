@@ -1,4 +1,4 @@
-module Physics.Library.Hipmunk.DebugDraw.CircleDebugDraw
+module Physics.DebugDraw.CircleDebugDraw
     ( mkCircleDebugDraw
     ) where
 
