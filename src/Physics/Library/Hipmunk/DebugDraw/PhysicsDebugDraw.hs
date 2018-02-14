@@ -3,8 +3,6 @@ module Physics.Library.Hipmunk.DebugDraw.PhysicsDebugDraw
     , syncPhysicsDrawing
     ) where
 
-import SFML.Graphics.Color
-
 import qualified Physics.Hipmunk as H
 
 import Control.Monad (liftM)
@@ -15,19 +13,18 @@ import GameObject.GameObjectTypes
 import Physics.Library.Hipmunk.VectorConversion (hVectorToVec2f)
 import Physics.DebugDraw.CircleDebugDraw (mkCircleDebugDraw)
 import Physics.DebugDraw.PolygonDebugDraw (mkPolygonDebugDraw)
+import Physics.DebugDraw.LineDebugDraw (mkLineDebugDraw)
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Messages.TransformableMessage
-import Component.Draw.LineDrawing (createLine)
 
 
 mkDrawingFromShape :: H.ShapeType -> MaybeT IO Drawing
 mkDrawingFromShape (H.Circle radius) = mkCircleDebugDraw (realToFrac radius)
 mkDrawingFromShape (H.Polygon points) = mkPolygonDebugDraw (map hVectorToVec2f points)
-mkDrawingFromShape (H.LineSegment s e t) = createLine segment thickness color
+mkDrawingFromShape (H.LineSegment s e t) = mkLineDebugDraw segment thickness
         where
             segment     = (hVectorToVec2f s, hVectorToVec2f e)
             thickness   = realToFrac t * 2 -- Chipmunk's thickness counts both ways
-            color       = white
 
 syncPhysicsDrawing :: H.Body -> H.Shape -> Drawing -> IO ()
 syncPhysicsDrawing body _ drawing = do
