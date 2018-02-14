@@ -1,6 +1,8 @@
 {-# LANGUAGE RankNTypes #-}
 module System.Messaging.Messages.ShapeMessage
     ( setFillColorMsg
+    , setOutlineColorMsg
+    , setOutlineThicknessMsg
     ) where
 
 import SFML.Graphics.CircleShape ()
@@ -17,11 +19,11 @@ import GameObject.GameObjectTypes
 setFillColorMsg :: Color -> DrawingMessageType
 setFillColorMsg c = (`setFillColor` c)
 
--- setPositionMsg :: Vec2f -> DrawingMessageType
--- setPositionMsg pos = runOnTransformable (`setOrigin` pos)
+setOutlineColorMsg :: Color -> DrawingMessageType
+setOutlineColorMsg c = (`setOutlineColor` c)
 
--- setRotationMsg :: Float -> DrawingMessageType
--- setRotationMsg ang = runOnTransformable (`setRotation` ang)
+setOutlineThicknessMsg :: Float -> DrawingMessageType
+setOutlineThicknessMsg f = (`setOutlineThickness` f)
 
 instance SFShape Drawing where
     setFillColor    drw color = runOnShape (`setFillColor` color) drw

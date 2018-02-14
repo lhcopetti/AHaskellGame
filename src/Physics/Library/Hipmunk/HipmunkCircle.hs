@@ -16,7 +16,7 @@ mkCirclePhysics radius pos (PhysicsWorld space) = do
     ----
     H.position body $= pos
     H.friction shape $= 0.5
-    H.elasticity shape $= 0.9
+    H.elasticity shape $= 0.4
     ----
     H.spaceAdd space body
     H.spaceAdd space shape

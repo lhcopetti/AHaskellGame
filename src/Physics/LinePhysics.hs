@@ -12,7 +12,7 @@ import qualified Physics.Library.Hipmunk.HipmunkLine as HMP
 import GameObject.GameObjectTypes
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.Library.Hipmunk.VectorConversion (vec2fToHVector)
-import Physics.Library.DebugDraw.DebugDraw (mkDebugDraw)
+import Physics.DebugDraw.DebugDraw (mkDebugDraw)
 
 mkLinePhysics :: (Vec2f, Vec2f) -> Float -> PhysicsWorld -> IO Physics
 mkLinePhysics (start, end) thickness = 

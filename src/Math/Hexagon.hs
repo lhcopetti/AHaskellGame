@@ -7,7 +7,7 @@ import SFML.System.Vector2 (Vec2f (..))
 
 import Vec2.Vec2Math (multiplyScalarVec2f)
 
--- |This function returns a list containing the points for a zero centered, unit (1) side hexagon
+-- |This function returns a list containing the points for a zero centered, unit (1) sided hexagon
 getUnitHexPoints :: [Vec2f]
 getUnitHexPoints = let
     p1 = (-0.5, sqrt 3 / 2)

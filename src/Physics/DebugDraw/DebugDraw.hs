@@ -1,4 +1,4 @@
-module Physics.Library.DebugDraw.DebugDraw
+module Physics.DebugDraw.DebugDraw
     where
 
 import Control.Monad.Trans.Maybe (MaybeT)

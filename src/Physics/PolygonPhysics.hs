@@ -12,7 +12,7 @@ import qualified Physics.Library.Hipmunk.HipmunkPolygon as HMP
 import GameObject.GameObjectTypes
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.Library.Hipmunk.VectorConversion (vec2fToHVector)
-import Physics.Library.DebugDraw.DebugDraw (mkDebugDraw)
+import Physics.DebugDraw.DebugDraw (mkDebugDraw)
 
 mkPolygonPhysics :: Vec2f -> [Vec2f] -> PhysicsWorld -> IO Physics
 mkPolygonPhysics pos = HMP.mkPolygonPhysics (vec2fToHVector pos) . map vec2fToHVector

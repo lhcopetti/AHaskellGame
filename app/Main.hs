@@ -103,10 +103,8 @@ createObjects gen env space = do
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
     namedObjects <- createNamedMessagesDemo (Vec2f 468 300)
     behavesAll <- createUsesBehaveAll
-    hipmunkObject <- createHipPhysicsBall (Vec2f 370 (-50)) space
-    hipmunkObject' <- createHipPhysicsBall (Vec2f 380 0) space
-    hipmunkObject'' <- createHipPhysicsBall (Vec2f 360 0) space
-    hipmunkLine <- createPhysicsLine 2.0 (Vec2f 0 400, Vec2f 640 400) space
+    hipmunkBalls <- createPhysicsBalls space
+    hipmunkLine <- createPhysicsLine 20.0 (Vec2f 0 400, Vec2f 640 400) space
     hLines <- createLines [(Vec2f 400 20, Vec2f 500 20, 1), (Vec2f 400 30, Vec2f 500 30, 3), (Vec2f 400 40, Vec2f 500 40, 5)]
     vLines <- createLines [
         (Vec2f 510 20, Vec2f 510 40, 1), 
@@ -118,7 +116,14 @@ createObjects gen env space = do
         (Vec2f 560 20, Vec2f 570 40, 5)]
     box1 <- createBox (Vec2f 40  350) 15 space
     box2 <- createBox (Vec2f 600 350) 15 space
-    return (box1 : box2 : hipmunkLine : hipmunkObject : hipmunkObject' : hipmunkObject'' : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines)
+    return (box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
+
+createPhysicsBalls :: PhysicsWorld -> MaybeT IO [GameObject]
+createPhysicsBalls physicsWorld = mapM (`createHipPhysicsBall` physicsWorld) positions
+    where
+        xs = take 5 [200, 250 ..]
+        ys = take 5 [-100, -50, 0, 50, 100 ]
+        positions = [ Vec2f x y | x <- xs, y <- ys]
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do
