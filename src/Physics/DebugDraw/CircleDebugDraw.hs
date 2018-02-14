@@ -14,18 +14,14 @@ import System.Messaging.Messages.ShapeMessage
 import Component.Draw.CircleDrawing (createCenteredCircle)
 import Component.Draw.LineDrawing (createLine)
 import Component.Draw.CompositeDrawing (createComposite)
-import Math.Cross (getUnitCrossScaled)
+import Physics.DebugDraw.DefaultParams
 
 
 mkCircleDebugDraw :: Float -> MaybeT IO Drawing
 mkCircleDebugDraw radius = do
-    drw <- createCenteredCircle radius white
+    drw <- createCenteredCircle radius lightColor
     liftIO $ do
-        runMessageT (setFillColorMsg transparent) drw
-        runMessageT (setOutlineThicknessMsg 1) drw
+        runMessageT (setOutlineThicknessMsg lightThickness) drw
         runMessageT (setOutlineColorMsg green) drw
-    cross <- mapM (createLineFlipped 1 red) (getUnitCrossScaled 3)
-    createComposite $ drw : cross
-
-createLineFlipped :: Float -> Color -> (Vec2f, Vec2f) -> MaybeT IO Drawing
-createLineFlipped f c points = createLine points f c
+    line <- createLine (Vec2f 0 0, Vec2f radius 0) 1 strongColor
+    createComposite [drw, line]

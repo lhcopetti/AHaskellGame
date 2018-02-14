@@ -11,6 +11,7 @@ module Vec2.Vec2Math ( zero
                      , angleVec2f
                      , distanceVec2f
                      , getOrthoVec2f
+                     , midPoint
                      ) where
 
 import SFML.System.Vector2
@@ -62,3 +63,10 @@ distanceVec2f (Vec2f x y) (Vec2f x' y') = sqrt $ (x - x') ^ 2 + (y - y') ^ 2
 
 getOrthoVec2f :: Vec2f -> (Vec2f, Vec2f)
 getOrthoVec2f (Vec2f x y) = (Vec2f y (-x), Vec2f (-y) x)
+
+midPoint :: (Vec2f, Vec2f) -> Vec2f
+midPoint (p1, p2) = let target       = subtractVec2f p2 p1
+                        unit         = unitVec2f target
+                        distance     = sizeVec2f (subtractVec2f p2 p1) / 2
+                        localMPoint  = multiplyScalarVec2f unit distance
+                    in  addVec2f p1 localMPoint

@@ -14,15 +14,15 @@ import Data.StateVar
 import GameObject.GameObjectTypes
 import Physics.Library.Hipmunk.VectorConversion (hVectorToVec2f)
 import Physics.DebugDraw.CircleDebugDraw (mkCircleDebugDraw)
+import Physics.DebugDraw.PolygonDebugDraw (mkPolygonDebugDraw)
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Messages.TransformableMessage
-import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.LineDrawing (createLine)
 
 
 mkDrawingFromShape :: H.ShapeType -> MaybeT IO Drawing
 mkDrawingFromShape (H.Circle radius) = mkCircleDebugDraw (realToFrac radius)
-mkDrawingFromShape (H.Polygon points) = createConvex white (map hVectorToVec2f points)
+mkDrawingFromShape (H.Polygon points) = mkPolygonDebugDraw (map hVectorToVec2f points)
 mkDrawingFromShape (H.LineSegment s e t) = createLine segment thickness color
         where
             segment     = (hVectorToVec2f s, hVectorToVec2f e)
