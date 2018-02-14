@@ -8,25 +8,20 @@ import SFML.Graphics.Color
 import qualified Physics.Hipmunk as H
 
 import Control.Monad (liftM)
-import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Maybe (MaybeT)
 import Data.StateVar
 
 import GameObject.GameObjectTypes
 import Physics.Library.Hipmunk.VectorConversion (hVectorToVec2f)
+import Physics.Library.Hipmunk.DebugDraw.CircleDebugDraw (mkCircleDebugDraw)
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
-import System.Messaging.Messages.TransformableMessage (setPositionMsg, setRotationMsg)
-import System.Messaging.Messages.ShapeMessage (setFillColorMsg)
-import Component.Draw.CircleDrawing (createCenteredCircle)
+import System.Messaging.Messages.TransformableMessage
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Draw.LineDrawing (createLine)
 
 
 mkDrawingFromShape :: H.ShapeType -> MaybeT IO Drawing
-mkDrawingFromShape (H.Circle radius) = do
-    drw <- createCenteredCircle (realToFrac radius) white
-    liftIO $ runMessageT (setFillColorMsg red) drw
-    return drw
+mkDrawingFromShape (H.Circle radius) = mkCircleDebugDraw (realToFrac radius)
 mkDrawingFromShape (H.Polygon points) = createConvex white (map hVectorToVec2f points)
 mkDrawingFromShape (H.LineSegment s e t) = createLine segment thickness color
         where
