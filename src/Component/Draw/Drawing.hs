@@ -14,7 +14,7 @@ import Drawable
 import NativeResource
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes (GameObject (..), Drawing (..), DrawingFlag (..))
-import Component.Draw.Animation.AnimationDrawing (updateAnimation, destroyAnimation)
+import Component.Draw.Animation.AnimationDrawing (updateAnimation)
 
 instance Drawable Drawing where
     draw wnd (CircleDrawing ptr) = drawCircle wnd ptr Nothing
@@ -50,7 +50,7 @@ instance NativeResource Drawing where
     free (ConvexDrawing       ptr )  = destroy ptr
     free (TextDrawing         ptr )  = destroy ptr
     free (SpriteDrawing   spr tex )  = destroy spr >> destroy tex
-    free (AnimationDrawing anim _)   = destroyAnimation anim
+    free (AnimationDrawing anim _)   = free anim
     free (CompositeDrawing    drws)  = mapM_ free drws
     free (FlaggedDrawing    ptr _ )  = free ptr
     free (NamedDrawing      _ ptr )  = free ptr

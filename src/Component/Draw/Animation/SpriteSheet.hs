@@ -8,7 +8,6 @@ module Component.Draw.Animation.SpriteSheet
     , spriteCount
     , spriteByIndex
     , setScaleSpriteSheet
-    , destroySpriteSheet
     ) where
 
 import SFML.Graphics.Types (Sprite, Texture)
@@ -22,6 +21,7 @@ import Control.Monad (forM, forM_)
 import GameObject.GameObjectTypes (SpriteSheet (..), Size (..), Ratio (..))
 import Component.Draw.TextureDrawing (createTextureDrawing, getTextureSize)
 import Component.Draw.SpriteDrawing (setScaleSprite, createSpriteTextureRect)
+import NativeResource
 
 loadSpriteSheet :: FilePath -> Ratio -> MaybeT IO SpriteSheet
 loadSpriteSheet path ratio = do
@@ -53,5 +53,5 @@ spriteByIndex index spriteSheet = sps !! (index `mod` spriteCount spriteSheet)
 setScaleSpriteSheet :: SpriteSheet -> Vec2f -> IO ()
 setScaleSpriteSheet spr scale = forM_ (sprites spr) (setScaleSprite scale)
 
-destroySpriteSheet :: SpriteSheet -> IO ()
-destroySpriteSheet SpriteSheet {..} = mapM_ destroy sprites >> destroy texture
+instance NativeResource SpriteSheet where
+    free SpriteSheet {..} = mapM_ destroy sprites >> destroy texture

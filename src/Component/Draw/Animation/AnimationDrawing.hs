@@ -4,13 +4,13 @@ module Component.Draw.Animation.AnimationDrawing
     ( Animation (..)
     , createAnimation
     , updateAnimation
-    , destroyAnimation
     ) where
 
 import SFML.Graphics.Types (Sprite)
 
 import GameObject.GameObjectTypes (Animation (..), Drawing (..))
-import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), spriteByIndex, destroySpriteSheet)
+import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), spriteByIndex)
+import NativeResource
 
 createAnimation :: SpriteSheet -> Float -> (Drawing -> Drawing) -> [Int] -> Drawing
 createAnimation ss i create loop =
@@ -45,5 +45,5 @@ createNewDrawing anim@Animation{..} = let
     newSprite = spriteByIndex (spriteLoop !! spriteIndex) spriteSheet
     in createDrawing (AnimationDrawing anim newSprite)
 
-destroyAnimation :: Animation -> IO ()
-destroyAnimation Animation{..} = destroySpriteSheet spriteSheet
+instance NativeResource Animation where
+    free Animation {..} = free spriteSheet
