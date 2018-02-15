@@ -4,7 +4,7 @@ module Physics.Library.Hipmunk.HipmunkLine
 
 import qualified Physics.Hipmunk as H
 import Data.StateVar
-import GameObject.GameObjectTypes (Physics (..))
+import GameObject.GameObjectTypes (Physics (..), PhysicsLibrary (..))
 import Physics.PhysicsTypes (PhysicsWorld (..))
 
 mkLinePhysics  :: (H.Vector, H.Vector) -> Double -> PhysicsWorld -> IO Physics
@@ -23,4 +23,4 @@ mkLinePhysics (start, end) thickness (PhysicsWorld space) = do
     let remove = H.spaceRemove space (H.Static shape)
                 -- We don't need to remove the body because all line shapes are currently being
                 -- created as static objects
-    return (HipPhy body shape t remove)
+    return (HipPhy $ PL body shape t remove)

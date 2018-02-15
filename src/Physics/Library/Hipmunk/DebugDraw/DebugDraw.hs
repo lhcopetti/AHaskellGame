@@ -10,7 +10,7 @@ import Physics.Library.Hipmunk.DebugDraw.PhysicsDebugDraw (mkDrawingFromShape, s
 
 mkDebugDraw :: Physics -> MaybeT IO Drawing
 mkDebugDraw SimplePhy {} = error "Not prepared to handle 'SimplePhy'"
-mkDebugDraw (HipPhy body shape shapeType _) = do
+mkDebugDraw (HipPhy (PL body shape shapeType _)) = do
     drawing <- mkDrawingFromShape shapeType
     let action = syncPhysicsDrawing body shape drawing
     return (PhysicsDebugDrawing drawing action)

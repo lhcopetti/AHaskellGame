@@ -18,6 +18,7 @@ module GameObject.GameObjectTypes
     , DrawingMessageType
     , DrawingMessage (..)
     , Physics (..)
+    , PhysicsLibrary (..)
     ) where
 
 
@@ -101,4 +102,10 @@ data DrawingMessage = MSG DrawingMessageType
                     | NamedMessage String DrawingMessageType
 
 data Physics = SimplePhy Vec2f Float
-             | HipPhy H.Body H.Shape H.ShapeType (IO ())
+             | HipPhy PhysicsLibrary
+
+data PhysicsLibrary = PL {  body        :: H.Body
+                         ,  shape       :: H.Shape
+                         ,  shapeType   :: H.ShapeType 
+                         ,  delCallback :: IO ()
+                         }

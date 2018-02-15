@@ -17,7 +17,7 @@ import Data.StateVar
 updateObjectPhysics :: GameObject -> IO GameObject
 updateObjectPhysics go = 
     case physicsComp go of 
-        (HipPhy b _ _ _) -> do 
+        (HipPhy (PL b _ _ _)) -> do 
             position <- liftM hVectorToVec2f   . get . H.position  $ b
             angle <-    liftM realToFrac       . get . H.angle     $ b
             putStrLn $ "This is the position" ++ show position ++ show angle
