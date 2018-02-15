@@ -13,6 +13,7 @@ import Synchronizable
 import Drawable
 import Killable
 import ChildBearer
+import NativeResource
 import qualified Component.Position as Pos
 import Component.Draw.Drawing
 import Component.Behavior.Behavior
@@ -45,8 +46,10 @@ instance Pos.Position GameObject where
 instance Killable GameObject where 
     isAlive = alive
     die g = g { alive = False }
-    destroyResource GameObject { drawComp, physicsComp } = 
-        destroyDrawing drawComp >> destroyPhysics physicsComp
+
+instance NativeResource GameObject where
+    free GameObject { drawComp, physicsComp } =
+        free drawComp >> destroyPhysics physicsComp
 
 instance DrawingInbox GameObject where
     getInbox = inbox

@@ -3,7 +3,6 @@ module Component.Draw.Drawing
     ( Drawing (..)
     , updateDrawing
     , syncDrawing
-    , destroyDrawing
     ) where
 
 import SFML.Graphics.RenderWindow (drawCircle, drawRectangle, drawConvexShape, drawText, drawSprite)
@@ -12,6 +11,7 @@ import SFML.SFResource (destroy)
 import qualified Component.Position as Pos
 import Component.Draw.DrawingSync (executeUpdateOnDrawing)
 import Drawable
+import NativeResource
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes (GameObject (..), Drawing (..), DrawingFlag (..))
 import Component.Draw.Animation.AnimationDrawing (updateAnimation, destroyAnimation)
@@ -44,14 +44,14 @@ syncDrawing (FlaggedDrawing drw flg) obj    = executeUpdateOnDrawing drw obj (up
 syncDrawing (CompositeDrawing drws)  obj    = mapM_ (`syncDrawing` obj) drws
 syncDrawing drw obj                         = executeUpdateOnDrawing drw obj (True, True)
 
-destroyDrawing :: Drawing -> IO ()
-destroyDrawing (CircleDrawing       ptr )  = destroy ptr
-destroyDrawing (RectangleDrawing    ptr )  = destroy ptr
-destroyDrawing (ConvexDrawing       ptr )  = destroy ptr
-destroyDrawing (TextDrawing         ptr )  = destroy ptr
-destroyDrawing (SpriteDrawing   spr tex )  = destroy spr >> destroy tex
-destroyDrawing (AnimationDrawing anim _)   = destroyAnimation anim
-destroyDrawing (CompositeDrawing    drws)  = mapM_ destroyDrawing drws
-destroyDrawing (FlaggedDrawing    ptr _ )  = destroyDrawing ptr
-destroyDrawing (NamedDrawing      _ ptr )  = destroyDrawing ptr
-destroyDrawing (PhysicsDebugDrawing drw _) = destroyDrawing drw
+instance NativeResource Drawing where
+    free (CircleDrawing       ptr )  = destroy ptr
+    free (RectangleDrawing    ptr )  = destroy ptr
+    free (ConvexDrawing       ptr )  = destroy ptr
+    free (TextDrawing         ptr )  = destroy ptr
+    free (SpriteDrawing   spr tex )  = destroy spr >> destroy tex
+    free (AnimationDrawing anim _)   = destroyAnimation anim
+    free (CompositeDrawing    drws)  = mapM_ free drws
+    free (FlaggedDrawing    ptr _ )  = free ptr
+    free (NamedDrawing      _ ptr )  = free ptr
+    free (PhysicsDebugDrawing drw _) = free drw

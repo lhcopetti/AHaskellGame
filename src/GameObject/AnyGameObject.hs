@@ -12,6 +12,7 @@ import Updatable
 import Synchronizable
 import Killable
 import ChildBearer
+import NativeResource
 import Component.Physics.PhysicsClass
 import Component.Physics.Physics ()
 
@@ -20,7 +21,8 @@ data AnyGameObject = forall a. ( Updatable a
                                , Synchronizable a
                                , Killable a
                                , ChildBearer a
-                               , PhysicsClass a)
+                               , PhysicsClass a
+                               , NativeResource a)
                                => AGO a
 
 instance Updatable AnyGameObject where
@@ -35,7 +37,9 @@ instance Drawable AnyGameObject where
 instance Killable AnyGameObject where
     isAlive         (AGO go) = isAlive go
     die             (AGO go) = AGO (die go)
-    destroyResource (AGO go) = destroyResource go
+
+instance NativeResource AnyGameObject where
+    free (AGO go) = free go
 
 instance ChildBearer AnyGameObject where
     getChildren     (AGO go) = getChildren go

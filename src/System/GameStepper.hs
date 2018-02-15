@@ -18,6 +18,7 @@ import Physics.PhysicsTypes (PhysicsWorld)
 import Updatable
 import Killable
 import ChildBearer
+import NativeResource
 import Component.Physics.PhysicsClass
 import Component.Physics.Physics ()
 
@@ -48,5 +49,5 @@ createObjects action = do
 removeDeadAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
 removeDeadAnyGameObjects objs = do 
     let (alive, dead) = partition isAlive objs
-    forM_ dead destroyResource
+    forM_ dead free
     return alive
