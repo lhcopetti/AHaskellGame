@@ -5,7 +5,7 @@ module Physics.Library.Hipmunk.HipmunkCircle
 import qualified Physics.Hipmunk as H
 import Data.StateVar
 import GameObject.GameObjectTypes
-import Physics.PhysicsTypes (PhysicsWorld (..))
+import Physics.Library.Hipmunk.PhysicsTypes
 
 mkCirclePhysics :: Double -> H.Vector -> PhysicsWorld -> IO Physics
 mkCirclePhysics radius pos (PhysicsWorld space) = do

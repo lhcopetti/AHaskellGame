@@ -6,6 +6,7 @@ import Control.Monad.Trans.Maybe (MaybeT)
 
 import GameObject.GameObjectTypes
 import Physics.Library.Hipmunk.DebugDraw.PhysicsDebugDraw (mkDrawingFromShape, syncPhysicsDrawing)
+import Physics.Library.Hipmunk.PhysicsTypes
 
 
 mkDebugDraw :: Physics -> MaybeT IO Drawing

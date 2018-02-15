@@ -6,7 +6,7 @@ module Physics.Library.Hipmunk.HipmunkWorld
 
 import qualified Physics.Hipmunk as H
 
-import Physics.PhysicsTypes (PhysicsWorld (..))
+import Physics.Library.Hipmunk.PhysicsTypes (PhysicsWorld (..))
 import Data.StateVar
 
 initPhysicsLibrary :: IO ()

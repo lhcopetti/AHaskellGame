@@ -3,7 +3,7 @@ module Physics.Library.Hipmunk.DestroyObject
     ) where
 
 import GameObject.GameObjectTypes
-
+import Physics.Library.Hipmunk.PhysicsTypes
 
 destroyPhysics :: Physics -> IO ()
 destroyPhysics phy = 

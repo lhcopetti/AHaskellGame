@@ -18,14 +18,12 @@ module GameObject.GameObjectTypes
     , DrawingMessageType
     , DrawingMessage (..)
     , Physics (..)
-    , PhysicsLibrary (..)
     ) where
 
 
 import SFML.Graphics.Types (CircleShape, RectangleShape, ConvexShape, Text, Sprite, Texture)
+import Physics.PhysicsTypes
 import SFML.System.Vector2 (Vec2f)
-
-import qualified Physics.Hipmunk as H
 
 import Control.Monad.Reader (Reader)
 import Control.Monad.Trans.Maybe (MaybeT)
@@ -103,9 +101,3 @@ data DrawingMessage = MSG DrawingMessageType
 
 data Physics = SimplePhy Vec2f Float
              | HipPhy PhysicsLibrary
-
-data PhysicsLibrary = PL {  body        :: H.Body
-                         ,  shape       :: H.Shape
-                         ,  shapeType   :: H.ShapeType 
-                         ,  delCallback :: IO ()
-                         }

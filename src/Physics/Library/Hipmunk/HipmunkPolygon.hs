@@ -5,7 +5,7 @@ module Physics.Library.Hipmunk.HipmunkPolygon
 import qualified Physics.Hipmunk as H
 import Data.StateVar
 import GameObject.GameObjectTypes
-import Physics.PhysicsTypes (PhysicsWorld (..))
+import Physics.Library.Hipmunk.PhysicsTypes
 
 mkPolygonPhysics :: H.Vector -> [H.Vector] -> PhysicsWorld -> IO Physics
 mkPolygonPhysics pos points (PhysicsWorld space) = do

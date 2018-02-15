@@ -4,8 +4,8 @@ module Physics.Library.Hipmunk.HipmunkLine
 
 import qualified Physics.Hipmunk as H
 import Data.StateVar
-import GameObject.GameObjectTypes (Physics (..), PhysicsLibrary (..))
-import Physics.PhysicsTypes (PhysicsWorld (..))
+import GameObject.GameObjectTypes (Physics (..))
+import Physics.Library.Hipmunk.PhysicsTypes
 
 mkLinePhysics  :: (H.Vector, H.Vector) -> Double -> PhysicsWorld -> IO Physics
 mkLinePhysics (start, end) thickness (PhysicsWorld space) = do

@@ -4,7 +4,9 @@ module Physics.PhysicsObject
 
 import qualified Physics.Library.Hipmunk.HipmunkObject as HMP -- Hipmunk Physics
 
-import GameObject.GameObjectTypes (GameObject)
+import GameObject.GameObjectTypes
 
 updateObjectPhysics :: GameObject -> IO GameObject
-updateObjectPhysics = HMP.updateObjectPhysics
+updateObjectPhysics go = case physicsComp go of
+            (HipPhy pl) -> HMP.updateObjectPhysics pl go
+            _           -> return go
