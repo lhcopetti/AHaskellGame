@@ -36,8 +36,8 @@ updatePosition obj = let
 
 updatePhysicsComponent :: GameObject -> IO GameObject
 updatePhysicsComponent go = case physicsComp go of
-    SimplePhy { } -> updateSimplePhysics go
-    HipPhy    { } -> updateObjectPhysics go
+    SimplePhy  { } -> updateSimplePhysics go
+    LibraryPhy pl  -> updateObjectPhysics pl go
 
 updateSimplePhysics :: GameObject -> IO GameObject
 updateSimplePhysics = return . updatePosition

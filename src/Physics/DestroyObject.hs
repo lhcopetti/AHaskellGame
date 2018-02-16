@@ -8,4 +8,6 @@ import GameObject.GameObjectTypes
 
 
 destroyPhysics :: Physics -> IO ()
-destroyPhysics = HMP.destroyPhysics
+destroyPhysics phy = case phy of 
+    LibraryPhy x    -> HMP.destroyPhysics x
+    _               -> return ()

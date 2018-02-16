@@ -1,9 +1,9 @@
 module Physics.PhysicsTypes
     ( PhysicsWorld
-    , PhysicsLibrary
+    , PhyObject
     ) where
 
 import qualified Physics.Library.Hipmunk.PhysicsTypes as HMP
 
 type PhysicsWorld   = HMP.PhysicsWorld
-type PhysicsLibrary = HMP.PhysicsObject
+type PhyObject = HMP.PhysicsObject

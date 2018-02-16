@@ -100,4 +100,4 @@ data DrawingMessage = MSG DrawingMessageType
                     | NamedMessage String DrawingMessageType
 
 data Physics = SimplePhy Vec2f Float
-             | HipPhy PhysicsLibrary
+             | LibraryPhy PhyObject
