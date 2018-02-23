@@ -6,16 +6,12 @@ module System.GameWorld
     ) where
 
 import SFML.Graphics.Types (RenderWindow)
-import Physics.PhysicsTypes (PhysicsWorld)
 
+import System.GameScene (GameScene (..))
 import GameObject.AnyGameObject
 
 
 data GameWorld = GameWorld  { window :: RenderWindow
-                            }
-
-data GameScene = GameScene  { physicsWorld :: PhysicsWorld
-                            , gameObjects  :: [AnyGameObject]
                             }
 
 -- | Puts the newly created child objects along with the standard gameObjects collection. 

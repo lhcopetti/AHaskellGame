@@ -170,10 +170,10 @@ createUsesBehaveAll = do
     let allTogether = behaveAllB (cycle behaviors)
     return (createSimplePhysicsGO drw allTogether (Vec2f 200 200) zero)
 
-createHipPhysicsBall :: Vec2f -> PhysicsWorld -> GameObjectCreation
-createHipPhysicsBall pos space = do
+createHipPhysicsBall :: Vec2f -> Float -> PhysicsWorld -> GameObjectCreation
+createHipPhysicsBall pos radius space = do
     liftIO $ putStrLn "Creating Hipmunk physics ball"
-    (physics, drw) <- mkCirclePhysicsD 10 pos space
+    (physics, drw) <- mkCirclePhysicsD radius pos space
     return (createGameObject drw encloseByWrapAroundB physics pos)
 
 createPhysicsLine :: Float -> (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation

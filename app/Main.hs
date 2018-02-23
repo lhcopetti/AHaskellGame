@@ -120,11 +120,18 @@ createObjects gen env space = do
     return (box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
 
 createPhysicsBalls :: PhysicsWorld -> MaybeT IO [GameObject]
-createPhysicsBalls physicsWorld = mapM (`createHipPhysicsBall` physicsWorld) positions
-    where
-        xs = take 5 [200, 250 ..]
-        ys = take 5 [-100, -50, 0, 50, 100 ]
-        positions = [ Vec2f x y | x <- xs, y <- ys]
+createPhysicsBalls physicsWorld = 
+        let xs = take 5 [200, 250 ..]
+            ys = take 5 [-100, -50, 0, 50, 100 ]
+            xss = take 5 [225, 275 ..]
+            positions = [ Vec2f x y | x <- xs, y <- ys]
+            positionss = [Vec2f x (-200) | x <- xss]
+            normal = flip createHipPhysicsBall 10
+            big = flip createHipPhysicsBall 20
+        in do
+            patternBalls <- mapM (`normal`  physicsWorld) positions
+            outOfPattern <- mapM (`big`     physicsWorld) positionss
+            return (patternBalls ++ outOfPattern)
 
 createSprites :: MaybeT IO [GameObject]
 createSprites = do

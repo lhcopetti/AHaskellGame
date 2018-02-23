@@ -8,16 +8,15 @@ import SFML.Graphics.Types (RenderWindow)
 import SFML.Graphics.RenderWindow (display, clearRenderWindow, destroy)
 import SFML.Graphics.Color (black)
 
-import Control.Monad (forM_, unless)
+import Control.Monad (unless)
 import Control.Concurrent (threadDelay)
 
-import System.GameWorld (GameWorld (..), GameScene (..), adoptChildren)
+import System.GameWorld (GameWorld (..), adoptChildren)
+import System.GameScene (GameScene (..), updateGameScene)
 import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
-import System.GameStepper (stepPhysics, stepGameObjects)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject)
 import Synchronizable
 import Drawable
 
@@ -45,7 +44,7 @@ loop (GameWorld wnd) scene@(GameScene _ objs) env = do
         putStrLn $ "This is the snapshot: " ++ show (inputSnapshot newEnv)
 
     updatedScene <- gameLoop scene newEnv
-    updateScreen wnd (gameObjects updatedScene)
+    updateScreen wnd updatedScene
 
     if any shouldCloseWindow evts then
         putStrLn ("Closing event: " ++ show evts)
@@ -56,27 +55,12 @@ loop (GameWorld wnd) scene@(GameScene _ objs) env = do
 gameLoop :: GameScene -> GameEnvironment -> IO GameScene
 gameLoop scene env = do
     threadDelay (10 * 10^3)
-    (scene', orphanChildren) <- updateGameWorld scene env
+    (scene', orphanChildren) <- updateGameScene scene env
     return $ adoptChildren scene' orphanChildren
 
-updateGameWorld :: GameScene -> GameEnvironment -> IO (GameScene, [AnyGameObject])
-updateGameWorld (GameScene physicsWorld objs) env = do
-    objs' <- stepPhysics (1 / 60) physicsWorld objs
-    (newObjs, childrenObj) <- stepGameObjects env objs'
-    return (GameScene physicsWorld newObjs, childrenObj)
-
-
-updateScreen :: RenderWindow -> [AnyGameObject] -> IO ()
-updateScreen window gameObjects = do
-    synchronizeObjects gameObjects
-
+updateScreen :: RenderWindow -> GameScene -> IO ()
+updateScreen window scene = do
+    synchronize scene
     clearRenderWindow window black
-    drawObjects window gameObjects
+    draw window scene
     display window
-
-
-drawObjects :: RenderWindow -> [AnyGameObject] -> IO ()
-drawObjects window gameObjects = forM_ gameObjects (draw window)
-
-synchronizeObjects :: [AnyGameObject] -> IO ()
-synchronizeObjects gameObjects = forM_ gameObjects synchronize
