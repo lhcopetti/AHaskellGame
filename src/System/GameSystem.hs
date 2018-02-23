@@ -26,12 +26,6 @@ startGame world scene gameEnv = do
     loop world scene gameEnv
     destroy (window world)
 
-drawObjects :: RenderWindow -> [AnyGameObject] -> IO ()
-drawObjects window gameObjects = forM_ gameObjects (draw window)
-
-synchronizeObjects :: GameScene -> IO ()
-synchronizeObjects GameScene { gameObjects } = forM_ gameObjects synchronize
-
 loop :: GameWorld -> GameScene -> GameEnvironment -> IO ()
 loop (GameWorld wnd) scene@(GameScene _ objs) env = do 
 
@@ -41,16 +35,17 @@ loop (GameWorld wnd) scene@(GameScene _ objs) env = do
 
     let snapshot = createSnapshot evts
     let liveGameObjects = fromIntegral . length $ objs
-    let newEnv = env    { input = mouse, 
-                        countGOs = liveGameObjects,
-                        inputSnapshot = snapshot
+    let newEnv = env    { input = mouse
+                        , countGOs = liveGameObjects
+                        , inputSnapshot = snapshot
                         }
 
     unless (null evts) $ do 
         putStrLn $ "These are the events: " ++ show evts
         putStrLn $ "This is the snapshot: " ++ show (inputSnapshot newEnv)
 
-    updatedScene <- gameLoop (GameWorld wnd) scene newEnv
+    updatedScene <- gameLoop scene newEnv
+    updateScreen wnd (gameObjects updatedScene)
 
     if any shouldCloseWindow evts then
         putStrLn ("Closing event: " ++ show evts)
@@ -58,23 +53,30 @@ loop (GameWorld wnd) scene@(GameScene _ objs) env = do
         loop (GameWorld wnd) updatedScene env
 
 
-gameLoop :: GameWorld -> GameScene -> GameEnvironment -> IO GameScene
-gameLoop world scene env = do
+gameLoop :: GameScene -> GameEnvironment -> IO GameScene
+gameLoop scene env = do
     threadDelay (10 * 10^3)
-
     (scene', orphanChildren) <- updateGameWorld scene env
-    updateScreen world scene'
     return $ adoptChildren scene' orphanChildren
-
-updateScreen :: GameWorld -> GameScene -> IO ()
-updateScreen GameWorld { window } scene = do
-    synchronizeObjects scene
-    clearRenderWindow window black
-    drawObjects window (gameObjects scene)
-    display window
 
 updateGameWorld :: GameScene -> GameEnvironment -> IO (GameScene, [AnyGameObject])
 updateGameWorld (GameScene physicsWorld objs) env = do
     objs' <- stepPhysics (1 / 60) physicsWorld objs
     (newObjs, childrenObj) <- stepGameObjects env objs'
     return (GameScene physicsWorld newObjs, childrenObj)
+
+
+updateScreen :: RenderWindow -> [AnyGameObject] -> IO ()
+updateScreen window gameObjects = do
+    synchronizeObjects gameObjects
+
+    clearRenderWindow window black
+    drawObjects window gameObjects
+    display window
+
+
+drawObjects :: RenderWindow -> [AnyGameObject] -> IO ()
+drawObjects window gameObjects = forM_ gameObjects (draw window)
+
+synchronizeObjects :: [AnyGameObject] -> IO ()
+synchronizeObjects gameObjects = forM_ gameObjects synchronize
