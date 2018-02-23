@@ -25,7 +25,7 @@ import PrefabObjects.AnimatedRunningCat (createAnimatedRunningCat)
 import PrefabObjects.AnimatedSpinningCoin (createSpinningCoin)
 import ObjectsFactory
 import System.GameSystem (startGame)
-import System.GameWorld (GameWorld (..))
+import System.GameWorld (GameWorld (..), GameScene (..))
 import Random.Random
 
 import Paths_AHaskellGame
@@ -74,8 +74,9 @@ main = do
         Nothing -> putStrLn "Error creating game objects"
         Just balls -> do
             let anyBalls = map AGO balls
-            let world = GameWorld physicsWorld wnd anyBalls
-            startGame world gameEnv
+            let world = GameWorld wnd
+            let scene = GameScene physicsWorld anyBalls
+            startGame world scene gameEnv 
             putStrLn "This is the End!"
 
 

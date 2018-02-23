@@ -4,13 +4,14 @@ module System.GameSystem
     ) where
 
 
+import SFML.Graphics.Types (RenderWindow)
 import SFML.Graphics.RenderWindow (display, clearRenderWindow, destroy)
 import SFML.Graphics.Color (black)
 
 import Control.Monad (forM_, unless)
 import Control.Concurrent (threadDelay)
 
-import System.GameWorld (GameWorld (..), adoptChildren)
+import System.GameWorld (GameWorld (..), GameScene (..), adoptChildren)
 import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
 import System.GameStepper (stepPhysics, stepGameObjects)
@@ -20,19 +21,19 @@ import GameObject.AnyGameObject (AnyGameObject)
 import Synchronizable
 import Drawable
 
-startGame :: GameWorld -> GameEnvironment -> IO ()
-startGame world gameEnv = do
-    loop world gameEnv
+startGame :: GameWorld -> GameScene -> GameEnvironment -> IO ()
+startGame world scene gameEnv = do
+    loop world scene gameEnv
     destroy (window world)
 
-drawObjects :: GameWorld -> IO ()
-drawObjects GameWorld { window, gameObjects } = forM_ gameObjects (draw window)
+drawObjects :: RenderWindow -> [AnyGameObject] -> IO ()
+drawObjects window gameObjects = forM_ gameObjects (draw window)
 
-synchronizeObjects :: GameWorld -> IO ()
-synchronizeObjects GameWorld { gameObjects } = forM_ gameObjects synchronize
+synchronizeObjects :: GameScene -> IO ()
+synchronizeObjects GameScene { gameObjects } = forM_ gameObjects synchronize
 
-loop :: GameWorld -> GameEnvironment -> IO ()
-loop world@(GameWorld _ wnd objs) env = do 
+loop :: GameWorld -> GameScene -> GameEnvironment -> IO ()
+loop (GameWorld wnd) scene@(GameScene _ objs) env = do 
 
     evts <- pollAllEvents wnd
 
@@ -49,31 +50,31 @@ loop world@(GameWorld _ wnd objs) env = do
         putStrLn $ "These are the events: " ++ show evts
         putStrLn $ "This is the snapshot: " ++ show (inputSnapshot newEnv)
 
-    updatedWorld <- gameLoop world newEnv
+    updatedScene <- gameLoop (GameWorld wnd) scene newEnv
 
     if any shouldCloseWindow evts then
         putStrLn ("Closing event: " ++ show evts)
     else
-        loop updatedWorld env
+        loop (GameWorld wnd) updatedScene env
 
 
-gameLoop :: GameWorld -> GameEnvironment -> IO GameWorld
-gameLoop world env = do
+gameLoop :: GameWorld -> GameScene -> GameEnvironment -> IO GameScene
+gameLoop world scene env = do
     threadDelay (10 * 10^3)
 
-    (newWorld, orphanChildren) <- updateGameWorld world env
-    updateScreen newWorld
-    return $ adoptChildren newWorld orphanChildren
+    (scene', orphanChildren) <- updateGameWorld scene env
+    updateScreen world scene'
+    return $ adoptChildren scene' orphanChildren
 
-updateScreen :: GameWorld -> IO ()
-updateScreen world @ GameWorld { window } = do
+updateScreen :: GameWorld -> GameScene -> IO ()
+updateScreen GameWorld { window } scene = do
+    synchronizeObjects scene
     clearRenderWindow window black
-    synchronizeObjects world
-    drawObjects world
+    drawObjects window (gameObjects scene)
     display window
 
-updateGameWorld :: GameWorld -> GameEnvironment -> IO (GameWorld, [AnyGameObject])
-updateGameWorld (GameWorld physicsWorld wnd objs) env = do
+updateGameWorld :: GameScene -> GameEnvironment -> IO (GameScene, [AnyGameObject])
+updateGameWorld (GameScene physicsWorld objs) env = do
     objs' <- stepPhysics (1 / 60) physicsWorld objs
     (newObjs, childrenObj) <- stepGameObjects env objs'
-    return (GameWorld physicsWorld wnd newObjs, childrenObj)
+    return (GameScene physicsWorld newObjs, childrenObj)
