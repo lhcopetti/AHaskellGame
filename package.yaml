@@ -26,10 +26,8 @@ dependencies:
 - mtl
 - random
 - Hipmunk
-- OpenGL
 - containers
 - StateVar
-- GLFW
 - monadplus
 
 library:
