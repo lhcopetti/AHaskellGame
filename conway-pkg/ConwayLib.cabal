@@ -1,0 +1,84 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: a2d097fef694519a9faffc0d44345214b917e63cde84fe776965022b940d9c8f
+
+name:           ConwayLib
+version:        0.1.0.0
+synopsis:       An implementation of the famous Conways's game of life
+description:    Please see the README on Github at <https://github.com/lhcopetti/AHaskellGame#readme>
+homepage:       https://github.com/lhcopetti/AHaskellGame#readme
+bug-reports:    https://github.com/lhcopetti/AHaskellGame/issues
+author:         Luís Copetti
+maintainer:     lhcopetti@gmail.com
+copyright:      2017 Luís Copetti
+license:        MIT
+build-type:     Simple
+cabal-version:  >= 1.10
+
+source-repository head
+  type: git
+  location: https://github.com/lhcopetti/AHaskellGame
+
+library
+  hs-source-dirs:
+      src
+  ghc-options: -W -Werror
+  build-depends:
+    base >=4.7 && <5
+  exposed-modules:
+    Conway
+  default-language: Haskell2010
+
+-- executable AHaskellGame-exe
+--   main-is: Main.hs
+--   hs-source-dirs:
+--       app
+--   ghc-options: -threaded -rtsopts -with-rtsopts=-N -W -Werror
+--   build-depends:
+--       AHaskellGame
+--     , GLFW
+--     , Hipmunk
+--     , OpenGL
+--     , SFML
+--     , StateVar
+--     , base >=4.7 && <5
+--     , containers
+--     , monadplus
+--     , mtl
+--     , random
+--     , transformers
+--   other-modules:
+--       Paths_AHaskellGame
+--   default-language: Haskell2010
+
+-- test-suite AHaskellGame-test
+--   type: exitcode-stdio-1.0
+--   main-is: Spec.hs
+--   hs-source-dirs:
+--       test
+--   ghc-options: -threaded -rtsopts -with-rtsopts=-N
+--   build-depends:
+--       AHaskellGame
+--     , GLFW
+--     , Hipmunk
+--     , OpenGL
+--     , SFML
+--     , StateVar
+--     , base >=4.7 && <5
+--     , containers
+--     , hspec
+--     , monadplus
+--     , mtl
+--     , random
+--     , transformers
+--   other-modules:
+--       Behavior.BoxedBehaviorSpec
+--       Component.Animation.SpriteSheetSpec
+--       Math.LineSpec
+--       Math.MathFunctionsSpec
+--       Vec2.Vec2BehaviorSpec
+--       Vec2.Vec2MathSpec
+--       Paths_AHaskellGame
+--   default-language: Haskell2010
