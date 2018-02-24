@@ -132,6 +132,56 @@ I could even switch back and forth using CPP defines to decide which library sho
 
 This will probably become one of the most interesting programming sprints I have done so far. I feel like I am learning a lot of things and I'm starting to feel like functionally thinking is becoming easier as time goes by. That becomes particular apparent when I have to reach out to code I wrote only a month ago. Also, this time next week will be past half the due date for this project, so we'd better be going fast enough!
 
+### 18/02/2018 - Did anyone say procastination?
+
+![alt text][diary-05]
+
+I feel like I really lost traction this week, as this diary entry is being written at least 5 days later than scheduled. I imagine that partly, this is because of the pressure that I recently started feeling about having something at least close to deliverable by the end of March. This has been a great experience so far but when it comes to actually settling down to prospect a result, I freeze. The argument that I employ is that for academic projects, I don't really care if what I wrote doesn't even have an entry point to be executed. All I care is everything that I learned, practiced and evolved as part of the experience through the project and programming in general. I usually state that the process is a lot more important to me than the end result. 
+
+My focus is shifting, though, toward a more objective oriented approach to expose the better part of the project so that others might enjoy, without necessaringly having to look through the code.
+
+Anyway, let's go back a bit and explore what I did do this past week:
+
+- Toy program: Components
+
+I made a toy program modelling the initialization of a group of components. In the case one of these components fails, they are deinitialized in reverse order so as to avoid
+any dependencies implication, should there exist any. It is available here: [Gist](https://gist.github.com/lhcopetti/f58c510ec61f1e8eb287f15bc30dbdd4)
+
+- Haskell C bindings 
+
+Another activity that I am enjoying is playing around with the [Foreign](https://hackage.haskell.org/package/base-4.10.1.0/docs/Foreign.html) packages that allow Haskell to interface with another programming language. One of the biggest advantages that I am having is being able to understand how the Physics (Hipmunk) and Graphics (SFML) library bindings have been written, including the use of the .hsc file type.
+
+- The only remarkable thing I did this week was improving the DebugDraw for Hipmunk. I have to confess that it was heavily inspired by Box2D and its test bed.
+
+- MonadPlus
+
+I had an epifany while scraping haskell questions on stackoverflow. It was not so much of an epiffany because said discovery was actually written in one of the answers, nonetheless, I felt that recognizable click going off on my brain. MonadPlus is the typeclass that models the possibility of choices and failures. And I have a really neat use case to show as to why implement your methods preferably by the use of monad type classes. The example below is how I got to apply the MonadPlus to actually achieve simpler code just by the smart use of the type system:
+
+```
+module MonadPlusTest where
+
+import Control.Monad.IO.Class (liftIO)
+import Control.Monad
+import Control.Monad.Trans.Maybe
+
+printInfo :: MaybeT IO String
+printInfo = do
+    str <- liftIO getLine
+    -- res <- MaybeT . return . bigLengthOnly $ str
+    res <- bigLengthOnly str
+    return ("Info: " ++ str ++ " | Size: " ++ show res)
+
+
+bigLengthOnly :: MonadPlus m => String -> m Integer
+bigLengthOnly xs = do
+    guard (length xs > 10)
+    return (fromIntegral . length $ xs)
+-- bigLengthOnly :: String -> Maybe Integer
+-- bigLengthOnly xs = do
+--     guard (length xs > 10)
+--     return (fromIntegral . length $ xs)
+```
+
 ## Development
 
 ### Setting up dependencies
@@ -227,3 +277,4 @@ This is also in honor for being the first logic bug on the project, and rightful
 [diary-02]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-21_AHaskellGame.gif "Diary 21/01/2018"
 [diary-03]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-28_AHaskellGame.gif "Diary 28/01/2018"
 [diary-04]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-02-11_AHaskellGame.gif "Diary 11/02/2018"
+[diary-05]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-02-18_AHaskellGame.gif "Diary 18/02/2018"
