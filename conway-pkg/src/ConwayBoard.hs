@@ -1,14 +1,21 @@
 module ConwayBoard where
 
 import ConwayCell
+import ListOfLists
 
-type Board      = [ [ConwayCell] ]
+type Board      = LL ConwayCell
 type Position   = (Int, Int)
+type BoardSize  = (Int, Int)
+
+newBoard :: BoardSize -> Board
+newBoard (width, height) = LL board
+    where 
+        board = replicate height (replicate width deadCell)
 
 setCellAt :: Position -> ConwayCell -> Board -> Board
-setCellAt (x, y) cell board = replaceAt y newColumn board
+setCellAt (x, y) cell (LL b) = LL (replaceAt y newColumn b)
     where
-        newColumn = replaceAt x cell (board !! y)
+        newColumn = replaceAt x cell (b !! y)
 
 setLiveCell :: Position -> Board -> Board
 setLiveCell pos = setCellAt pos liveCell
