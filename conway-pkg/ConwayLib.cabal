@@ -47,4 +47,5 @@ test-suite Conway-test
     , mtl
   other-modules:
     ConwayBoardSpec
+    ConwayCellSpec
   default-language: Haskell2010
