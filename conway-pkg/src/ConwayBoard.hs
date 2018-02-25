@@ -7,10 +7,15 @@ type Board      = LL ConwayCell
 type Position   = (Int, Int)
 type BoardSize  = (Int, Int)
 
-newBoard :: BoardSize -> Board
-newBoard (width, height) = LL board
+newBoard :: BoardSize -> Maybe Board
+newBoard (width, height)
+    | width <= 0 || height <= 0 = Nothing
+    | otherwise                 = Just (LL board)
     where 
         board = replicate height (replicate width deadCell)
+
+boardSize :: Board -> BoardSize
+boardSize (LL xs) = (length (head xs), length xs)
 
 setCellAt :: Position -> ConwayCell -> Board -> Board
 setCellAt (x, y) cell (LL b) = LL (replaceAt y newColumn b)
@@ -22,6 +27,12 @@ setLiveCell pos = setCellAt pos liveCell
 
 setDeadCell :: Position -> Board -> Board
 setDeadCell pos = setCellAt pos deadCell
+
+isLive :: Position -> Board -> Maybe Bool
+isLive pos b = undefined
+
+atPosition :: Position -> Board -> Maybe ConwayCell
+atPosition = llAt
 
 replaceAt :: Int -> a -> [a] -> [a]
 replaceAt i v xs = take i xs ++ [v] ++ drop (i+1) xs

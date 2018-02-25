@@ -29,7 +29,6 @@ library
     base >=4.7 && <5
   exposed-modules:
     Conway
-  other-modules:
     ConwayCell
     ConwayBoard
     ListOfLists
@@ -45,6 +44,7 @@ test-suite Conway-test
       ConwayLib
     , base >=4.7 && <5
     , hspec
+    , mtl
   other-modules:
     ConwayBoardSpec
   default-language: Haskell2010
