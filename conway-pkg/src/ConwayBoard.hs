@@ -1,5 +1,8 @@
 module ConwayBoard where
 
+import Control.Monad (guard)
+import Data.Maybe (catMaybes)
+
 import ConwayCell
 import ListOfLists
 
@@ -32,7 +35,9 @@ isLive :: Position -> Board -> Maybe Bool
 isLive pos b = undefined
 
 atPosition :: Position -> Board -> Maybe ConwayCell
-atPosition = llAt
+atPosition pos@(x, y) b = do
+    guard (x >= 0 && y >= 0)
+    llAt pos b
 
 replaceAt :: Int -> a -> [a] -> [a]
 replaceAt i v xs = take i xs ++ [v] ++ drop (i+1) xs
@@ -42,3 +47,24 @@ getNeighbours pos board = undefined
 
 tickBoard :: Board -> Board
 tickBoard board = undefined
+
+countLiveNeighbours :: Position -> Board -> Int
+countLiveNeighbours pos = length . cellLiveNeighbours pos
+
+cellLiveNeighbours :: Position -> Board -> [ConwayCell]
+cellLiveNeighbours pos = filter isLiveCell . cellNeighbours pos
+
+
+cellNeighbours :: Position -> Board -> [ConwayCell]
+cellNeighbours pos b = catMaybes allCells
+    where
+        positions = neighbours pos
+        allCells = map atPosition positions <*> [b]
+
+
+neighbours :: Position -> [Position]
+neighbours (cx, cy) = do
+    x <- [0, -1, 1]
+    y <- [0, -1, 1]
+    guard (x /= 0 || y /= 0)
+    return (cx + x, cy + y)
