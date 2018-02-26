@@ -21,12 +21,15 @@ boardSize :: Board -> BoardSize
 boardSize (LL xs) = (length (head xs), length xs)
 
 setCellAt :: Position -> ConwayCell -> Board -> Board
-setCellAt (x, y) cell (LL b) = LL (replaceAt y newColumn b)
-    where
-        newColumn = replaceAt x cell (b !! y)
+setCellAt = llReplace
 
 setLiveCell :: Position -> Board -> Board
 setLiveCell pos = setCellAt pos liveCell
+
+setLiveCells :: [Position] -> Board -> Board
+setLiveCells pos board = foldr ($) board f
+    where
+        f = map setLiveCell pos
 
 setDeadCell :: Position -> Board -> Board
 setDeadCell pos = setCellAt pos deadCell
@@ -39,11 +42,11 @@ atPosition pos@(x, y) b = do
     guard (x >= 0 && y >= 0)
     llAt pos b
 
-replaceAt :: Int -> a -> [a] -> [a]
-replaceAt i v xs = take i xs ++ [v] ++ drop (i+1) xs
-
 getNeighbours :: Position -> Board -> [ConwayCell]
 getNeighbours pos board = undefined
+
+allCells :: Board -> [ConwayCell]
+allCells = llFlat
 
 tickBoard :: Board -> Board
 tickBoard board = undefined
@@ -68,3 +71,19 @@ neighbours (cx, cy) = do
     y <- [0, -1, 1]
     guard (x /= 0 || y /= 0)
     return (cx + x, cy + y)
+
+positionsFor :: Board -> [Position]
+positionsFor b = 
+    let (width, height) = boardSize b
+    in
+        [(x, y) | x <- [0..width-1], y <- [0..height-1]]
+
+positionCellMapping :: Board -> [(Position, ConwayCell)]
+positionCellMapping b = zip (positionsFor b) (allCells b)
+
+stepBoard :: Board -> Board
+stepBoard b = snd $ foldr acc (b, b) (positionCellMapping b)
+    where
+        acc (pos, cell) (static, change) = (static, setCellAt pos (stepCell neighbourCount cell) change)
+            where
+                neighbourCount = countLiveNeighbours pos static

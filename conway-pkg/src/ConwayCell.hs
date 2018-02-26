@@ -28,7 +28,9 @@ isLiveCell :: ConwayCell -> Bool
 isLiveCell ConwayCell { alive } = alive
 
 stepCell :: Int -> ConwayCell -> ConwayCell
-stepCell = undefined
+stepCell neighbourCount cell = step neighbourCount cell
+    where
+        step = if isLiveCell cell then stepLiveCell else stepDeadCell
 
 stepDeadCell :: Int -> ConwayCell -> ConwayCell
 stepDeadCell neighbourCount cell

@@ -23,6 +23,13 @@ spec = do
     populatedBoardTests
     neighborsTest
     liveNeighboursTest
+    floatBoardTest
+
+    singleCellShouldDieTest
+
+    twoCellsDieTest
+    blockStillLifeTest
+    blinkerOscillatorTest
 
 boardCreationTests :: Spec
 boardCreationTests = describe "ConwayBoard constructor" $ do
@@ -48,10 +55,8 @@ emptyBoardTests = describe "Empty ConwayBoard" $ do
 
 populatedBoardTests :: Spec
 populatedBoardTests = describe "Populated ConwayBoard" $ do
-    let board = (`execState` unsafeNewBoard (2,2)) $ do
-                                                            modify (setLiveCell (0, 0))
-                                                            modify (setLiveCell (1, 1))
-    let atPositionB = (`atPosition` board)
+    let board = setLiveCells [ (0, 0), (1, 1) ] (unsafeNewBoard (2, 2))
+        atPositionB = (`atPosition` board)
     it "should return the correct cell at position" $ do
         atPositionB (0, 0) `shouldBe` Just liveCell
         atPositionB (0, 1) `shouldBe` Just deadCell
@@ -71,17 +76,59 @@ liveNeighboursTest = describe "Testing the live neighbours" $ do
     -- _ _ x
     -- _ x x
     -- _ x _
-    let b = (`execState` unsafeNewBoard (3, 3)) $ do
-                                                        modify (setLiveCell (2, 0))
-                                                        modify (setLiveCell (1, 1))
-                                                        modify (setLiveCell (2, 1))
-                                                        modify (setLiveCell (1, 2))
+    let b = setLiveCells    [ (2, 0)
+                            , (1, 1)
+                            , (2, 1)
+                            , (1, 2) ] (unsafeNewBoard (3, 3))
     it "should return the correct count of live neighbours" $ do
         countLiveNeighbours (0, 0) b `shouldBe` 1
         countLiveNeighbours (0, 2) b `shouldBe` 2
         countLiveNeighbours (2, 1) b `shouldBe` 3
 
 
+
+blockStillLifeTest :: Spec
+blockStillLifeTest = describe "Should behave like a still block (4 cells)" $
+    it "should remain constant through iterations" $ do
+        let seed = setLiveCells [(1, 1), (1, 2), (2, 1), (2, 2)] (unsafeNewBoard (3, 3))
+            snapshots = scanr ($) seed (replicate 10 stepBoard)
+        all (== seed) snapshots `shouldBe` True
+
+singleCellShouldDieTest :: Spec
+singleCellShouldDieTest = describe "A single live cell should die" $ do
+    let board = setLiveCells [(2, 2)] (unsafeNewBoard (5, 5))
+    it "should return a board with only dead cells" $
+            stepBoard board `shouldBe` unsafeNewBoard (5,5)
+
+twoCellsDieTest :: Spec
+twoCellsDieTest = describe "Both cells should die as if cause by underpopulation" $ do
+    let board = setLiveCells [(0, 0), (1, 1)] (unsafeNewBoard (5, 5))
+    it "should return a board with only dead cells" $
+            allCells (stepBoard board) `shouldBe` replicate 25 deadCell
+
+floatBoardTest :: Spec
+floatBoardTest = describe "Should flatten a ConwayBoard" $
+    it "should flat a board" $ do
+        let board = setLiveCells [(0, 0), (1, 1)] (unsafeNewBoard (2, 2))
+        positionCellMapping board `shouldBe` [
+            ((0, 0), liveCell), 
+            ((0, 1), deadCell),
+            ((1, 0), deadCell),
+            ((1, 1), liveCell)]
+
+
+blinkerOscillatorTest :: Spec
+blinkerOscillatorTest = describe "Should behave like an oscillator with a period of 2" $ do
+    let blinkFst = [(2, 1), (2, 2), (2, 3)] -- Vertical
+        blinkSnd = [(1, 2), (2, 2), (3, 2)] -- Horizontal
+    it "should turn the vertical arrow for a horizontal one" $ do
+        let seed = setLiveCells blinkFst (unsafeNewBoard (5, 5))
+        let fstIteration = stepBoard seed
+        fstIteration `shouldBe` setLiveCells blinkSnd (unsafeNewBoard (5, 5))
+    it "should turn the horizontal line into a vertical one" $ do
+        let seed = setLiveCells blinkSnd (unsafeNewBoard (5, 5))
+            fstIteration = stepBoard seed
+        fstIteration `shouldBe` setLiveCells blinkFst (unsafeNewBoard (5, 5))
 
 unsafeNewBoard :: BoardSize -> Board
 unsafeNewBoard = fromJust . newBoard
