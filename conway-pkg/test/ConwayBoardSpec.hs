@@ -91,20 +91,20 @@ blockStillLifeTest :: Spec
 blockStillLifeTest = describe "Should behave like a still block (4 cells)" $
     it "should remain constant through iterations" $ do
         let seed = setLiveCells [(1, 1), (1, 2), (2, 1), (2, 2)] (unsafeNewBoard (3, 3))
-            snapshots = scanr ($) seed (replicate 10 stepBoard)
+            snapshots = scanr ($) seed (replicate 10 tickBoard)
         all (== seed) snapshots `shouldBe` True
 
 singleCellShouldDieTest :: Spec
 singleCellShouldDieTest = describe "A single live cell should die" $ do
     let board = setLiveCells [(2, 2)] (unsafeNewBoard (5, 5))
     it "should return a board with only dead cells" $
-            stepBoard board `shouldBe` unsafeNewBoard (5,5)
+            tickBoard board `shouldBe` unsafeNewBoard (5,5)
 
 twoCellsDieTest :: Spec
 twoCellsDieTest = describe "Both cells should die as if cause by underpopulation" $ do
     let board = setLiveCells [(0, 0), (1, 1)] (unsafeNewBoard (5, 5))
     it "should return a board with only dead cells" $
-            allCells (stepBoard board) `shouldBe` replicate 25 deadCell
+            allCells (tickBoard board) `shouldBe` replicate 25 deadCell
 
 floatBoardTest :: Spec
 floatBoardTest = describe "Should flatten a ConwayBoard" $
@@ -123,11 +123,11 @@ blinkerOscillatorTest = describe "Should behave like an oscillator with a period
         blinkSnd = [(1, 2), (2, 2), (3, 2)] -- Horizontal
     it "should turn the vertical arrow for a horizontal one" $ do
         let seed = setLiveCells blinkFst (unsafeNewBoard (5, 5))
-        let fstIteration = stepBoard seed
+        let fstIteration = tickBoard seed
         fstIteration `shouldBe` setLiveCells blinkSnd (unsafeNewBoard (5, 5))
     it "should turn the horizontal line into a vertical one" $ do
         let seed = setLiveCells blinkSnd (unsafeNewBoard (5, 5))
-            fstIteration = stepBoard seed
+            fstIteration = tickBoard seed
         fstIteration `shouldBe` setLiveCells blinkFst (unsafeNewBoard (5, 5))
 
 unsafeNewBoard :: BoardSize -> Board

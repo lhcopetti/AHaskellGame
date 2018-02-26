@@ -2,7 +2,9 @@
 module Conway 
     ( newConwayWorld
     , setLive
+    , setDead
     , cellAt
+    , tick
     , BoardSize
     , ConwayWorld
     , Position
@@ -24,6 +26,9 @@ newConwayWorld dimensions = liftM ConwayWorld (newBoard dimensions)
 
 setLive :: Position -> ConwayWorld -> ConwayWorld
 setLive pos ConwayWorld { world } = ConwayWorld (setLiveCell pos world)
+
+setDead :: Position -> ConwayWorld -> ConwayWorld
+setDead pos ConwayWorld { world } = ConwayWorld (setDeadCell pos world)
 
 tick :: ConwayWorld -> ConwayWorld
 tick ConwayWorld { world } = ConwayWorld { world = tickBoard world }

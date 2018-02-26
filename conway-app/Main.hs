@@ -10,10 +10,17 @@ main = do
     putStrLn "The Conway-app"
     putStrLn "Welcome to the Conway-app!"
     runMaybeT $ do
+        -- This is bugged when the size is (10, 5). Trust me!
         w <- MaybeT . return . newConwayWorld $ (10, 5)
-        liftIO $ putStrLn $ "The board is: \n" ++ show w
-        let w' = setLive (0, 1) w
+        -- w <- MaybeT . return . newConwayWorld $ (5, 5)
+        let setLives :: [Position] -> ConwayWorld -> ConwayWorld; 
+            setLives xs w = foldr setLive w xs
+        let w' = setLives [(1, 2), (2, 2), (3, 2)] w
         liftIO $ putStrLn $ "The board is: \n" ++ show w'
-        let cell = cellAt (0, 1) w'
-        liftIO $ putStrLn $ "This is the cell at (0, 1): " ++ show cell
+        let w'' = tick w'
+        liftIO $ putStrLn $ "The board is: \n" ++ show w''
+        let ww' = tick w''
+        liftIO $ putStrLn $ "The board is: \n" ++ show ww'
+        let ww'' = tick ww'
+        liftIO $ putStrLn $ "The board is: \n" ++ show ww''
     return ()

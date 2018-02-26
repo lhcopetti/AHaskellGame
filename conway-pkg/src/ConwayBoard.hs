@@ -48,9 +48,6 @@ getNeighbours pos board = undefined
 allCells :: Board -> [ConwayCell]
 allCells = llFlat
 
-tickBoard :: Board -> Board
-tickBoard board = undefined
-
 countLiveNeighbours :: Position -> Board -> Int
 countLiveNeighbours pos = length . cellLiveNeighbours pos
 
@@ -81,8 +78,8 @@ positionsFor b =
 positionCellMapping :: Board -> [(Position, ConwayCell)]
 positionCellMapping b = zip (positionsFor b) (allCells b)
 
-stepBoard :: Board -> Board
-stepBoard b = snd $ foldr acc (b, b) (positionCellMapping b)
+tickBoard :: Board -> Board
+tickBoard b = snd $ foldr acc (b, b) (positionCellMapping b)
     where
         acc (pos, cell) (static, change) = (static, setCellAt pos (stepCell neighbourCount cell) change)
             where
