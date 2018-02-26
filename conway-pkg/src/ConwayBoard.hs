@@ -73,7 +73,7 @@ positionsFor :: Board -> [Position]
 positionsFor b = 
     let (width, height) = boardSize b
     in
-        [(x, y) | x <- [0..width-1], y <- [0..height-1]]
+        [(x, y) | y <- [0..height-1], x <- [0..width-1]]
 
 positionCellMapping :: Board -> [(Position, ConwayCell)]
 positionCellMapping b = zip (positionsFor b) (allCells b)

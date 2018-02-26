@@ -23,11 +23,13 @@ spec = do
     populatedBoardTests
     neighborsTest
     liveNeighboursTest
-    floatBoardTest
+    flattenSquareBoardTest
 
     singleCellShouldDieTest
 
     twoCellsDieTest
+    minimalBlockStillLife
+    heterogenousBlockStillLife
     blockStillLifeTest
     blinkerOscillatorTest
 
@@ -94,6 +96,20 @@ blockStillLifeTest = describe "Should behave like a still block (4 cells)" $
             snapshots = scanr ($) seed (replicate 10 tickBoard)
         all (== seed) snapshots `shouldBe` True
 
+minimalBlockStillLife :: Spec
+minimalBlockStillLife = describe "Should behave like a still block (4 cells)" $
+    it "should remain constant through iterations" $ do
+        let seed = setLiveCells [(0, 0), (0, 1), (1, 0), (1, 1)] (unsafeNewBoard (2, 2))
+            snapshots = scanr ($) seed (replicate 10 tickBoard)
+        all (== seed) snapshots `shouldBe` True
+
+heterogenousBlockStillLife :: Spec
+heterogenousBlockStillLife = describe "Should behave like a still block (4 cells)" $
+    it "should remain constant through iterations" $ do
+        let seed = setLiveCells [(0, 0), (0, 1), (1, 0), (1, 1)] (unsafeNewBoard (3, 2))
+            snapshots = scanr ($) seed (replicate 10 tickBoard)
+        all (== seed) snapshots `shouldBe` True
+
 singleCellShouldDieTest :: Spec
 singleCellShouldDieTest = describe "A single live cell should die" $ do
     let board = setLiveCells [(2, 2)] (unsafeNewBoard (5, 5))
@@ -106,14 +122,14 @@ twoCellsDieTest = describe "Both cells should die as if cause by underpopulation
     it "should return a board with only dead cells" $
             allCells (tickBoard board) `shouldBe` replicate 25 deadCell
 
-floatBoardTest :: Spec
-floatBoardTest = describe "Should flatten a ConwayBoard" $
-    it "should flat a board" $ do
+flattenSquareBoardTest :: Spec
+flattenSquareBoardTest = describe "Should flatten a square ConwayBoard" $
+    it "should flatten a board" $ do
         let board = setLiveCells [(0, 0), (1, 1)] (unsafeNewBoard (2, 2))
         positionCellMapping board `shouldBe` [
             ((0, 0), liveCell), 
-            ((0, 1), deadCell),
             ((1, 0), deadCell),
+            ((0, 1), deadCell),
             ((1, 1), liveCell)]
 
 
