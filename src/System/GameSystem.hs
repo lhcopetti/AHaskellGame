@@ -23,11 +23,11 @@ import NativeResource
 
 startGame :: GameWorld -> GameScene -> GameEnvironment -> IO ()
 startGame world scene gameEnv = do
-    loop world scene gameEnv
-    free scene
+    endScene <- loop world scene gameEnv
+    free endScene
     free world
 
-loop :: GameWorld -> GameScene -> GameEnvironment -> IO ()
+loop :: GameWorld -> GameScene -> GameEnvironment -> IO GameScene
 loop (GameWorld wnd) scene@(GameScene _ objs) env = do 
 
     evts <- pollAllEvents wnd
@@ -49,7 +49,8 @@ loop (GameWorld wnd) scene@(GameScene _ objs) env = do
     updateScreen wnd updatedScene
 
     if any shouldCloseWindow evts then
-        putStrLn ("Closing event: " ++ show evts)
+        do  putStrLn ("Closing event: " ++ show evts)
+            return updatedScene
     else
         loop (GameWorld wnd) updatedScene env
 
