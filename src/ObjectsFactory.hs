@@ -38,7 +38,7 @@ createMiniBall pos vel = do
     liftIO $ putStrLn $ "Creating mini ball at " ++ show pos
     let color = blue
     shape <- createCircle 2 color
-    return (createSimplePhysicsGO shape encloseToBoxB pos vel)    
+    return (createSimplePhysicsGO shape encloseToBoxB pos vel)
 
 createBall :: Vec2f -> Vec2f -> GameObjectCreation
 createBall pos vel = do 
@@ -52,6 +52,12 @@ createRedBall pos vel = do
     liftIO $ putStrLn $ "Creating red ball at " ++ show pos
     drawComponent <- createCircle 10 red
     return (createSimplePhysicsGO drawComponent encloseToBoxB pos vel)
+
+createSquareObject :: Float -> Color -> Vec2f -> GameObjectCreation
+createSquareObject side color pos = do
+    liftIO $ putStrLn $ "Creating square at " ++ show pos
+    draw <- createSquare side color
+    return (createStaticGameObject draw pos) 
 
 createYellowSquare :: Vec2f -> Vec2f -> GameObjectCreation
 createYellowSquare pos vel = do

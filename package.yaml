@@ -65,6 +65,7 @@ executables:
     - -Werror
     dependencies:
     - ConwayLib
+    - AHaskellGame
 
 tests:
   AHaskellGame-test:
