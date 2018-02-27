@@ -6,9 +6,11 @@ module System.GameWorld
     ) where
 
 import SFML.Graphics.Types (RenderWindow)
+import SFML.Graphics.RenderWindow (destroy)
 
 import System.GameScene (GameScene (..))
 import GameObject.AnyGameObject
+import NativeResource
 
 
 data GameWorld = GameWorld  { window :: RenderWindow
@@ -20,3 +22,7 @@ data GameWorld = GameWorld  { window :: RenderWindow
 -- cycle yet.
 adoptChildren :: GameScene -> [AnyGameObject] -> GameScene
 adoptChildren scene@ GameScene { gameObjects } orphanChildren = scene { gameObjects = gameObjects ++ orphanChildren }
+
+
+instance NativeResource GameWorld where
+    free (GameWorld window) = destroy window

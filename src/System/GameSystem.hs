@@ -5,7 +5,7 @@ module System.GameSystem
 
 
 import SFML.Graphics.Types (RenderWindow)
-import SFML.Graphics.RenderWindow (display, clearRenderWindow, destroy)
+import SFML.Graphics.RenderWindow (display, clearRenderWindow)
 import SFML.Graphics.Color (black)
 
 import Control.Monad (unless)
@@ -19,11 +19,13 @@ import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..))
 import Synchronizable
 import Drawable
+import NativeResource
 
 startGame :: GameWorld -> GameScene -> GameEnvironment -> IO ()
 startGame world scene gameEnv = do
     loop world scene gameEnv
-    destroy (window world)
+    free scene
+    free world
 
 loop :: GameWorld -> GameScene -> GameEnvironment -> IO ()
 loop (GameWorld wnd) scene@(GameScene _ objs) env = do 

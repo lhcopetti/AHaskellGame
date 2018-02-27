@@ -8,8 +8,10 @@ import Control.Monad (forM_)
 import System.GameStepper (stepPhysics, stepGameObjects)
 import GameObject.AnyGameObject (AnyGameObject)
 import Physics.PhysicsTypes (PhysicsWorld)
+import Physics.PhysicsWorld ()
 import Drawable
 import Synchronizable
+import NativeResource
 import GameEnv (GameEnvironment (..))
 
 data GameScene = GameScene  { physicsWorld :: PhysicsWorld
@@ -22,6 +24,9 @@ instance Drawable GameScene where
 
 instance Synchronizable GameScene where
     synchronize scene = forM_ (gameObjects scene) synchronize
+
+instance NativeResource GameScene where
+    free (GameScene physicsWorld objs) = mapM_ free objs >> free physicsWorld
 
 
 updateGameScene :: GameScene -> GameEnvironment -> IO (GameScene, [AnyGameObject])
