@@ -5,12 +5,18 @@ import SFML.Graphics.RenderWindow
 import SFML.Graphics.Color
 
 import Control.Monad.Trans.Maybe (MaybeT (..))
+import Control.Monad.Trans.State
+import Control.Monad.Trans.Class
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
+import Command.MessageCommand
+import System.Messaging.Messages.ShapeMessage
+import System.Messaging.Handler.PushMessageHandler
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
+import GameObject.GameObjectTypes
 import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
@@ -63,4 +69,16 @@ createObjects _ _ = do
                         , Vec2f 50  100
                         , Vec2f 100 100
                         ]
-    mapM (createSquareObject 40 white) sqPositions
+    objs <- mapM (createSquareObject 40 white) sqPositions
+    mapM (setBehaviorFor changeColorBehavior) objs
+
+setBehaviorFor :: Monad m => BehaviorType -> GameObject -> m GameObject
+setBehaviorFor bt go = return $ go { behavior = Behavior bt }
+
+
+changeColorBehavior :: BehaviorType
+changeColorBehavior go = do
+    value <- get
+    let blueIntensity = fromIntegral (value `mod` 256)
+    let newColor = Color blueIntensity 0 0 255
+    pushMessage (setFillColorMsg newColor) go
