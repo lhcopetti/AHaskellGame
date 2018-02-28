@@ -75,8 +75,8 @@ main = do
         Just balls -> do
             let anyBalls = map AGO balls
             let world = GameWorld wnd
-            let scene = GameScene physicsWorld anyBalls
-            startGame world scene gameEnv 
+            let scene = GameScene physicsWorld anyBalls 0
+            startGame world scene gameEnv
             putStrLn "This is the End!"
 
 

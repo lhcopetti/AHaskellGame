@@ -6,10 +6,8 @@ import SFML.Graphics.Color
 
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.State
-import Control.Monad.Trans.Class
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
-import Command.MessageCommand
 import System.Messaging.Messages.ShapeMessage
 import System.Messaging.Handler.PushMessageHandler
 
