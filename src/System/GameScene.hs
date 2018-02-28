@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 module System.GameScene
     ( GameScene (..)
     , updateGameScene
@@ -16,6 +17,7 @@ import GameEnv (GameEnvironment (..))
 
 data GameScene = GameScene  { physicsWorld :: PhysicsWorld
                             , gameObjects  :: [AnyGameObject]
+                            , gameState    :: Int
                             }
 
 
@@ -26,11 +28,11 @@ instance Synchronizable GameScene where
     synchronize scene = forM_ (gameObjects scene) synchronize
 
 instance NativeResource GameScene where
-    free (GameScene physicsWorld objs) = mapM_ free objs >> free physicsWorld
+    free GameScene {..} = mapM_ free gameObjects >> free physicsWorld
 
 
 updateGameScene :: GameScene -> GameEnvironment -> IO (GameScene, [AnyGameObject])
-updateGameScene (GameScene physicsWorld objs) env = do
-    objs' <- stepPhysics (1 / 60) physicsWorld objs
-    (newObjs, childrenObj) <- stepGameObjects env objs'
-    return (GameScene physicsWorld newObjs, childrenObj)
+updateGameScene GameScene {..} env = do
+    objs' <- stepPhysics (1 / 60) physicsWorld gameObjects
+    (newObjs, childrenObj, newState) <- stepGameObjects env objs' gameState
+    return (GameScene physicsWorld newObjs newState, childrenObj)

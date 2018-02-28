@@ -41,7 +41,7 @@ main = do
 
     let ctxSettings = Just $ ContextSettings 24 8 0 1 2 [ContextDefault]
     wnd <- createRenderWindow (VideoMode 640 480 32) "Conway's Game of Life" [SFDefaultStyle] ctxSettings
-    
+
     -- Game Environment initialization
     dimensions <- getWindowSize wnd
     let gameEnv = createGameEnv dimensions
@@ -52,7 +52,7 @@ main = do
         Just balls -> do
             let anyBalls = map AGO balls
             let world = GameWorld wnd
-            let scene = GameScene physicsWorld anyBalls
+            let scene = GameScene physicsWorld anyBalls 0
             startGame world scene gameEnv 
             putStrLn "This is the End!"
 
@@ -70,7 +70,11 @@ createObjects _ _ = do
                         , Vec2f 100 100
                         ]
     objs <- mapM (createSquareObject 40 white) sqPositions
-    mapM (setBehaviorFor changeColorBehavior) objs
+    newObjs <- mapM (setBehaviorFor changeColorBehavior) objs
+    obj <- createSquareObject 40 green (Vec2f 200 200)
+    obj' <- setBehaviorFor incrementStateTValue obj
+    return (obj' : newObjs)
+
 
 setBehaviorFor :: Monad m => BehaviorType -> GameObject -> m GameObject
 setBehaviorFor bt go = return $ go { behavior = Behavior bt }
@@ -82,3 +86,10 @@ changeColorBehavior go = do
     let blueIntensity = fromIntegral (value `mod` 256)
     let newColor = Color blueIntensity 0 0 255
     pushMessage (setFillColorMsg newColor) go
+
+incrementStateTValue :: BehaviorType
+incrementStateTValue go = do
+    value <- get
+    let f = if value > 255 then const 0 else (+1)
+    put (f value)
+    return go
