@@ -81,6 +81,7 @@ data Drawing    = CircleDrawing         CircleShape
                 | NamedDrawing          String Drawing
                 | AnimationDrawing      Animation Sprite
                 | PhysicsDebugDrawing   Drawing (IO ())
+                | EmptyDrawing
 
 data DrawingFlag 
     = NoRotationUpdates

@@ -17,16 +17,17 @@ import GameObject.GameObjectTypes (GameObject (..), Drawing (..), DrawingFlag (.
 import Component.Draw.Animation.AnimationDrawing (updateAnimation)
 
 instance Drawable Drawing where
-    draw wnd (CircleDrawing ptr) = drawCircle wnd ptr Nothing
-    draw wnd (RectangleDrawing ptr) = drawRectangle wnd ptr Nothing
-    draw wnd (ConvexDrawing ptr) = drawConvexShape wnd ptr Nothing
-    draw wnd (TextDrawing ptr) = drawText wnd ptr Nothing
-    draw wnd (SpriteDrawing sprite _) = drawSprite wnd sprite Nothing
+    draw wnd (CircleDrawing ptr)         = drawCircle wnd ptr Nothing
+    draw wnd (RectangleDrawing ptr)      = drawRectangle wnd ptr Nothing
+    draw wnd (ConvexDrawing ptr)         = drawConvexShape wnd ptr Nothing
+    draw wnd (TextDrawing ptr)           = drawText wnd ptr Nothing
+    draw wnd (SpriteDrawing sprite _)    = drawSprite wnd sprite Nothing
     draw wnd (AnimationDrawing _ sprite) = drawSprite wnd sprite Nothing
-    draw wnd (FlaggedDrawing drawing _) = draw wnd drawing
-    draw wnd (CompositeDrawing drws) = mapM_ (draw wnd) drws
-    draw wnd (NamedDrawing _ drw) = draw wnd drw
+    draw wnd (FlaggedDrawing drawing _)  = draw wnd drawing
+    draw wnd (CompositeDrawing drws)     = mapM_ (draw wnd) drws
+    draw wnd (NamedDrawing _ drw)        = draw wnd drw
     draw wnd (PhysicsDebugDrawing drw _) = draw wnd drw
+    draw _   EmptyDrawing                = return ()
 
 updateDrawing :: GameObject -> GameObject
 updateDrawing obj@GameObject{..} = obj { drawComp = update drawComp }
@@ -55,3 +56,4 @@ instance NativeResource Drawing where
     free (FlaggedDrawing    ptr _ )  = free ptr
     free (NamedDrawing      _ ptr )  = free ptr
     free (PhysicsDebugDrawing drw _) = free drw
+    free EmptyDrawing                = return ()
