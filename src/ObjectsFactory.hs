@@ -7,7 +7,7 @@ import SFML.Window.Keyboard
 
 import Control.Monad.IO.Class (liftIO)
 
-import GameObjectFactory (createGameObject, createSimplePhysicsGO, createStaticGameObject, createStaticGameObjectB)
+import GameObjectFactory (createGameObject, createSimplePhysicsGO, createStaticGameObject, createStaticGameObjectB, createLogicGameObject)
 import GameObject.GameObjectTypes
 import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Messages.TransformableMessage (setOriginMsg)
@@ -205,3 +205,8 @@ createBox pos size world = do
     liftIO $ putStrLn $ "Creating box S: " ++ show size ++ " at " ++ show pos
     (physics, draw) <- mkPolygonPhysicsD pos (unitSquarePointsScaled size) world
     return (createGameObject draw noopB physics pos)
+
+createLogicGO :: Behavior -> GameObjectCreation
+createLogicGO behavior = do
+    liftIO $ putStrLn "Creating logic gameObject"
+    return (createLogicGameObject behavior)

@@ -69,9 +69,8 @@ createObjects _ _ = do
                         ]
     objs <- mapM (createSquareObject 40 white) sqPositions
     newObjs <- mapM (setBehaviorFor changeColorBehavior) objs
-    obj <- createSquareObject 40 green (Vec2f 200 200)
-    obj' <- setBehaviorFor incrementStateTValue obj
-    return (obj' : newObjs)
+    obj <- createLogicGO (Behavior incrementStateTValue)
+    return (obj : newObjs)
 
 
 setBehaviorFor :: Monad m => BehaviorType -> GameObject -> m GameObject
