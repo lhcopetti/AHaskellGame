@@ -27,6 +27,7 @@ import SFML.System.Vector2 (Vec2f)
 
 import Control.Monad.Reader (Reader)
 import Control.Monad.Trans.Maybe (MaybeT)
+import Control.Monad.Trans.State (StateT)
 import qualified Data.List.NonEmpty as LNE
 
 import GameEnv
@@ -44,7 +45,7 @@ data GameObject = GameObject { drawComp     :: Drawing
                              , alive        :: Bool
                              }
 
-type BehaviorType = GameObject -> Reader GameEnvironment GameObject
+type BehaviorType = GameObject -> StateT Int (Reader GameEnvironment) GameObject
 
 type Creation a = MaybeT IO a
 type GameObjectCreation  = Creation  GameObject
@@ -55,7 +56,7 @@ data Behavior = Behavior {  behave :: BehaviorType
 
 
 type CommandType    = UpdateType GameObject
-type InputType a    = GameObject -> Reader GameEnvironment a
+type InputType a    = GameObject -> StateT Int (Reader GameEnvironment) a
 
 data Command = Command CommandType
 

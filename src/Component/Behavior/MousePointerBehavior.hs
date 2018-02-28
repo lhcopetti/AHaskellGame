@@ -7,6 +7,7 @@ module Component.Behavior.MousePointerBehavior
     ) where
 
 import Control.Monad.Reader (Reader, asks)
+import Control.Monad.Trans.State
 
 import Component.Behavior.Behavior (BehaviorType)
 import Component.Behavior.HigherOrderBehavior (behaveBoth)
@@ -41,7 +42,7 @@ mousePointer obj = do
 followPointingMouse :: BehaviorType
 followPointingMouse = behaveBoth mousePointer mouseFollower
 
-mouseDistance :: GameObject -> Reader GameEnvironment Float
+mouseDistance :: GameObject -> StateT Int (Reader GameEnvironment) Float
 mouseDistance obj = do
     mousePosition <- asks (mousePos . input)
     let objPosition = getPosition obj

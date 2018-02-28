@@ -6,6 +6,7 @@ module System.GameStepper
 import Control.Monad (forM, forM_)
 import Data.List (partition)
 import Control.Monad.Trans.Maybe (runMaybeT)
+import Control.Monad.Trans.State
 
 import Control.Monad.Reader (runReader)
 
@@ -29,7 +30,7 @@ stepPhysics deltaTime physicsWorld objs = stepWorld deltaTime physicsWorld >>
 
 stepGameObjects :: GameEnvironment -> [AnyGameObject] -> IO ([AnyGameObject], [AnyGameObject])
 stepGameObjects env objs = do
-    let newObjs = runReader (forM objs update) env
+    let newObjs = runReader (evalStateT (forM objs update) 5) env
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
     return (map removeChildren newObjs', childrenObj)

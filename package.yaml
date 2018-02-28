@@ -29,6 +29,7 @@ dependencies:
 - containers
 - StateVar
 - monadplus
+- hspec
 
 library:
   source-dirs: src
