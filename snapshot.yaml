@@ -1,0 +1,12 @@
+resolver: lts-10.4
+
+name: snapshot-trying-to-save-buildtime
+
+packages:
+  - SFML-2.3.2.4
+  - Hipmunk-5.2.0.17
+
+ghc-options:
+  SFML:
+    - --extra-include-dirs=/home/lhcopetti/Documents/Dev/Tools/CSFML-2.3/include
+    - --extra-lib-dirs=/home/lhcopetti/Documents/Dev/Tools/CSFML-2.3/lib
