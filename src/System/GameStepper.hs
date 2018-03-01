@@ -28,7 +28,7 @@ stepPhysics :: Float -> PhysicsWorld -> [AnyGameObject] -> IO [AnyGameObject]
 stepPhysics deltaTime physicsWorld objs = stepWorld deltaTime physicsWorld >>
     mapM updatePhysics objs
 
-stepGameObjects :: GameEnvironment -> [AnyGameObject] -> Int -> IO ([AnyGameObject], [AnyGameObject], Int)
+stepGameObjects :: GameEnvironment -> [AnyGameObject] -> StateType -> IO ([AnyGameObject], [AnyGameObject], StateType)
 stepGameObjects env objs state = do
     let (newObjs, newState) = runReader (runStateT (forM objs update) state) env
     childrenObj <- getChildrenAnyGameObjects newObjs

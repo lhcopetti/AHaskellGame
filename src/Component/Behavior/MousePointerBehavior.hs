@@ -6,13 +6,13 @@ module Component.Behavior.MousePointerBehavior
     , mouseDistance
     ) where
 
-import Control.Monad.Reader (Reader, asks)
-import Control.Monad.Trans.State
+import Control.Monad.Reader (asks)
 
 import Component.Behavior.Behavior (BehaviorType)
 import Component.Behavior.HigherOrderBehavior (behaveBoth)
 import GameObject.GameObject (GameObject (..))
 import GameEnv (GameEnvironment (..))
+import Updatable (UpdateMStack)
 
 import Component.Position (setPosition, getPosition, setRotation)
 import Component.Physics.PhysicsClass (setVelocity)
@@ -42,7 +42,7 @@ mousePointer obj = do
 followPointingMouse :: BehaviorType
 followPointingMouse = behaveBoth mousePointer mouseFollower
 
-mouseDistance :: GameObject -> StateT Int (Reader GameEnvironment) Float
+mouseDistance :: GameObject -> UpdateMStack Float
 mouseDistance obj = do
     mousePosition <- asks (mousePos . input)
     let objPosition = getPosition obj
