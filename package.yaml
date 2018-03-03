@@ -30,6 +30,7 @@ dependencies:
 - StateVar
 - monadplus
 - hspec
+- ConwayLib
 
 library:
   source-dirs: src
@@ -52,6 +53,7 @@ executables:
     - -Werror
     dependencies:
     - AHaskellGame
+    - ConwayLib
     other-modules:
     - Paths_AHaskellGame
 

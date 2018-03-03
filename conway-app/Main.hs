@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Main where
 
 import SFML.Window
@@ -19,12 +20,16 @@ import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import Vec2.Vec2Math
+import Conway
 
 defaultGravity :: Float
 defaultGravity = 30
 
 main :: IO ()
 main = do
+#ifdef DO_SOMETHING_DIFFERENT
+    putStrLn "Doing something different!"
+#endif
     initPhysicsLibrary
     physicsWorld <- createWorld defaultGravity
     desktopMode <- getDesktopMode
@@ -47,12 +52,16 @@ main = do
     objects  <- runMaybeT (createObjects gameEnv physicsWorld)
     case objects of 
         Nothing -> putStrLn "Error creating game objects"
-        Just balls -> do
-            let anyBalls = map AGO balls
-            let world = GameWorld wnd
-            let scene = GameScene physicsWorld anyBalls 0
-            startGame world scene gameEnv 
-            putStrLn "This is the End!"
+        Just balls -> case newConwayWorld (5, 5) of
+                        Just b -> do
+                            let anyBalls = map AGO balls
+                            let world = GameWorld wnd
+                            let scene = GameScene physicsWorld anyBalls b
+                            startGame world scene gameEnv 
+                            putStrLn "This is the End!"
+                        Nothing -> do
+                            putStrLn "Error creating conway board"
+                            return ()
 
 createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO [GameObject]
 createObjects _ _ = do 
@@ -68,25 +77,11 @@ createObjects _ _ = do
                         , Vec2f 100 100
                         ]
     objs <- mapM (createSquareObject 40 white) sqPositions
-    newObjs <- mapM (setBehaviorFor changeColorBehavior) objs
-    obj <- createLogicGO (Behavior incrementStateTValue)
-    return (obj : newObjs)
+    return objs
 
 
 setBehaviorFor :: Monad m => BehaviorType -> GameObject -> m GameObject
 setBehaviorFor bt go = return $ go { behavior = Behavior bt }
 
-
-changeColorBehavior :: BehaviorType
-changeColorBehavior go = do
-    value <- get
-    let blueIntensity = fromIntegral (value `mod` 256)
-    let newColor = Color blueIntensity 0 0 255
-    pushMessage (setFillColorMsg newColor) go
-
-incrementStateTValue :: BehaviorType
-incrementStateTValue go = do
-    value <- get
-    let f = if value > 255 then const 0 else (+1)
-    put (f value)
-    return go
+setConwayColorBehavior :: Position -> BehaviorType
+setConwayColorBehavior pos go = undefined

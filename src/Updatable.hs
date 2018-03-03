@@ -9,8 +9,9 @@ module Updatable
 import GameEnv (GameEnvironment)
 import Control.Monad.Reader (Reader)
 import Control.Monad.Trans.State (StateT)
+import Conway
 
-type StateType = Integer
+type StateType = ConwayWorld
 type UpdateMStack a = StateT StateType (Reader GameEnvironment) a
 type UpdateType a = a -> UpdateMStack a
 

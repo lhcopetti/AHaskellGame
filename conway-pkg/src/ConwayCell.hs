@@ -3,7 +3,7 @@ module ConwayCell
     ( ConwayCell (..)
     , deadCell
     , liveCell
-    , isLiveCell
+    , isAlive
     , stepCell
     , stepDeadCell
     , stepLiveCell
@@ -24,13 +24,13 @@ liveCell = ConwayCell { alive = True }
 deadCell :: ConwayCell
 deadCell = ConwayCell { alive = False }
 
-isLiveCell :: ConwayCell -> Bool
-isLiveCell ConwayCell { alive } = alive
+isAlive :: ConwayCell -> Bool
+isAlive ConwayCell { alive } = alive
 
 stepCell :: Int -> ConwayCell -> ConwayCell
 stepCell neighbourCount cell = step neighbourCount cell
     where
-        step = if isLiveCell cell then stepLiveCell else stepDeadCell
+        step = if isAlive cell then stepLiveCell else stepDeadCell
 
 stepDeadCell :: Int -> ConwayCell -> ConwayCell
 stepDeadCell neighbourCount cell

@@ -5,6 +5,7 @@ module Conway
     , setDead
     , cellAt
     , tick
+    , isLive
     , BoardSize
     , ConwayWorld
     , Position
@@ -35,3 +36,6 @@ tick ConwayWorld { world } = ConwayWorld { world = tickBoard world }
 
 cellAt :: Position -> ConwayWorld -> Maybe ConwayCell
 cellAt pos ConwayWorld { world } = atPosition pos world
+
+isLive :: Position -> ConwayWorld -> Bool
+isLive pos ConwayWorld { world } = maybe False id (isLiveCell pos world)
