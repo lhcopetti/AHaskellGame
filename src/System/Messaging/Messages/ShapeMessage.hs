@@ -15,6 +15,7 @@ import SFML.Graphics.SFShape
 import SFML.Graphics.Color
 
 import GameObject.GameObjectTypes
+import Vec2.Vec2Math (zero)
 
 setFillColorMsg :: Color -> DrawingMessageType
 setFillColorMsg c = (`setFillColor` c)
@@ -30,14 +31,16 @@ instance SFShape Drawing where
     setOutlineColor drw color = runOnShape (`setOutlineColor` color) drw
     setOutlineThickness drw f = runOnShape (`setOutlineThickness` f) drw
 
-    -- I am aware that this transfer the error that should happen at compile time
-    -- to one that will explore during runtime. Hovewer, I still have no idea
-    -- what the proper abstraction for this behavior should be.
-    getFillColor        = undefined
-    getOutlineColor     = undefined
-    getOutlineThickness = undefined
-    getPointCount       = undefined
-    getPoint            = undefined
+    -- You know the interface is really broken when you have to 
+    -- implement things like these:
+    getFillColor        _ = getFillColor        EmptyShape
+    getOutlineColor     _ = getOutlineColor     EmptyShape
+    getOutlineThickness _ = getOutlineThickness EmptyShape
+    getPointCount       _ = getPointCount       EmptyShape
+    getPoint            _ = getPoint            EmptyShape
+    -- I will have it removed when I isolate the SFML library
+    -- and redesign some aspects of the Drawing component
+
 
 runOnShape :: (forall a. SFShape a => a -> IO ()) -> Drawing -> IO ()
 runOnShape f (CircleDrawing ptr)         = f ptr
@@ -51,3 +54,16 @@ runOnShape _ TextDrawing {}              = return ()
 runOnShape _ SpriteDrawing {}            = return ()
 runOnShape _ AnimationDrawing {}         = return ()
 runOnShape _ EmptyDrawing                = return ()
+
+data EmptyShape = EmptyShape
+
+instance SFShape EmptyShape where
+    setFillColor        _ _ = return ()
+    setOutlineColor     _ _ = return ()
+    setOutlineThickness _ _ = return ()
+
+    getFillColor          _ = return black
+    getOutlineColor       _ = return black
+    getOutlineThickness   _ = return 0.0
+    getPointCount         _ = return 0
+    getPoint            _ _ = return zero
