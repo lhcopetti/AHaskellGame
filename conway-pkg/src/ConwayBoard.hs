@@ -1,6 +1,6 @@
 module ConwayBoard where
 
-import Control.Monad (guard)
+import Control.Monad (guard, liftM)
 import Data.Maybe (catMaybes)
 
 import ConwayCell
@@ -35,7 +35,7 @@ setDeadCell :: Position -> Board -> Board
 setDeadCell pos = setCellAt pos deadCell
 
 isLiveCell :: Position -> Board -> Maybe Bool
-isLiveCell pos b = undefined
+isLiveCell pos b = liftM isAlive (atPosition pos b)
 
 atPosition :: Position -> Board -> Maybe ConwayCell
 atPosition pos@(x, y) b = do

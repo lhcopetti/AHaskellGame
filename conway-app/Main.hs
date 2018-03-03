@@ -52,11 +52,14 @@ main = do
     objects  <- runMaybeT (createObjects gameEnv physicsWorld)
     case objects of 
         Nothing -> putStrLn "Error creating game objects"
-        Just balls -> case newConwayWorld (5, 5) of
+        Just balls -> case newConwayWorld (3, 3) of
                         Just b -> do
+                            let n = setLive (1, 0) b
+                                n' = setLive (1, 1) n
+                                n'' = setLive (1, 2) n'
                             let anyBalls = map AGO balls
                             let world = GameWorld wnd
-                            let scene = GameScene physicsWorld anyBalls b
+                            let scene = GameScene physicsWorld anyBalls n''
                             startGame world scene gameEnv 
                             putStrLn "This is the End!"
                         Nothing -> do
@@ -65,7 +68,7 @@ main = do
 
 createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO [GameObject]
 createObjects _ _ = do 
-    let sqPositions =   map (addVec2f (Vec2f 5 5)) 
+    let drawingPos =   map (addVec2f (Vec2f 5 5)) 
                         [ Vec2f 0   0
                         , Vec2f 50  0
                         , Vec2f 100 0
@@ -76,12 +79,29 @@ createObjects _ _ = do
                         , Vec2f 50  100
                         , Vec2f 100 100
                         ]
-    objs <- mapM (createSquareObject 40 white) sqPositions
-    return objs
+        cellPos = [(x, y) | y <- [0..2], x <- [0..2]]
+    objs <- mapM createConwayCell (zip drawingPos cellPos)
+    logicGO <- createLogicGO (Behavior stepConway)
+    return (objs ++ [logicGO])
+
+
+createConwayCell :: (Vec2f, Position) -> MaybeT IO GameObject
+createConwayCell (pos, idx) = do
+    obj <- createSquareObject 40 white pos
+    setBehaviorFor (setConwayColorBehavior idx) obj
+
+
+stepConway :: BehaviorType
+stepConway go = do
+    modify tick
+    return go
 
 
 setBehaviorFor :: Monad m => BehaviorType -> GameObject -> m GameObject
 setBehaviorFor bt go = return $ go { behavior = Behavior bt }
 
 setConwayColorBehavior :: Position -> BehaviorType
-setConwayColorBehavior pos go = undefined
+setConwayColorBehavior pos go = do
+    isLive <- gets (isLive pos)
+    let color = if isLive then white else red
+    pushMessage (setFillColorMsg color) go

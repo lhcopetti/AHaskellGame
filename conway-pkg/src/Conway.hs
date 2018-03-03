@@ -13,6 +13,7 @@ module Conway
 
 import Data.List (intercalate, intersperse)
 import Control.Monad (liftM)
+import Data.Maybe (fromMaybe)
 
 import ConwayBoard
 import ConwayCell
@@ -38,4 +39,4 @@ cellAt :: Position -> ConwayWorld -> Maybe ConwayCell
 cellAt pos ConwayWorld { world } = atPosition pos world
 
 isLive :: Position -> ConwayWorld -> Bool
-isLive pos ConwayWorld { world } = maybe False id (isLiveCell pos world)
+isLive pos ConwayWorld { world } = fromMaybe False (isLiveCell pos world)
