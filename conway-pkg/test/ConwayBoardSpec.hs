@@ -46,7 +46,7 @@ emptyBoardTests :: Spec
 emptyBoardTests = describe "Empty ConwayBoard" $ do
     let defaultBoard = unsafeNewBoard (5,5)
     it "should be initialized with only dead cells" $ 
-        any isLiveCell defaultBoard `shouldBe` False
+        any isAlive defaultBoard `shouldBe` False
     it "should have the correct length" $
         F.length defaultBoard `shouldBe` 25
     it "should return Nothing for negative indexes" $ do
