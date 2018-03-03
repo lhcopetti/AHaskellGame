@@ -6,9 +6,6 @@ module System.GameStepper
 import Control.Monad (forM, forM_)
 import Data.List (partition)
 import Control.Monad.Trans.Maybe (runMaybeT)
-import Control.Monad.Trans.State
-
-import Control.Monad.Reader (runReader)
 
 import GameEnv (GameEnvironment (..))
 import GameObject.AnyGameObject (AnyGameObject (..))

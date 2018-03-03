@@ -1,6 +1,6 @@
 module ConwayBoard where
 
-import Control.Monad (guard, liftM)
+import Control.Monad (guard, liftM, MonadPlus, mzero)
 import Data.Maybe (catMaybes)
 
 import ConwayCell
@@ -10,12 +10,11 @@ type Board      = LL ConwayCell
 type Position   = (Int, Int)
 type BoardSize  = (Int, Int)
 
-newBoard :: BoardSize -> Maybe Board
-newBoard (width, height)
-    | width <= 0 || height <= 0 = Nothing
-    | otherwise                 = Just (LL board)
-    where 
-        board = replicate height (replicate width deadCell)
+newBoard :: (MonadPlus m) => BoardSize -> m Board
+newBoard (width, height) = do
+    guard (width > 0 && height > 0)
+    let board = replicate height (replicate width deadCell)
+    pure (LL board)
 
 boardSize :: Board -> BoardSize
 boardSize (LL xs) = (length (head xs), length xs)
@@ -35,7 +34,7 @@ setDeadCell :: Position -> Board -> Board
 setDeadCell pos = setCellAt pos deadCell
 
 isLiveCell :: Position -> Board -> Maybe Bool
-isLiveCell pos b = liftM isAlive (atPosition pos b)
+isLiveCell = (liftM isAlive .) . atPosition
 
 atPosition :: Position -> Board -> Maybe ConwayCell
 atPosition pos@(x, y) b = do

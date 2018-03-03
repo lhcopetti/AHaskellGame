@@ -12,7 +12,7 @@ module Conway
     ) where
 
 import Data.List (intercalate, intersperse)
-import Control.Monad (liftM)
+import Control.Monad (liftM, MonadPlus)
 import Data.Maybe (fromMaybe)
 
 import ConwayBoard
@@ -23,7 +23,7 @@ data ConwayWorld = ConwayWorld { world :: Board }
 instance Show ConwayWorld where
     show ConwayWorld { world } = show world
 
-newConwayWorld :: BoardSize -> Maybe ConwayWorld
+newConwayWorld :: (MonadPlus m) => BoardSize -> m ConwayWorld
 newConwayWorld dimensions = liftM ConwayWorld (newBoard dimensions)
 
 setLive :: Position -> ConwayWorld -> ConwayWorld

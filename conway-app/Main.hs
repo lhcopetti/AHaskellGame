@@ -5,18 +5,21 @@ import SFML.Window
 import SFML.Graphics.RenderWindow
 import SFML.Graphics.Color
 
+import Control.Monad (liftM)
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.State
+
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
 import System.Messaging.Messages.ShapeMessage
 import System.Messaging.Handler.PushMessageHandler
-
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes
+import Component.Behavior.Behavior (setBehaviorT)
 import ObjectsFactory
+import GridGameObjectFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import Vec2.Vec2Math
@@ -49,56 +52,40 @@ main = do
     dimensions <- getWindowSize wnd
     let gameEnv = createGameEnv dimensions
 
-    objects  <- runMaybeT (createObjects gameEnv physicsWorld)
-    case objects of 
+    objs <- runMaybeT (createObjects gameEnv physicsWorld)
+    case objs of 
         Nothing -> putStrLn "Error creating game objects"
-        Just balls -> case newConwayWorld (3, 3) of
-                        Just b -> do
+        Just (b, objects) -> do
                             let n = setLive (1, 0) b
                                 n' = setLive (1, 1) n
                                 n'' = setLive (1, 2) n'
-                            let anyBalls = map AGO balls
+                            let anyObjs = map AGO objects
                             let world = GameWorld wnd
-                            let scene = GameScene physicsWorld anyBalls n''
+                            let scene = GameScene physicsWorld anyObjs n''
                             startGame world scene gameEnv 
                             putStrLn "This is the End!"
-                        Nothing -> do
-                            putStrLn "Error creating conway board"
-                            return ()
 
-createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO [GameObject]
-createObjects _ _ = do 
-    let drawingPos =   map (addVec2f (Vec2f 5 5)) 
-                        [ Vec2f 0   0
-                        , Vec2f 50  0
-                        , Vec2f 100 0
-                        , Vec2f 0   50
-                        , Vec2f 50  50
-                        , Vec2f 100 50
-                        , Vec2f 0   100
-                        , Vec2f 50  100
-                        , Vec2f 100 100
-                        ]
-        cellPos = [(x, y) | y <- [0..2], x <- [0..2]]
-    objs <- mapM createConwayCell (zip drawingPos cellPos)
+createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO (ConwayWorld, [GameObject])
+createObjects _ _ = do
+    let gridSize = (3, 3)
+    board <- newConwayWorld gridSize
+    objs <- createGridObjects gridSize mkConwayCell
     logicGO <- createLogicGO (Behavior stepConway)
-    return (objs ++ [logicGO])
+    return (board, logicGO : objs)
 
-
-createConwayCell :: (Vec2f, Position) -> MaybeT IO GameObject
-createConwayCell (pos, idx) = do
-    obj <- createSquareObject 40 white pos
-    setBehaviorFor (setConwayColorBehavior idx) obj
-
+mkConwayCell :: Position -> MaybeT IO GameObject
+mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
+    where
+        fx = fromIntegral x
+        fy = fromIntegral y
+        pos = addVec2f (Vec2f 5 5) (Vec2f (fx * 50) (fy * 50))
+        updateBehavior = setBehaviorT (setConwayColorBehavior gpos)
+        createObject   = createSquareObject 40 white pos
 
 stepConway :: BehaviorType
 stepConway go = do
     modify tick
     return go
-
-
-setBehaviorFor :: Monad m => BehaviorType -> GameObject -> m GameObject
-setBehaviorFor bt go = return $ go { behavior = Behavior bt }
 
 setConwayColorBehavior :: Position -> BehaviorType
 setConwayColorBehavior pos go = do
