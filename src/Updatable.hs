@@ -4,11 +4,12 @@ module Updatable
     , UpdateType
     , StateType
     , UpdateMStack
+    , runMStack
     ) where
 
 import GameEnv (GameEnvironment)
-import Control.Monad.Reader (Reader)
-import Control.Monad.Trans.State (StateT)
+import Control.Monad.Reader (Reader, runReader)
+import Control.Monad.Trans.State (StateT, runStateT)
 import Conway
 
 type StateType = ConwayWorld
@@ -17,3 +18,6 @@ type UpdateType a = a -> UpdateMStack a
 
 class Updatable a where 
     update :: UpdateType a
+
+runMStack :: Updatable a => GameEnvironment -> StateType -> [a] -> ([a], StateType)
+runMStack env state = (`runReader` env) . (`runStateT` state) . mapM update

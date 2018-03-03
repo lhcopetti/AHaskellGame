@@ -30,7 +30,7 @@ stepPhysics deltaTime physicsWorld objs = stepWorld deltaTime physicsWorld >>
 
 stepGameObjects :: GameEnvironment -> [AnyGameObject] -> StateType -> IO ([AnyGameObject], [AnyGameObject], StateType)
 stepGameObjects env objs state = do
-    let (newObjs, newState) = runReader (runStateT (forM objs update) state) env
+    let (newObjs, newState) = runMStack env state objs
     childrenObj <- getChildrenAnyGameObjects newObjs
     newObjs' <- removeDeadAnyGameObjects newObjs
     return (map removeChildren newObjs', childrenObj, newState)
