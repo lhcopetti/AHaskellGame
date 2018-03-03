@@ -17,6 +17,7 @@ module Component.Behavior.Behaviors
     , addChildB
     , updateMultipleTextsB
     , behaveAllB
+    , behaveEveryB
     , addCommandBehaviorB
     ) where
 
@@ -30,7 +31,7 @@ import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMo
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
-import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveAll)
+import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveAll, behaveEvery)
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 
 encloseToBoxB :: Behavior
@@ -86,6 +87,9 @@ updateMultipleTextsB = Behavior (updateMultipleTexts 0)
 
 behaveAllB :: [BehaviorType] -> Behavior
 behaveAllB xs = Behavior (behaveAll xs)
+
+behaveEveryB :: Int -> BehaviorType -> Behavior
+behaveEveryB counter beh = Behavior (behaveEvery counter beh)
 
 addCommandBehaviorB :: Command -> Behavior
 addCommandBehaviorB comm = Behavior (addCommandBehavior comm)

@@ -18,6 +18,7 @@ import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes
 import Component.Behavior.Behavior (setBehaviorT)
+import Component.Behavior.Behaviors (behaveEveryB)
 import ObjectsFactory
 import GridGameObjectFactory
 import System.GameSystem (startGame)
@@ -67,10 +68,10 @@ main = do
 
 createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO (ConwayWorld, [GameObject])
 createObjects _ _ = do
-    let gridSize = (3, 3)
+    let gridSize = (12, 8)
     board <- newConwayWorld gridSize
     objs <- createGridObjects gridSize mkConwayCell
-    logicGO <- createLogicGO (Behavior stepConway)
+    logicGO <- createLogicGO (stepConway 60)
     return (board, logicGO : objs)
 
 mkConwayCell :: Position -> MaybeT IO GameObject
@@ -82,8 +83,8 @@ mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
         updateBehavior = setBehaviorT (setConwayColorBehavior gpos)
         createObject   = createSquareObject 40 white pos
 
-stepConway :: BehaviorType
-stepConway go = do
+stepConway :: Int -> Behavior
+stepConway interval = behaveEveryB interval $ \go -> do
     modify tick
     return go
 

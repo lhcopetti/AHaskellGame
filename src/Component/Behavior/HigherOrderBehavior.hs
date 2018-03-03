@@ -4,6 +4,7 @@ module Component.Behavior.HigherOrderBehavior
     , behaveOnce
     , behaveBoth
     , behaveAll
+    , behaveEvery
     ) where
 
 import Control.Monad (liftM)
@@ -32,3 +33,9 @@ behaveBoth first second = (second =<<) . first
 behaveAll :: [BehaviorType] -> BehaviorType
 behaveAll [] obj = noopBehavior obj
 behaveAll (beh:behs) obj = liftM (setBehaviorT (behaveAll behs)) (beh obj)
+
+behaveEvery :: Int -> BehaviorType -> BehaviorType
+behaveEvery counter = go counter counter
+    where go max counter beh obj
+            | counter == 0 = liftM (setBehaviorT (behaveEvery max beh)) (beh obj) 
+            | otherwise = return $ setBehaviorT (go max (counter -1) beh) obj
