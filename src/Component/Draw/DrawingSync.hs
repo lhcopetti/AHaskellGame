@@ -34,6 +34,7 @@ syncDrawingTransformable (NamedDrawing _ drw)     obj tuple = syncDrawingTransfo
 syncDrawingTransformable CompositeDrawing    {} _ _ = error "This pattern should not happen as the CompositeDrawing is unwrapped on the 'syncDrawing'"
 syncDrawingTransformable FlaggedDrawing      {} _ _ = error "This pattern should not happen as the FlaggedDrawing is unwrapped on the 'syncDrawing'"
 syncDrawingTransformable PhysicsDebugDrawing {} _ _ = error "This pattern should not happen as the PhysicsDebugDrawing is unwrapped on the 'syncDrawing'"
+syncDrawingTransformable EmptyDrawing           _ _ = return ()
 
 updateTransformable :: (SFTransformable a, Pos.Position b) => a -> b -> (Bool, Bool) -> IO ()
 updateTransformable ptr obj (pos, rot) = do

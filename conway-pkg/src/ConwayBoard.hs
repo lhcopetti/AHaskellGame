@@ -1,6 +1,6 @@
 module ConwayBoard where
 
-import Control.Monad (guard)
+import Control.Monad (guard, liftM)
 import Data.Maybe (catMaybes)
 
 import ConwayCell
@@ -34,8 +34,8 @@ setLiveCells pos board = foldr ($) board f
 setDeadCell :: Position -> Board -> Board
 setDeadCell pos = setCellAt pos deadCell
 
-isLive :: Position -> Board -> Maybe Bool
-isLive pos b = undefined
+isLiveCell :: Position -> Board -> Maybe Bool
+isLiveCell pos b = liftM isAlive (atPosition pos b)
 
 atPosition :: Position -> Board -> Maybe ConwayCell
 atPosition pos@(x, y) b = do
@@ -52,7 +52,7 @@ countLiveNeighbours :: Position -> Board -> Int
 countLiveNeighbours pos = length . cellLiveNeighbours pos
 
 cellLiveNeighbours :: Position -> Board -> [ConwayCell]
-cellLiveNeighbours pos = filter isLiveCell . cellNeighbours pos
+cellLiveNeighbours pos = filter isAlive . cellNeighbours pos
 
 
 cellNeighbours :: Position -> Board -> [ConwayCell]

@@ -25,12 +25,10 @@ import SFML.Graphics.Types (CircleShape, RectangleShape, ConvexShape, Text, Spri
 import Physics.PhysicsTypes
 import SFML.System.Vector2 (Vec2f)
 
-import Control.Monad.Reader (Reader)
 import Control.Monad.Trans.Maybe (MaybeT)
 import qualified Data.List.NonEmpty as LNE
 
-import GameEnv
-import Updatable (UpdateType)
+import Updatable (UpdateType, UpdateMStack)
 
 data GameObject = GameObject { drawComp     :: Drawing
                              , behavior     :: Behavior
@@ -44,7 +42,7 @@ data GameObject = GameObject { drawComp     :: Drawing
                              , alive        :: Bool
                              }
 
-type BehaviorType = GameObject -> Reader GameEnvironment GameObject
+type BehaviorType = UpdateType GameObject
 
 type Creation a = MaybeT IO a
 type GameObjectCreation  = Creation  GameObject
@@ -55,11 +53,11 @@ data Behavior = Behavior {  behave :: BehaviorType
 
 
 type CommandType    = UpdateType GameObject
-type InputType a    = GameObject -> Reader GameEnvironment a
+type InputType a    = GameObject -> UpdateMStack a
 
 data Command = Command CommandType
 
-data Input = Input { runInput :: InputType GameObject
+data Input = Input { runInput :: UpdateType GameObject
                    }
 
 data Animation = Animation  { createDrawing :: Drawing -> Drawing
@@ -80,6 +78,7 @@ data Drawing    = CircleDrawing         CircleShape
                 | NamedDrawing          String Drawing
                 | AnimationDrawing      Animation Sprite
                 | PhysicsDebugDrawing   Drawing (IO ())
+                | EmptyDrawing
 
 data DrawingFlag 
     = NoRotationUpdates

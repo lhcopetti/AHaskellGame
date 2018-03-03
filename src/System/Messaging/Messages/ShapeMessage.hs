@@ -50,3 +50,4 @@ runOnShape f (CompositeDrawing drws)     = mapM_ (runOnShape f) drws
 runOnShape _ TextDrawing {}              = return ()
 runOnShape _ SpriteDrawing {}            = return ()
 runOnShape _ AnimationDrawing {}         = return ()
+runOnShape _ EmptyDrawing                = return ()

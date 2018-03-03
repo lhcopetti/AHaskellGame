@@ -28,14 +28,14 @@ startGame world scene gameEnv = do
     free world
 
 loop :: GameWorld -> GameScene -> GameEnvironment -> IO GameScene
-loop (GameWorld wnd) scene@(GameScene _ objs) env = do 
+loop (GameWorld wnd) scene@GameScene { gameObjects } env = do 
 
     evts <- pollAllEvents wnd
 
     mouse <- getMouseInput wnd
 
     let snapshot = createSnapshot evts
-    let liveGameObjects = fromIntegral . length $ objs
+    let liveGameObjects = fromIntegral . length $ gameObjects
     let newEnv = env    { input = mouse
                         , countGOs = liveGameObjects
                         , inputSnapshot = snapshot

@@ -5,6 +5,7 @@ module Conway
     , setDead
     , cellAt
     , tick
+    , isLive
     , BoardSize
     , ConwayWorld
     , Position
@@ -12,6 +13,7 @@ module Conway
 
 import Data.List (intercalate, intersperse)
 import Control.Monad (liftM)
+import Data.Maybe (fromMaybe)
 
 import ConwayBoard
 import ConwayCell
@@ -35,3 +37,6 @@ tick ConwayWorld { world } = ConwayWorld { world = tickBoard world }
 
 cellAt :: Position -> ConwayWorld -> Maybe ConwayCell
 cellAt pos ConwayWorld { world } = atPosition pos world
+
+isLive :: Position -> ConwayWorld -> Bool
+isLive pos ConwayWorld { world } = fromMaybe False (isLiveCell pos world)

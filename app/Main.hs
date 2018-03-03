@@ -27,6 +27,7 @@ import ObjectsFactory
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import Random.Random
+import Conway
 
 import Paths_AHaskellGame
 
@@ -72,12 +73,16 @@ main = do
     objects  <- runMaybeT (createObjects gen gameEnv physicsWorld)
     case objects of 
         Nothing -> putStrLn "Error creating game objects"
-        Just balls -> do
-            let anyBalls = map AGO balls
-            let world = GameWorld wnd
-            let scene = GameScene physicsWorld anyBalls
-            startGame world scene gameEnv 
-            putStrLn "This is the End!"
+        Just balls -> case newConwayWorld (5, 5) of 
+                        Just b -> do
+                            let anyBalls = map AGO balls
+                            let world = GameWorld wnd
+                            let scene = GameScene physicsWorld anyBalls b
+                            startGame world scene gameEnv
+                            putStrLn "This is the End!"
+                        Nothing -> do
+                            putStrLn "Invalid board!" 
+                            return ()
 
 
 type BallCreation a = ReaderT GameEnvironment (StateT StdGen (MaybeT IO)) a

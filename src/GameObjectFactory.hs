@@ -3,6 +3,7 @@ module GameObjectFactory
     , createSimplePhysicsGO
     , createStaticGameObject
     , createStaticGameObjectB
+    , createLogicGameObject
     ) where
 
 import SFML.System.Vector2 (Vec2f)
@@ -43,3 +44,6 @@ createStaticGameObject drw pos = let
     beh = noopB
     in
         createStaticGameObjectB drw pos beh
+
+createLogicGameObject :: Behavior -> GameObject
+createLogicGameObject = createStaticGameObjectB EmptyDrawing zero
