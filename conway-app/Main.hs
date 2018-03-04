@@ -18,7 +18,7 @@ import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes
 import Component.Behavior.Behavior (setBehaviorT)
-import Component.Behavior.Behaviors (behaveEveryB)
+import Component.Behavior.Behaviors (behaveEveryB, behaveOnKeyPressB)
 import ObjectsFactory
 import GridGameObjectFactory
 import System.GameSystem (startGame)
@@ -57,36 +57,50 @@ main = do
     case objs of 
         Nothing -> putStrLn "Error creating game objects"
         Just (b, objects) -> do
-                            let n = setLive (1, 0) b
-                                n' = setLive (1, 1) n
-                                n'' = setLive (1, 2) n'
+                            let n = initialBoard b
                             let anyObjs = map AGO objects
                             let world = GameWorld wnd
-                            let scene = GameScene physicsWorld anyObjs n''
+                            let scene = GameScene physicsWorld anyObjs n
                             startGame world scene gameEnv 
                             putStrLn "This is the End!"
 
 createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO (ConwayWorld, [GameObject])
 createObjects _ _ = do
-    let gridSize = (12, 8)
+    let gridSize = (15, 15)
     board <- newConwayWorld gridSize
     objs <- createGridObjects gridSize mkConwayCell
-    logicGO <- createLogicGO (stepConway 60)
-    return (board, logicGO : objs)
+    stepper <- createLogicGO (stepConway 20)
+    resetter <- createLogicGO (resetConwayB KeyR)
+    return (board, stepper : resetter : objs)
+
+initialBoard :: ConwayWorld -> ConwayWorld
+initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)
+                        , (2, 4), (8, 4)
+                        , (4, 5), (6, 5)
+                        , (3, 6), (4, 6), (6, 6), (7, 6)
+                        , (2, 7), (8, 7) ]
 
 mkConwayCell :: Position -> MaybeT IO GameObject
 mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
     where
         fx = fromIntegral x
         fy = fromIntegral y
-        pos = addVec2f (Vec2f 5 5) (Vec2f (fx * 50) (fy * 50))
+        squareSize = 25
+        sizeDrawings = 25 + 2 -- padding
+        pos = addVec2f (Vec2f 2 2) (Vec2f (fx * sizeDrawings) (fy * sizeDrawings))
         updateBehavior = setBehaviorT (setConwayColorBehavior gpos)
-        createObject   = createSquareObject 40 white pos
+        createObject   = createSquareObject squareSize white pos
 
 stepConway :: Int -> Behavior
 stepConway interval = behaveEveryB interval $ \go -> do
     modify tick
     return go
+
+resetConwayB :: KeyCode -> Behavior
+resetConwayB key = behaveOnKeyPressB key $ \go -> do
+    modify (initialBoard . reset)
+    return go
+
 
 setConwayColorBehavior :: Position -> BehaviorType
 setConwayColorBehavior pos go = do

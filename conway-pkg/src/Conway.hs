@@ -1,13 +1,14 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module Conway 
     ( newConwayWorld
-    , resetConwayWorld
+    , reset
     , setLive
     , setLives
     , setDead
     , cellAt
     , tick
     , isLive
+    , reset
     , BoardSize
     , ConwayWorld
     , Position
@@ -28,8 +29,8 @@ instance Show ConwayWorld where
 newConwayWorld :: (MonadPlus m) => BoardSize -> m ConwayWorld
 newConwayWorld dimensions = liftM ConwayWorld (newBoard dimensions)
 
-resetConwayWorld :: ConwayWorld -> ConwayWorld
-resetConwayWorld ConwayWorld { world } = ConwayWorld { world = reset world }
+reset :: ConwayWorld -> ConwayWorld
+reset ConwayWorld { world } = ConwayWorld { world = resetBoard world }
 
 setLive :: Position -> ConwayWorld -> ConwayWorld
 setLive pos ConwayWorld { world } = ConwayWorld (setLiveCell pos world)

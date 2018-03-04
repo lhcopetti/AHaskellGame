@@ -40,7 +40,7 @@ singleCellBoardTests = describe "Single cell board tests" $ do
     let board = setLiveCell (0, 0) . unsafeNewBoard $ (1, 1)
     it "should kill a cell at specified position" $ do
         isLiveCell (0, 0) board `shouldBe` Just True
-        isLiveCell (0, 0) (reset board) `shouldBe` Just False
+        isLiveCell (0, 0) (resetBoard board) `shouldBe` Just False
 
 
 boardCreationTests :: Spec
@@ -56,11 +56,11 @@ resetBoardTests :: Spec
 resetBoardTests = describe "ConwayBoard Reset" $ do
     it "a reset board should be equal to a newly created one" $ do
         let board       = setLiveCells [ (0, 0), (1, 1) ] (unsafeNewBoard (2, 2))
-        let resetBoard  = reset board
-        resetBoard `shouldBe` unsafeNewBoard (2,2)
+        let rst  = resetBoard board
+        rst `shouldBe` unsafeNewBoard (2,2)
     it "should kill all living cells in a board" $ do
         let board = setLiveCells [ (0, 0), (1, 1), (4, 5), (3, 2), (4, 9) ] (unsafeNewBoard (5, 10))
-            allDead = reset board
+            allDead = resetBoard board
         any isAlive (allCells allDead) `shouldBe` False
 
 emptyBoardTests :: Spec
