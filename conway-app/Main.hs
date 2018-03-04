@@ -58,7 +58,7 @@ main = do
     case objs of 
         Nothing -> putStrLn "Error creating game objects"
         Just (b, objects) -> do
-                            let n = SceneState (initialBoard b)
+                            let n = SceneState (initialBoard b) False
                                 anyObjs = map AGO objects
                                 world = GameWorld wnd
                                 scene = GameScene physicsWorld anyObjs n
@@ -72,7 +72,9 @@ createObjects _ _ = do
     objs <- createGridObjects gridSize mkConwayCell
     stepper <- createLogicGO (stepConway 20)
     resetter <- createLogicGO (resetConwayB KeyR)
-    return (board, stepper : resetter : objs)
+    shouldUpdate <- createLogicGO (turnOnAutoUpdateB KeyA)
+    dontUpdate <- createLogicGO (turnOffAutoUpdateB KeyZ)
+    return (board, dontUpdate : shouldUpdate : stepper : resetter : objs)
 
 initialBoard :: ConwayWorld -> ConwayWorld
 initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)
@@ -94,8 +96,9 @@ mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
 
 stepConway :: Int -> Behavior
 stepConway interval = behaveEveryB interval $ \go -> do
-    modify tickState
-    return go
+    (SceneState _ shouldUpdate) <- get
+    if shouldUpdate then modify tickState >> return go
+    else return go
 
 resetConwayB :: KeyCode -> Behavior
 resetConwayB key = behaveOnKeyPressB key $ \go -> do
@@ -103,10 +106,10 @@ resetConwayB key = behaveOnKeyPressB key $ \go -> do
     return go
 
 tickState :: SceneState -> SceneState
-tickState (SceneState b) = SceneState (tick b)
+tickState (SceneState b autoUpdate) = SceneState (tick b) autoUpdate
 
 resetState :: SceneState -> SceneState
-resetState (SceneState b) = SceneState (initialBoard . reset $ b)
+resetState (SceneState b autoUpdate) = SceneState (initialBoard . reset $ b) autoUpdate
 
 setConwayColorBehavior :: Position -> BehaviorType
 setConwayColorBehavior pos go = do
@@ -115,4 +118,16 @@ setConwayColorBehavior pos go = do
     pushMessage (setFillColorMsg color) go
 
 isLiveCellAt :: Position -> SceneState -> Bool
-isLiveCellAt pos (SceneState s) = isLive pos s
+isLiveCellAt pos (SceneState s _) = isLive pos s
+
+turnOnAutoUpdateB :: KeyCode -> Behavior
+turnOnAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
+    (SceneState b _) <- get
+    put (SceneState b True)
+    return go
+
+turnOffAutoUpdateB :: KeyCode -> Behavior
+turnOffAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
+    (SceneState b _) <- get
+    put (SceneState b False)
+    return go

@@ -12,7 +12,7 @@ import Control.Monad.Reader (Reader, runReader)
 import Control.Monad.Trans.State (StateT, runStateT)
 import Conway
 
-data SceneState = SceneState ConwayWorld
+data SceneState = SceneState ConwayWorld Bool
 type UpdateMStack a = StateT SceneState (Reader GameEnvironment) a
 type UpdateType a = a -> UpdateMStack a
 

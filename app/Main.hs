@@ -77,7 +77,7 @@ main = do
         Nothing -> putStrLn "Error creating game objects"
         Just balls -> case newConwayWorld (5, 5) of 
                         Just b -> do
-                            let sceneState = SceneState b
+                            let sceneState = SceneState b True
                                 anyBalls = map AGO balls
                                 world = GameWorld wnd
                                 scene = GameScene physicsWorld anyBalls sceneState
