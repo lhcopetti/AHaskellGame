@@ -5,6 +5,7 @@ module Component.Behavior.HigherOrderBehavior
     , behaveBoth
     , behaveAll
     , behaveEvery
+    , chooseBehavior
     ) where
 
 import Control.Monad (liftM)
@@ -20,6 +21,12 @@ behaviorPred bool first second obj = let
     chosenBehavior = if bool then first else second
     in
         return $ setBehaviorT chosenBehavior obj
+
+chooseBehavior :: Bool -> BehaviorType -> BehaviorType -> BehaviorType
+chooseBehavior pred first second obj = let
+    chosenBeh = if pred then first else second
+    in
+        chosenBeh obj
 
 behaveOnceAndThen :: BehaviorType -> BehaviorType -> BehaviorType
 behaveOnceAndThen first second obj = liftM (setBehaviorT second) (first obj)

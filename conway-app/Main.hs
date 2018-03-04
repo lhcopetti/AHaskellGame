@@ -18,7 +18,7 @@ import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes
 import Component.Behavior.Behavior (setBehaviorT)
-import Component.Behavior.Behaviors (behaveEveryB, behaveOnKeyPressB)
+import Component.Behavior.Behaviors
 import ObjectsFactory
 import GridGameObjectFactory
 import Updatable
@@ -97,8 +97,10 @@ mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
 stepConway :: Int -> Behavior
 stepConway interval = behaveEveryB interval $ \go -> do
     (SceneState _ shouldUpdate) <- get
-    if shouldUpdate then modify tickState >> return go
-    else return go
+    behave (chooseBehaviorB shouldUpdate should shouldNot) go
+        where
+            should      = Behavior $ \go -> modify tickState >> return go
+            shouldNot   = noopB
 
 resetConwayB :: KeyCode -> Behavior
 resetConwayB key = behaveOnKeyPressB key $ \go -> do
