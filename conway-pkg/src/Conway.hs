@@ -8,7 +8,6 @@ module Conway
     , cellAt
     , tick
     , isLive
-    , reset
     , BoardSize
     , ConwayWorld
     , Position

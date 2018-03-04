@@ -74,7 +74,8 @@ createObjects _ _ = do
     resetter <- createLogicGO (resetConwayB KeyR)
     shouldUpdate <- createLogicGO (turnOnAutoUpdateB KeyA)
     dontUpdate <- createLogicGO (turnOffAutoUpdateB KeyZ)
-    return (board, dontUpdate : shouldUpdate : stepper : resetter : objs)
+    manualStepper <- createLogicGO (singleStepB KeyS)
+    return (board, manualStepper : dontUpdate : shouldUpdate : stepper : resetter : objs)
 
 initialBoard :: ConwayWorld -> ConwayWorld
 initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)
@@ -118,6 +119,11 @@ setConwayColorBehavior pos go = do
     isLive <- gets (isLiveCellAt pos)
     let color = if isLive then white else red
     pushMessage (setFillColorMsg color) go
+
+singleStepB :: KeyCode -> Behavior
+singleStepB key = behaveOnKeyPressB key $ \go -> do
+    modify tickState
+    return go
 
 isLiveCellAt :: Position -> SceneState -> Bool
 isLiveCellAt pos (SceneState s _) = isLive pos s
