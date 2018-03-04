@@ -16,6 +16,11 @@ newBoard (width, height) = do
     let board = replicate height (replicate width deadCell)
     pure (LL board)
 
+reset :: Board -> Board
+reset board = let 
+    allPos = positionsFor board
+    in foldr setDeadCell board allPos
+
 boardSize :: Board -> BoardSize
 boardSize (LL xs) = (length (head xs), length xs)
 

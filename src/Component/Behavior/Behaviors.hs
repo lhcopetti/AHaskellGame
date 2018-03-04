@@ -19,10 +19,12 @@ module Component.Behavior.Behaviors
     , behaveAllB
     , behaveEveryB
     , addCommandBehaviorB
+    , behaveOnKeyPressB
     ) where
 
-import GameObject.GameObjectTypes (GameObjectCreation, Command)
+import SFML.Window.Keyboard (KeyCode)
 
+import GameObject.GameObjectTypes (GameObjectCreation, Command)
 import Component.Behavior.Behavior
 import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer, followPointingMouse)
@@ -33,6 +35,7 @@ import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHit
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
 import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveAll, behaveEvery)
 import Component.Behavior.CommandBehavior (addCommandBehavior)
+import Component.Behavior.InputBehavior (behaveOnKeyPress)
 
 encloseToBoxB :: Behavior
 encloseToBoxB = Behavior encloseToBox
@@ -93,3 +96,6 @@ behaveEveryB counter beh = Behavior (behaveEvery counter beh)
 
 addCommandBehaviorB :: Command -> Behavior
 addCommandBehaviorB comm = Behavior (addCommandBehavior comm)
+
+behaveOnKeyPressB :: KeyCode -> BehaviorType -> Behavior
+behaveOnKeyPressB key beh = Behavior (behaveOnKeyPress key beh)

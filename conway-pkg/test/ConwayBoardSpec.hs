@@ -18,7 +18,9 @@ main = hspecWith defaultConfig { configFastFail = True } spec
 
 spec :: Spec
 spec = do
+    singleCellBoardTests
     boardCreationTests
+    resetBoardTests
     emptyBoardTests
     populatedBoardTests
     neighborsTest
@@ -33,6 +35,14 @@ spec = do
     blockStillLifeTest
     blinkerOscillatorTest
 
+singleCellBoardTests :: Spec
+singleCellBoardTests = describe "Single cell board tests" $ do
+    let board = setLiveCell (0, 0) . unsafeNewBoard $ (1, 1)
+    it "should kill a cell at specified position" $ do
+        isLiveCell (0, 0) board `shouldBe` Just True
+        isLiveCell (0, 0) (reset board) `shouldBe` Just False
+
+
 boardCreationTests :: Spec
 boardCreationTests = describe "ConwayBoard constructor" $ do
     it "should only allow nonzero and non-negatives dimensions" $ do
@@ -41,6 +51,17 @@ boardCreationTests = describe "ConwayBoard constructor" $ do
     it "should return the correct size" $ do
         let boards = newBoard <$> [(3, 3), (1, 5), (5, 1)]
         map (liftM boardSize) boards `shouldBe` [Just (3, 3), Just (1, 5), Just (5, 1)]
+
+resetBoardTests :: Spec
+resetBoardTests = describe "ConwayBoard Reset" $ do
+    it "a reset board should be equal to a newly created one" $ do
+        let board       = setLiveCells [ (0, 0), (1, 1) ] (unsafeNewBoard (2, 2))
+        let resetBoard  = reset board
+        resetBoard `shouldBe` unsafeNewBoard (2,2)
+    it "should kill all living cells in a board" $ do
+        let board = setLiveCells [ (0, 0), (1, 1), (4, 5), (3, 2), (4, 9) ] (unsafeNewBoard (5, 10))
+            allDead = reset board
+        any isAlive (allCells allDead) `shouldBe` False
 
 emptyBoardTests :: Spec
 emptyBoardTests = describe "Empty ConwayBoard" $ do
