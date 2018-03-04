@@ -9,10 +9,12 @@ import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
 import Control.Monad.Trans.Class
 import Control.Monad.IO.Class (liftIO)
+
 import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
+import Updatable
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
@@ -75,9 +77,10 @@ main = do
         Nothing -> putStrLn "Error creating game objects"
         Just balls -> case newConwayWorld (5, 5) of 
                         Just b -> do
-                            let anyBalls = map AGO balls
-                            let world = GameWorld wnd
-                            let scene = GameScene physicsWorld anyBalls b
+                            let sceneState = SceneState b
+                                anyBalls = map AGO balls
+                                world = GameWorld wnd
+                                scene = GameScene physicsWorld anyBalls sceneState
                             startGame world scene gameEnv
                             putStrLn "This is the End!"
                         Nothing -> do

@@ -13,12 +13,12 @@ import Physics.PhysicsWorld ()
 import Drawable
 import Synchronizable
 import NativeResource
-import Updatable (StateType)
+import Updatable (SceneState)
 import GameEnv (GameEnvironment (..))
 
 data GameScene = GameScene  { physicsWorld :: PhysicsWorld
                             , gameObjects  :: [AnyGameObject]
-                            , gameState    :: StateType
+                            , gameState    :: SceneState
                             }
 
 

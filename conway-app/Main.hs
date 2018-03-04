@@ -21,6 +21,7 @@ import Component.Behavior.Behavior (setBehaviorT)
 import Component.Behavior.Behaviors (behaveEveryB, behaveOnKeyPressB)
 import ObjectsFactory
 import GridGameObjectFactory
+import Updatable
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import Vec2.Vec2Math
@@ -57,10 +58,10 @@ main = do
     case objs of 
         Nothing -> putStrLn "Error creating game objects"
         Just (b, objects) -> do
-                            let n = initialBoard b
-                            let anyObjs = map AGO objects
-                            let world = GameWorld wnd
-                            let scene = GameScene physicsWorld anyObjs n
+                            let n = SceneState (initialBoard b)
+                                anyObjs = map AGO objects
+                                world = GameWorld wnd
+                                scene = GameScene physicsWorld anyObjs n
                             startGame world scene gameEnv 
                             putStrLn "This is the End!"
 
@@ -93,17 +94,25 @@ mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
 
 stepConway :: Int -> Behavior
 stepConway interval = behaveEveryB interval $ \go -> do
-    modify tick
+    modify tickState
     return go
 
 resetConwayB :: KeyCode -> Behavior
 resetConwayB key = behaveOnKeyPressB key $ \go -> do
-    modify (initialBoard . reset)
+    modify resetState
     return go
 
+tickState :: SceneState -> SceneState
+tickState (SceneState b) = SceneState (tick b)
+
+resetState :: SceneState -> SceneState
+resetState (SceneState b) = SceneState (initialBoard . reset $ b)
 
 setConwayColorBehavior :: Position -> BehaviorType
 setConwayColorBehavior pos go = do
-    isLive <- gets (isLive pos)
+    isLive <- gets (isLiveCellAt pos)
     let color = if isLive then white else red
     pushMessage (setFillColorMsg color) go
+
+isLiveCellAt :: Position -> SceneState -> Bool
+isLiveCellAt pos (SceneState s) = isLive pos s
