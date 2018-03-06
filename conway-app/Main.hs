@@ -17,11 +17,13 @@ import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes
+import GameObject.TextGameObject (createTextGO, createTextGO)
 import Component.Behavior.Behavior (setBehaviorT)
 import Component.Behavior.Behaviors
 import ObjectsFactory
 import GridGameObjectFactory
 import Updatable
+import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import Vec2.Vec2Math
@@ -75,7 +77,8 @@ createObjects _ _ = do
     shouldUpdate <- createLogicGO (turnOnAutoUpdateB KeyA)
     dontUpdate <- createLogicGO (turnOffAutoUpdateB KeyZ)
     manualStepper <- createLogicGO (singleStepB KeyS)
-    return (board, manualStepper : dontUpdate : shouldUpdate : stepper : resetter : objs)
+    instructions <- createInstructions
+    return (board, manualStepper : dontUpdate : shouldUpdate : stepper : resetter : objs ++ instructions)
 
 initialBoard :: ConwayWorld -> ConwayWorld
 initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)
@@ -139,3 +142,17 @@ turnOffAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
     (SceneState b _) <- get
     put (SceneState b False)
     return go
+
+
+createInstructions :: MaybeT IO [GameObject]
+createInstructions = do
+    autoOn      <- positionM (Vec2f 420 30) (newText "Auto ON: 'A'")
+    autoOff     <- positionM (Vec2f 420 60) (newText "Auto OFF: 'Z'")
+    rstBoard    <- positionM (Vec2f 420 90) (newText "Reset board: 'R'")
+    singleStep  <- positionM (Vec2f 420 120) (newText "Single step: 'S'")
+    return [autoOn, autoOff, rstBoard, singleStep]
+    where
+        newText = createTextGO 15 white
+
+positionM :: (Monad m) => Vec2f -> m GameObject -> m GameObject
+positionM pos = liftM (`Pos.setPosition` pos)
