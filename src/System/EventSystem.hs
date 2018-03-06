@@ -7,6 +7,7 @@ module System.EventSystem
 import SFML.Graphics.Types (RenderWindow)
 import SFML.Graphics.RenderWindow (pollEvent)
 import SFML.Window.Event (SFEvent (..))
+import SFML.Window.Keyboard (KeyCode (KeyEscape))
 
 import Control.Monad.IO.Class (liftIO)
 
@@ -39,6 +40,7 @@ pollEventT :: RenderWindow -> MaybeT IO SFEvent
 pollEventT = MaybeT . pollEvent
 
 shouldCloseWindow :: SFEvent -> Bool
-shouldCloseWindow SFEvtClosed                   = True
-shouldCloseWindow SFEvtMouseButtonPressed {}    = True
-shouldCloseWindow _                             = False
+shouldCloseWindow SFEvtClosed                           = True
+shouldCloseWindow SFEvtMouseButtonPressed {}            = True
+shouldCloseWindow (SFEvtKeyPressed KeyEscape _ _ _ _)   = True
+shouldCloseWindow _                                     = False
