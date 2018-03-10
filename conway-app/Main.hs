@@ -149,13 +149,21 @@ turnOffAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
 
 createInstructions :: MaybeT IO [GameObject]
 createInstructions = do
-    autoOn      <- positionM (Vec2f 420 30) (newText "Auto ON: 'A'")
-    autoOff     <- positionM (Vec2f 420 60) (newText "Auto OFF: 'Z'")
-    rstBoard    <- positionM (Vec2f 420 90) (newText "Reset board: 'R'")
-    singleStep  <- positionM (Vec2f 420 120) (newText "Single step: 'S'")
+    let pos = genPositions (Vec2f 420 30) (onY (+30))
+    objs <- createLabels
+    return (zipWith Pos.setPosition objs pos)
+
+createLabels :: MaybeT IO [GameObject]
+createLabels = do
+    autoOn      <- newText "Auto ON: 'A'"
+    autoOff     <- newText "Auto OFF: 'Z'"
+    rstBoard    <- newText "Reset board: 'R'"
+    singleStep  <- newText "Single step: 'S'"
     return [autoOn, autoOff, rstBoard, singleStep]
     where
         newText = createTextGO 15 white
 
-positionM :: (Monad m) => Vec2f -> m GameObject -> m GameObject
-positionM pos = liftM (`Pos.setPosition` pos)
+genPositions :: Vec2f -> (Vec2f -> Vec2f) -> [Vec2f]
+genPositions seed f = newPos : genPositions newPos f
+    where
+        newPos = f seed

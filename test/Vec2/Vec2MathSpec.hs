@@ -24,8 +24,16 @@ spec = describe "testVec2fMath" $ do
             map (uncurry divideVec2f . fst) divideTestCases `shouldBe` map snd divideTestCases
         it "should return the angle in relation to the x axis" $
             map (angleVec2f . fst) angleTestCases `shouldBe` map snd angleTestCases
-        it "should return both perperndicular vectors to the one supplied" $
+        it "should return both perpendicular vectors to the one supplied" $
             map (getOrthoVec2f . fst) orthoTestCases `shouldBe` map snd orthoTestCases
+        it "should flip the Vec2f components" $ do
+            flipV2f (Vec2f 5 5)     `shouldBe` Vec2f 5 5
+            flipV2f (Vec2f 5 10)    `shouldBe` Vec2f 10 5
+        it "should only modify the X component" $
+            map (uncurry onX . fst) onTestCases `shouldBe` map snd onTestCases
+        it "should only modify the Y component" $
+            map (uncurry onY . fst) onTestCases `shouldBe` map (flipV2f . snd) onTestCases
+            
 
 
 testCases :: [((Float, Float), Float)]
@@ -61,3 +69,9 @@ orthoTestCases = [ (Vec2f 0  1, (Vec2f 1 0      , Vec2f (-1) 0  ))
                  , (Vec2f 10 0, (Vec2f 0 (-10)  , Vec2f 0 10    ))
                  , (Vec2f 5  5, (Vec2f 5 (-5)   , Vec2f (-5) 5   ))
                  ]
+
+onTestCases :: [((Float -> Float, Vec2f), Vec2f)]
+onTestCases =  [ (((+3), Vec2f 0 0     ), Vec2f 3   0)
+                , (((*5), Vec2f 5 5     ), Vec2f 25  5)
+                , (((/10), Vec2f 50 50  ), Vec2f 5   50)
+                ]
