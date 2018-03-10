@@ -1,0 +1,35 @@
+lor=always"
+    Process exited with code: ExitFailure 1
+    Logs have been written to: /home/lhcopetti/Documents/Dev/Haskell/SFMLHelloWorld/.stack-work/logs/ConwayLib-0.1.0.0.log
+
+    Preprocessing library for ConwayLib-0.1.0.0..
+    Building library for ConwayLib-0.1.0.0..
+    [2 of 3] Compiling ConwayBoard      ( src/ConwayBoard.hs, .stack-work/dist/x86_64-linux/Cabal-2.0.1.0/build/ConwayBoard.o )
+
+    /home/lhcopetti/Documents/Dev/Haskell/SFMLHelloWorld/conway-pkg/src/ConwayBoard.hs:12:10: error:
+        • Illegal instance declaration for ‘Show Board’
+            (All instance types must be of the form (T t1 ... tn)
+             where T is not a synonym.
+             Use TypeSynonymInstances if you want to disable this.)
+        • In the instance declaration for ‘Show Board’
+       |
+    12 | instance Show Board where
+       |          ^^^^^^^^^^
+
+
+type Board = LL ConwayCell
+instance Show Board 
+
+
+----------------------------------
+   Preprocessing library for ConwayLib-0.1.0.0..
+    Building library for ConwayLib-0.1.0.0..
+    [2 of 3] Compiling ConwayBoard      ( src/ConwayBoard.hs, .stack-work/dist/x86_64-linux/Cabal-2.0.1.0/build/ConwayBoard.o )
+
+    /home/lhcopetti/Documents/Dev/Haskell/SFMLHelloWorld/conway-pkg/src/ConwayBoard.hs:15:19: error:
+        • Expected kind ‘* -> *’, but ‘Board’ has kind ‘*’
+        • In the first argument of ‘Foldable’, namely ‘Board’
+          In the instance declaration for ‘Foldable Board’
+       |
+    15 | instance Foldable Board where
+       |                   ^^^^^
