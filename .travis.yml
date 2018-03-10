@@ -26,8 +26,8 @@ before_install:
 
 install:
 # Build dependencies
-- stack --no-terminal --install-ghc test --only-dependencies --extra-include-dirs="CSFML-2.3/include" --extra-lib-dirs="CSFML-2.3/lib" --extra-lib-dirs="./SFML-2.3/lib"
+- stack --no-terminal --install-ghc test --only-dependencies --extra-include-dirs="./CSFML-2.3/include" --extra-lib-dirs="./CSFML-2.3/lib" --extra-lib-dirs="./SFML-2.3/lib"
 
 script:
 # Build the package, its tests, and its docs and run the tests
-- stack --no-terminal test --haddock --no-haddock-deps --extra-include-dirs="CSFML-2.3/include" --extra-lib-dirs="CSFML-2.3/lib" --extra-lib-dirs="./SFML-2.3/lib"
+- stack --no-terminal test --haddock --no-haddock-deps --extra-include-dirs="./CSFML-2.3/include" --extra-lib-dirs="./CSFML-2.3/lib" --extra-lib-dirs="./SFML-2.3/lib"
