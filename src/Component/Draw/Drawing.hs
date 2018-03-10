@@ -12,7 +12,7 @@ import Drawable
 import NativeResource
 import Updatable
 import System.Messaging.DrawingMessage
-import GameObject.GameObjectTypes (GameObject (..), Drawing (..), DrawingFlag (..))
+import GameObject.GameObjectTypes
 import Component.Draw.Animation.AnimationDrawing (updateAnimation)
 
 instance Drawable Drawing where
