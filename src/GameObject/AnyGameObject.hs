@@ -15,6 +15,7 @@ import ChildBearer
 import NativeResource
 import Component.Physics.PhysicsClass
 import Component.Physics.Physics ()
+import Component.Draw.ZOrderable
 
 data AnyGameObject = forall a. ( Updatable a
                                , Drawable a
@@ -22,7 +23,8 @@ data AnyGameObject = forall a. ( Updatable a
                                , Killable a
                                , ChildBearer a
                                , PhysicsClass a
-                               , NativeResource a)
+                               , NativeResource a
+                               , ZOrderable a)
                                => AGO a
 
 instance Updatable AnyGameObject where
@@ -50,3 +52,7 @@ instance PhysicsClass AnyGameObject where
     getVelocity   (AGO go)   = getVelocity go
     setVelocity   (AGO go) v = AGO (setVelocity go v)
     updatePhysics (AGO go)   = liftM AGO (updatePhysics go)
+
+instance ZOrderable AnyGameObject where
+    getZ   (AGO go) = getZ go
+    setZ z (AGO go) = AGO (setZ z go)

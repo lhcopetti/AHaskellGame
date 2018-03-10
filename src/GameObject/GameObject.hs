@@ -15,7 +15,8 @@ import Killable
 import ChildBearer
 import NativeResource
 import qualified Component.Position as Pos
-import Component.Draw.Drawing
+import Component.Draw.ZOrderable
+import Component.Draw.ZDrawing
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
 import GameObject.GameObjectTypes
@@ -28,11 +29,15 @@ instance Updatable GameObject where
         updatedObj <- runInput (inputComp go) noDrawingMsgs
         updatedObj' <- behave (behavior updatedObj) updatedObj
         updatedObj'' <- runCommands updatedObj'
-        return (updateDrawing updatedObj'')
+        updateDrawing updatedObj''
 
+updateDrawing :: UpdateType GameObject
+updateDrawing obj@GameObject{ drawComp } = do
+    newDrawing <- update drawComp
+    return $ obj { drawComp = newDrawing }
 
 instance Synchronizable GameObject where
-    synchronize go = syncDrawing (drawComp go) go
+    synchronize go = syncZDrawing (drawComp go) go
 
 instance Drawable GameObject where 
     draw wnd GameObject { drawComp } = draw wnd drawComp
@@ -64,6 +69,10 @@ instance ChildBearer GameObject where
     getChildren = childObjects
     removeChildren obj = obj { childObjects = [] }
     addChild child obj@GameObject { childObjects } = obj { childObjects = child : childObjects }
+
+instance ZOrderable GameObject where
+    getZ GameObject { drawComp } = getZ drawComp
+    setZ z obj@GameObject { drawComp } = obj { drawComp = setZ z drawComp }
 
 addCommand :: Command -> GameObject -> GameObject
 addCommand comm obj@GameObject { commands } = obj { commands = comm : commands }

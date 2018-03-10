@@ -104,19 +104,66 @@
 	OK! Add a drawing for the line segment.
 	OK! Add debug draw for PhysicsObjects
 
+13/02/2018
+	OK!: We don't need to reimplement a lot of methods like: updateAnyGameObject, drawAnyGameObject.
+		We did because we had to unwrap the gameobject from within the existential type, however, as seen 
+		on this article: https://wiki.haskell.org/Existential_type#Introduction_to_existential_types,
+		we could simply instantiate the type classes on the AnyGameObject itself, so that the callers
+		can use the standard update and draw methods defined in the type class it self. So PRETTy!!
+	I hope it works.
+	OK! Change the type of the Composite Drawing to NonEmpty list,
+		This will come in handy for the implementation of the composite drawing, 
+		where I will have to return simply the head of the list of results from the CompositeDrawing.
+		I'm not sure yet if this will be the best approach, let's say that for some reason
+		I would need the current position of all the drawings of a composite. That would be a problem,
+		but I will leave that for a future  exercise.
+	OK! Opened an issue at stack overflow because I couldn't figure out how the hell would I be able to
+		make the implementation of runOnTransformable feasible. However, after only one hour there was already 
+		an answer post that clared my mind and led me to a solution.
 
-	Destroy physics objects (remove from space)
+14/02/2018
+	OK! Enchance DebugDraw. It should be clear when an object is rotating for example.
+		Also, the fillColor is not suited for this, currently opaque white.
+	OK! Destroy physics objects (remove from space)
+		I think I will destroy the line physics object by pressing a key
+
+15/02/2018
+	OK! Add a specific data type for the hypmunk physics that can be passed around 
+	when the whole game object is not needed
+
+
+	TODO: Have a simple way to create static vs dynamic objects. This brings the question:
+	Would I have to model the use case where the user changes the type of the physics object?
+		Thinking very briefly about it tells me no, 
+	TODO: Create a Scene object that will hold its own list of gameobjects
+		The game scene should have its own list of gameobjects, physics world and etc...
+
+22/02/2018
+24/02/2018
+	OK! Remove HipmunkSimple from the code base (It is pulling a lot of unwanted dependencies)
+
+26/02/2018
+	OK!Add destroy for scenes
+
+28/02/2018
+	OK! Let the updateType be more generic. We now are tied to only one parametric type,
+	but we should allow two, for example: InputType (It should simply be an specific application)
+	of the UpdateType type constructor.
+	TODO: There should be a method `runUpdate` that should enclose (hide) the implementation detail
+	of the monad stack.
+
+01/03/2018
+
 	encloseByWrapAround should a physics version to actually update the underlying hipmunk library
 
+	TODO: Start to abstract SFML away from the code base just like with Hipmunk
 	TODO: Add the Vec2Instances.hs to another module that also reexports the following:
 		import SFML.System.Vec2 (Vec2f (..).
 
-
-
-	TODO: Create a Scene object that will hold its own list of gameobjects
 	TODO: Create a demo for switching between scenes
 
-
+	TODO: Start to gradually eliminate the hardcoded dependencies to the SFML library.
+		The first step could be creating your own Vector instance.
 
 	TODO: All time counter (all of the game objects)
 	TODO: Add a statistics object that will show:

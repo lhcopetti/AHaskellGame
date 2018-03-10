@@ -14,6 +14,7 @@ module GameObject.GameObjectTypes
     , SpriteSheet (..)
     , Animation (..)
     , DrawingFlag (..)
+    , ZDrawing (..)
     , Drawing (..)
     , DrawingMessageType
     , DrawingMessage (..)
@@ -30,7 +31,7 @@ import qualified Data.List.NonEmpty as LNE
 
 import Updatable (UpdateType, UpdateMStack)
 
-data GameObject = GameObject { drawComp     :: Drawing
+data GameObject = GameObject { drawComp     :: ZDrawing
                              , behavior     :: Behavior
                              , physicsComp  :: Physics
                              , inputComp    :: Input
@@ -67,6 +68,8 @@ data Animation = Animation  { createDrawing :: Drawing -> Drawing
                             , spriteSheet   :: SpriteSheet
                             , spriteLoop    :: [Int]
                             }
+
+data ZDrawing = ZDrawing Drawing Float
 
 data Drawing    = CircleDrawing         CircleShape
                 | RectangleDrawing      RectangleShape

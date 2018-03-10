@@ -1,7 +1,5 @@
-{-# LANGUAGE RecordWildCards #-}
 module Component.Draw.Drawing
     ( Drawing (..)
-    , updateDrawing
     , syncDrawing
     ) where
 
@@ -12,8 +10,9 @@ import qualified Component.Position as Pos
 import Component.Draw.DrawingSync (executeUpdateOnDrawing)
 import Drawable
 import NativeResource
+import Updatable
 import System.Messaging.DrawingMessage
-import GameObject.GameObjectTypes (GameObject (..), Drawing (..), DrawingFlag (..))
+import GameObject.GameObjectTypes
 import Component.Draw.Animation.AnimationDrawing (updateAnimation)
 
 instance Drawable Drawing where
@@ -29,12 +28,12 @@ instance Drawable Drawing where
     draw wnd (PhysicsDebugDrawing drw _) = draw wnd drw
     draw _   EmptyDrawing                = return ()
 
-updateDrawing :: GameObject -> GameObject
-updateDrawing obj@GameObject{..} = obj { drawComp = update drawComp }
+instance Updatable Drawing where
+    update drw = return (updateDrawing drw)
 
-update :: Drawing -> Drawing
-update (AnimationDrawing anim spr) = updateAnimation anim spr
-update d = d
+updateDrawing :: Drawing -> Drawing
+updateDrawing (AnimationDrawing anim spr) = updateAnimation anim spr
+updateDrawing d = d
 
 syncDrawing :: (Pos.Position a, DrawingInbox a) => Drawing -> a -> IO ()
 syncDrawing (PhysicsDebugDrawing _ act) _ = act

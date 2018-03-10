@@ -10,6 +10,7 @@ import SFML.System.Vector2 (Vec2f)
 
 import GameObject.GameObjectTypes (Physics)
 import Component.Draw.Drawing
+import Component.Draw.ZDrawing
 import Component.Behavior.Behavior
 import Component.Behavior.Behaviors (noopB)
 import Component.Physics.PhysicsFactory (newSimplePhysics)
@@ -26,7 +27,8 @@ createGameObject drw beh physics pos = let
     noCommands = []
     input = emptyInput
     emptyInbox = []
-    in GameObject drw beh physics input pos initialRotation emptyInbox children noCommands live
+    zdrw = mkZDrawing drw
+    in GameObject zdrw beh physics input pos initialRotation emptyInbox children noCommands live
 
 createSimplePhysicsGO :: Drawing -> Behavior -> Vec2f -> Vec2f -> GameObject
 createSimplePhysicsGO drw beh pos vel = 
