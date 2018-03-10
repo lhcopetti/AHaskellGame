@@ -33,6 +33,7 @@ import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import Random.Random
 import Conway
+import Data.Time
 
 import Paths_AHaskellGame
 
@@ -60,7 +61,8 @@ main = do
     
     -- Game Environment initialization
     dimensions <- getWindowSize wnd
-    let gameEnv = createGameEnv dimensions
+    currTime <- getCurrentTime
+    let gameEnv = createGameEnv dimensions currTime
 
     -- Initialize a Random Generator
 #ifdef USE_RANDOM_GENERATOR

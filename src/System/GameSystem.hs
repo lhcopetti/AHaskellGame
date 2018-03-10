@@ -16,7 +16,7 @@ import System.GameScene (GameScene (..), updateGameScene)
 import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.InputSnapshot (createSnapshot)
 import Input.Mouse (getMouseInput)
-import GameEnv (GameEnvironment (..))
+import GameEnv (GameEnvironment (..), updateGameEnv)
 import Synchronizable
 import Drawable
 import NativeResource
@@ -36,10 +36,7 @@ loop (GameWorld wnd) scene@GameScene { gameObjects } env = do
 
     let snapshot = createSnapshot evts
     let liveGameObjects = fromIntegral . length $ gameObjects
-    let newEnv = env    { input = mouse
-                        , countGOs = liveGameObjects
-                        , inputSnapshot = snapshot
-                        }
+    newEnv <- updateGameEnv env mouse liveGameObjects snapshot
 
     unless (null evts) $ do 
         putStrLn $ "These are the events: " ++ show evts

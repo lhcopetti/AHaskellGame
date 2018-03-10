@@ -31,6 +31,7 @@ dependencies:
 - monadplus
 - hspec
 - ConwayLib
+- time
 
 library:
   source-dirs: src
