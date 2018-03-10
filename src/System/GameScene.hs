@@ -13,6 +13,7 @@ import Physics.PhysicsWorld ()
 import Drawable
 import Synchronizable
 import NativeResource
+import Component.Draw.ZOrderable
 import Updatable (SceneState)
 import GameEnv (GameEnvironment (..))
 
@@ -23,7 +24,9 @@ data GameScene = GameScene  { physicsWorld :: PhysicsWorld
 
 
 instance Drawable GameScene where
-    draw wnd scene = forM_ (gameObjects scene) (draw wnd)
+    draw wnd scene = 
+        let objs = gameObjects scene
+            in forM_ (orderByZ objs) (draw wnd)
 
 instance Synchronizable GameScene where
     synchronize scene = forM_ (gameObjects scene) synchronize

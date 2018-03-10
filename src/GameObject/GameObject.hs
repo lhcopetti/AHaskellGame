@@ -15,6 +15,7 @@ import Killable
 import ChildBearer
 import NativeResource
 import qualified Component.Position as Pos
+import Component.Draw.ZOrderable
 import Component.Draw.ZDrawing
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
@@ -68,6 +69,10 @@ instance ChildBearer GameObject where
     getChildren = childObjects
     removeChildren obj = obj { childObjects = [] }
     addChild child obj@GameObject { childObjects } = obj { childObjects = child : childObjects }
+
+instance ZOrderable GameObject where
+    getZ GameObject { drawComp } = getZ drawComp
+    setZ z obj@GameObject { drawComp } = obj { drawComp = setZ z drawComp }
 
 addCommand :: Command -> GameObject -> GameObject
 addCommand comm obj@GameObject { commands } = obj { commands = comm : commands }

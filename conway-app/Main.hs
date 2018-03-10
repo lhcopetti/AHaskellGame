@@ -23,6 +23,7 @@ import Component.Behavior.Behaviors
 import ObjectsFactory
 import GridGameObjectFactory
 import Updatable
+import Component.Draw.ZOrderable
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
@@ -79,9 +80,9 @@ createObjects _ _ = do
     dontUpdate <- createLogicGO (turnOffAutoUpdateB KeyZ)
     manualStepper <- createLogicGO (singleStepB KeyS)
     instructions <- createInstructions
-    mouse <- liftM (`Pos.setPosition` Vec2f 0 470) mkMousePrinter
-
-    return (board, manualStepper : dontUpdate : shouldUpdate : stepper : resetter : objs ++ instructions ++ [mouse])
+    mouse <- liftM (`Pos.setPosition` Vec2f 0 0) mkMousePrinter
+    let mouse' = setZ 10 mouse
+    return (board, mouse' : manualStepper : dontUpdate : shouldUpdate : stepper : resetter : objs ++ instructions)
 
 initialBoard :: ConwayWorld -> ConwayWorld
 initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)
