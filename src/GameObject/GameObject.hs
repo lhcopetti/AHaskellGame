@@ -28,8 +28,12 @@ instance Updatable GameObject where
         updatedObj <- runInput (inputComp go) noDrawingMsgs
         updatedObj' <- behave (behavior updatedObj) updatedObj
         updatedObj'' <- runCommands updatedObj'
-        return (updateDrawing updatedObj'')
+        updateDrawing updatedObj''
 
+updateDrawing :: UpdateType GameObject
+updateDrawing obj@GameObject{ drawComp } = do
+    newDrawing <- update drawComp
+    return $ obj { drawComp = newDrawing }
 
 instance Synchronizable GameObject where
     synchronize go = syncDrawing (drawComp go) go
