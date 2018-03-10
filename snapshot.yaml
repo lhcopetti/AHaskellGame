@@ -10,3 +10,4 @@ ghc-options:
   SFML:
     - --extra-include-dirs=./CSFML-2.3/include
     - --extra-lib-dirs=./CSFML-2.3/lib
+    - --extra-lib-dirs=./SFML-2.3/lib
