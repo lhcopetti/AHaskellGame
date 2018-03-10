@@ -27,7 +27,7 @@ import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import Vec2.Vec2Math
-import PrefabObjects.MousePositionPrinter (mkMousePrinter, mkMousePrinterB)
+import PrefabObjects.MousePositionPrinter (mkMousePrinter)
 import Conway
 
 defaultGravity :: Float
@@ -79,10 +79,9 @@ createObjects _ _ = do
     dontUpdate <- createLogicGO (turnOffAutoUpdateB KeyZ)
     manualStepper <- createLogicGO (singleStepB KeyS)
     instructions <- createInstructions
-    mouse <- mkMousePrinter
-    mouse2 <- liftM (`Pos.setPosition` Vec2f 0 470) mkMousePrinterB
+    mouse <- liftM (`Pos.setPosition` Vec2f 0 470) mkMousePrinter
 
-    return (board, manualStepper : dontUpdate : shouldUpdate : stepper : resetter : objs ++ instructions ++ [mouse, mouse2])
+    return (board, manualStepper : dontUpdate : shouldUpdate : stepper : resetter : objs ++ instructions ++ [mouse])
 
 initialBoard :: ConwayWorld -> ConwayWorld
 initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)

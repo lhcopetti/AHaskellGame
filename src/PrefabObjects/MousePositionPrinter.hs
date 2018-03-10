@@ -1,6 +1,5 @@
 module PrefabObjects.MousePositionPrinter
     ( mkMousePrinter
-    , mkMousePrinterB
     ) where
 
 import SFML.Graphics.Color
@@ -18,18 +17,12 @@ import Vec2.Vec2Math (zero)
 mkMousePrinter :: GameObjectCreation
 mkMousePrinter = do
     drawing <- createEmptyText 10
-    let beh = updateTextWithMousePositionB
+    let beh = Behavior (mouseBehavior WithinBounds)
     return (createSimplePhysicsGO drawing beh zero zero)
 
 transitionTo :: MousePositionState -> DrawingMessageType
 transitionTo WithinBounds = setTextColorMsg white
 transitionTo OutOfBounds  = setTextColorMsg red
-
-mkMousePrinterB :: GameObjectCreation
-mkMousePrinterB = do
-    drawing <- createEmptyText 10
-    let beh = Behavior (mouseBehavior WithinBounds)
-    return (createSimplePhysicsGO drawing beh zero zero)
 
 mouseBehavior :: MousePositionState -> BehaviorType
 mouseBehavior currState obj = do

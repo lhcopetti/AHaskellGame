@@ -8,6 +8,7 @@ import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
 import Control.Monad.Trans.Class
+import Control.Monad (liftM)
 import Control.Monad.IO.Class (liftIO)
 
 import System.Random (StdGen)
@@ -25,7 +26,9 @@ import PrefabObjects.AnimatedBlueBird (createAnimatedBlueBird)
 import PrefabObjects.BallInputAware (createBallInputAware)
 import PrefabObjects.AnimatedRunningCat (createAnimatedRunningCat)
 import PrefabObjects.AnimatedSpinningCoin (createSpinningCoin)
+import PrefabObjects.MousePositionPrinter (mkMousePrinter)
 import ObjectsFactory
+import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import Random.Random
@@ -102,7 +105,7 @@ createObjects gen env space = do
     eqT <- createMouseFollowerEqTriangle
     inputAware <- createBallInputAware (Vec2f 50 400)
     mousePointer <- createMousePositionCopier
-    mousePrinter <- createMousePositionPrinter (Vec2f 500 0)
+    mousePrinter <- liftM (`Pos.setPosition` Vec2f 500 0) mkMousePrinter
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
     (randomObjects, _) <- runBallCreation gen env createRandomMiniBalls
     goCounter <- createLiveGameObjectCounter (Vec2f 20 20)

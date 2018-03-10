@@ -128,13 +128,6 @@ createDeathByHitsOnWall pos vel = do
     let behavior = deathByHitsOnWallB
     return (createSimplePhysicsGO drawComponent behavior pos vel)
 
-createMousePositionPrinter :: Vec2f -> GameObjectCreation
-createMousePositionPrinter pos = do
-    liftIO $ putStrLn "Creating object that prints mouse position"
-    drawComponent <- createEmptyText 10
-    let behavior = updateTextWithMousePositionB
-    return (createSimplePhysicsGO drawComponent behavior pos zero)
-
 createSprite :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation
 createSprite path pos vel = do
     liftIO $ putStrLn ("Creating a Sprite GameObject from " ++ path)
