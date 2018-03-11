@@ -38,6 +38,7 @@ addons:
       - libsndfile1-dev
       - libopenal-dev
       - libstdc++6
+      - libsfml-dev
 
 ghc:
   - 8.2.2
