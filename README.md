@@ -182,6 +182,34 @@ bigLengthOnly xs = do
 --     return (fromIntegral . length $ xs)
 ```
 
+### 11/03/2018 - The end is near!
+
+I have spent the last couple of weeks weighing the pros and cons of developing a game or going for something more generic (a library for developing games in Haskell). I finally decided to go for the latter!  That means I have a exatcly 3 weeks to work on the remaining project.
+
+##### My plan:
+
+I am starting to feel the pressure and some of my decisions are already taking into account the proximity of the end of the project. Below, you will find a draft of my plan for the following weeks (the deliverable should be ready on March 31):
+
+- *Implement 3 SIMPLE (even larger emphasis on simple) games*
+
+The goal is to show that the 'framework' I built is sufficiently agnostic to embrace different game genres.
+
+1) Conway's Game of Life - Almost ready (still not handling mouse clicks).
+2) To be filled...
+3) To be filled...
+
+- *Maintain my hideous playground (the original executable)*
+
+    I really like how messy it has become. For me, it shows how much the project has grown and I always feel really good whenever I see the amounts of features that are concurrently running on that sandbox.
+
+- *Learn more about Docker*
+
+I won't promise anything here, but I would like to at least try to apply the concept to my game, especially because it has native dependencies such as libcsfml and libsfml that could be packaged together to ease the deploy and continous integration phase (Travis).
+
+Now, take a glimpse at the second executable (Conway's Game of Life) that I developed the past weeks.
+
+![alt text][diary-06]
+
 ## Development
 
 ### Setting up dependencies
@@ -278,3 +306,4 @@ This is also in honor for being the first logic bug on the project, and rightful
 [diary-03]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-28_AHaskellGame.gif "Diary 28/01/2018"
 [diary-04]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-02-11_AHaskellGame.gif "Diary 11/02/2018"
 [diary-05]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-02-18_AHaskellGame.gif "Diary 18/02/2018"
+[diary-06]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-03-11_ConwaysGameOfLife.gif "Diary 11/03/2018"
