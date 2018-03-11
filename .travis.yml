@@ -26,6 +26,8 @@ addons:
   apt:
     packages:
       - libgmp-dev
+      - libxcb-image0
+      - libxcb-image0-dev
 
 ghc:
   - 8.2.2
