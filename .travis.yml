@@ -37,6 +37,7 @@ addons:
       - libjpeg8-dev
       - libsndfile1-dev
       - libopenal-dev
+      - libstdc++6
 
 ghc:
   - 8.2.2
