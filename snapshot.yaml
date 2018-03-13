@@ -8,5 +8,5 @@ packages:
 
 ghc-options:
   SFML:
-    - --extra-include-dirs=./CSFML-2.3/include
-    - --extra-lib-dirs=./CSFML-2.3/lib
+    - --extra-include-dirs=/home/lhcopetti/Documents/Dev/Tools/CSFML-2.3/include
+    - --extra-lib-dirs=/home/lhcopetti/Documents/Dev/Tools/CSFML-2.3/lib
