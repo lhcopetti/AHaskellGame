@@ -1,3 +1,5 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
 module ChildBearer
     ( ChildBearer
     , getChildren
@@ -7,7 +9,7 @@ module ChildBearer
 
 import GameObject.GameObjectTypes (GameObjectCreation)
 
-class ChildBearer a where
-    getChildren :: a -> [GameObjectCreation]
-    removeChildren :: a -> a
-    addChild :: GameObjectCreation -> a -> a
+class ChildBearer obj st | obj -> st where
+    getChildren :: obj -> [GameObjectCreation st]
+    addChild :: GameObjectCreation st -> obj -> obj
+    removeChildren :: obj -> obj

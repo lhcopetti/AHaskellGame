@@ -20,7 +20,7 @@ data GameWorld = GameWorld  { window :: RenderWindow
 -- This two-part system to add child objects to the GameWorld happens because 
 -- we don't want to synchronize or draw objects that have not had their first update
 -- cycle yet.
-adoptChildren :: GameScene -> [GameObject GoVoidState] -> GameScene
+adoptChildren :: GameScene a -> [GameObject a] -> GameScene a
 adoptChildren scene@ GameScene { gameObjects } orphanChildren = scene { gameObjects = gameObjects ++ orphanChildren }
 
 

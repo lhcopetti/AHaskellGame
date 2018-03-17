@@ -81,7 +81,7 @@ main = do
         Just balls -> case newConwayWorld (5, 5) of 
                         Just _ -> do
                             let world = GameWorld wnd
-                                scene = GameScene physicsWorld balls GVS
+                                scene = GameScene physicsWorld balls ()
                             startGame world scene gameEnv
                             putStrLn "This is the End!"
                         Nothing -> do
@@ -94,7 +94,7 @@ type BallCreation a = ReaderT GameEnvironment (StateT StdGen (MaybeT IO)) a
 runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> MaybeT IO (a, StdGen)
 runBallCreation gen env eval = runStateT (runReaderT eval env) gen
 
-createObjects :: StdGen -> GameEnvironment -> PhysicsWorld -> MaybeT IO [GameObject GoVoidState]
+createObjects :: StdGen -> GameEnvironment -> PhysicsWorld -> MaybeT IO [GameObject st]
 createObjects gen env space = do 
     balls <- createGameBalls
     dots <- createDots
@@ -128,7 +128,7 @@ createObjects gen env space = do
     box2 <- createBox (Vec2f 600 350) 15 space
     return (box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
 
-createPhysicsBalls :: PhysicsWorld -> MaybeT IO [GameObject GoVoidState]
+createPhysicsBalls :: PhysicsWorld -> MaybeT IO [GameObject st]
 createPhysicsBalls physicsWorld = 
         let xs = take 5 [200, 250 ..]
             ys = take 5 [-100, -50, 0, 50, 100 ]
@@ -142,7 +142,7 @@ createPhysicsBalls physicsWorld =
             outOfPattern <- mapM (`big`     physicsWorld) positionss
             return (patternBalls ++ outOfPattern)
 
-createSprites :: MaybeT IO [GameObject GoVoidState]
+createSprites :: MaybeT IO [GameObject st]
 createSprites = do
     blueBird <- createSpriteFromFile "resources/sprites/blue-bird/blue-bird-0-resized.png" (Vec2f 400 100) (Vec2f 1.0 0)
     bird <- createAnimatedBlueBird (Vec2f 400 150) (Vec2f 1.0 0)
@@ -150,21 +150,21 @@ createSprites = do
     coin <- createSpinningCoin (Vec2f 36 300) (Vec2f 0 0)
     return [blueBird, bird, cat, coin]
 
-createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation
+createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation st
 createSpriteFromFile path pos vel = do
     systemPath <- liftIO $ getDataFileName path
     createSprite systemPath pos vel
 
-createRandomMiniBalls :: BallCreation [GameObject GoVoidState]
+createRandomMiniBalls :: BallCreation [GameObject st]
 createRandomMiniBalls = do
     pos <- createRandomPositions 5
     speed <- lift (createRandomSpeeds 8.0 10)
     sequence (ballCreationMiniBall <$> pos <*> speed)
 
-ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation (GameObject GoVoidState)
+ballCreationMiniBall :: Vec2f -> Vec2f -> BallCreation (GameObject st)
 ballCreationMiniBall pos vel = lift . lift $ createMiniBall pos vel
 
-createGameBalls :: MaybeT IO [GameObject GoVoidState]
+createGameBalls :: MaybeT IO [GameObject st]
 createGameBalls = do
     ball <- createBall (Vec2f 25 25) (Vec2f 4 4)
     ball2 <- createBall (Vec2f 15 15) (Vec2f 2 0)
@@ -179,7 +179,7 @@ createGameBalls = do
     ball14 <- createWhiteNoopBall (Vec2f 60 60)
     return [ball, ball2, ball3, ball4, ball5, ball6, ball7, ball8, ball9, ball13, ball14]
 
-createDots :: MaybeT IO [GameObject GoVoidState]
+createDots :: MaybeT IO [GameObject st]
 createDots = do
     dot     <- createWhiteNoopBall (Vec2f 50 50)
     dot'    <- createWhiteNoopBall (Vec2f 150 150)
@@ -187,7 +187,7 @@ createDots = do
     dot3    <- createWhiteNoopBall (Vec2f 350 350)
     return [dot, dot', dot'', dot3]
 
-createTriangles :: MaybeT IO [GameObject GoVoidState]
+createTriangles :: MaybeT IO [GameObject st]
 createTriangles = do
     triangle <- createDeadManWalking (Vec2f 150 150)
     return [triangle]

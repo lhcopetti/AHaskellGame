@@ -5,5 +5,5 @@ module Component.Behavior.CommandBehavior
 import GameObject.GameObjectTypes (Command (..), BehaviorType)
 import GameObject.GameObject (addCommand)
 
-addCommandBehavior :: Command -> BehaviorType
+addCommandBehavior :: Command st -> BehaviorType st
 addCommandBehavior comm obj = return (addCommand comm obj)

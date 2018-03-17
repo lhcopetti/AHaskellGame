@@ -4,5 +4,5 @@ module Component.Behavior.NoopBehavior
 
 import Component.Behavior.Behavior
 
-noopBehavior :: BehaviorType
+noopBehavior :: BehaviorType st
 noopBehavior = return

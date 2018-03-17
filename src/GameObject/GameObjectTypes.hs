@@ -1,9 +1,6 @@
 module GameObject.GameObjectTypes
     ( GameObject (..)
-    , GameObjectST
     , GoUpdateType
-    , GoUpdateMStack
-    , GoVoidState (..)
     , BehaviorType
     , Behavior (..)
     , Creation
@@ -33,45 +30,43 @@ import SFML.System.Vector2 (Vec2f)
 import Control.Monad.Trans.Maybe (MaybeT)
 import qualified Data.List.NonEmpty as LNE
 
-import Updatable (UpdateType, UpdateMStack)
+import Updatable (UpdateType)
 
 data GameObject st = GameObject { drawComp     :: ZDrawing
-                                , behavior     :: Behavior
+                                , behavior     :: Behavior st
                                 , physicsComp  :: Physics
-                                , inputComp    :: Input
+                                , inputComp    :: Input st
                                 , position     :: Vec2f
                                 , rotation     :: Float
                                 , inbox        :: [DrawingMessage]
-                                , childObjects :: [GameObjectCreation]
-                                , commands     :: [Command]
+                                , childObjects :: [GameObjectCreation st]
+                                , commands     :: [Command st]
                                 , alive        :: Bool
                                 }
 
-data GoVoidState = GVS
+type GoUpdateType st = UpdateType (GameObject st) st
+-- type GoUpdateMStack obj = UpdateMStack obj GoVoidState
 
-type GoUpdateType = UpdateType (GameObject GoVoidState) GoVoidState
-type GoUpdateMStack obj = UpdateMStack obj GoVoidState
+-- type GameObjectST = GameObject GoVoidState
 
-type GameObjectST = GameObject GoVoidState
-
-type BehaviorType = GoUpdateType
+type BehaviorType st = GoUpdateType st
 
 type Creation a = MaybeT IO a
-type GameObjectCreation  = Creation  (GameObject GoVoidState)
-type GameObjectsCreation = Creation [GameObject GoVoidState]
+type GameObjectCreation st  = Creation  (GameObject st)
+type GameObjectsCreation st = Creation [GameObject st]
 
-data Behavior = Behavior {  behave :: BehaviorType
+data Behavior st = Behavior {  behave :: BehaviorType st
                          }
 
 -- data BehaviorState a = BehaviorState    { behaveState :: GameObject -> State a GameObject
 --                                         }
 
-type CommandType    = UpdateType (GameObject GoVoidState) GoVoidState
-type InputType a    = GoUpdateType
+type CommandType st    = GoUpdateType st
+type InputType st    = GoUpdateType st
 
-data Command = Command CommandType
+data Command st = Command (CommandType st)
 
-data Input = Input { runInput :: GoUpdateType
+data Input st = Input { runInput :: GoUpdateType st
                    }
 
 data Animation = Animation  { createDrawing :: Drawing -> Drawing

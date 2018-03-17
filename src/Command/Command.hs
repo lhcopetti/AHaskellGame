@@ -7,7 +7,7 @@ import Control.Monad (foldM)
 
 import GameObject.GameObjectTypes
 
-runCommands :: GoUpdateType
+runCommands :: GoUpdateType st
 runCommands obj@GameObject { commands } = do
     let goWithoutCommands = cleanCommands obj
     foldM (flip executeCommand) goWithoutCommands commands
@@ -15,5 +15,5 @@ runCommands obj@GameObject { commands } = do
 cleanCommands :: GameObject a -> GameObject a
 cleanCommands obj = obj { commands = [] }
 
-executeCommand :: Command -> GoUpdateType
+executeCommand :: Command st -> GoUpdateType st
 executeCommand (Command f) = f

@@ -1,4 +1,6 @@
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
 module Component.Behavior.Behavior
     ( BehaviorType
     , Behavior (..)
@@ -9,6 +11,6 @@ module Component.Behavior.Behavior
 
 import GameObject.GameObjectTypes
 
-class Behavioral a where
-    setBehavior :: Behavior -> a -> a
-    setBehaviorT :: BehaviorType -> a -> a
+class Behavioral obj st | obj -> st where
+    setBehavior :: Behavior st -> obj -> obj
+    setBehaviorT :: BehaviorType st -> obj -> obj

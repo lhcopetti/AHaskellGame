@@ -16,32 +16,32 @@ import Component.Behavior.NoopBehavior (noopBehavior)
 import GameObject.GameObject ()
 
 -- | Sets the behavior of a gameObject given two options and a bool value.
-behaviorPred :: Bool -> BehaviorType -> BehaviorType -> BehaviorType
+behaviorPred :: Bool -> BehaviorType st -> BehaviorType st -> BehaviorType st
 behaviorPred bool first second obj = let
     chosenBehavior = if bool then first else second
     in
         return $ setBehaviorT chosenBehavior obj
 
-chooseBehavior :: Bool -> BehaviorType -> BehaviorType -> BehaviorType
+chooseBehavior :: Bool -> BehaviorType st -> BehaviorType st -> BehaviorType st
 chooseBehavior pred first second obj = let
     chosenBeh = if pred then first else second
     in
         chosenBeh obj
 
-behaveOnceAndThen :: BehaviorType -> BehaviorType -> BehaviorType
+behaveOnceAndThen :: BehaviorType st -> BehaviorType st -> BehaviorType st
 behaveOnceAndThen first second obj = liftM (setBehaviorT second) (first obj)
 
-behaveOnce :: BehaviorType -> BehaviorType
+behaveOnce :: BehaviorType st -> BehaviorType st
 behaveOnce beh = behaveOnceAndThen beh noopBehavior
 
-behaveBoth :: BehaviorType -> BehaviorType -> BehaviorType
+behaveBoth :: BehaviorType st -> BehaviorType st -> BehaviorType st
 behaveBoth first second = (second =<<) . first
 
-behaveAll :: [BehaviorType] -> BehaviorType
+behaveAll :: [BehaviorType st] -> BehaviorType st
 behaveAll [] obj = noopBehavior obj
 behaveAll (beh:behs) obj = liftM (setBehaviorT (behaveAll behs)) (beh obj)
 
-behaveEvery :: Int -> BehaviorType -> BehaviorType
+behaveEvery :: Int -> BehaviorType st -> BehaviorType st
 behaveEvery counter = go counter counter
     where go max counter beh obj
             | counter == 0 = liftM (setBehaviorT (behaveEvery max beh)) (beh obj) 

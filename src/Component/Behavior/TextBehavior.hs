@@ -17,12 +17,12 @@ import GameEnv (GameEnvironment (..))
 import Input.Mouse (mousePos)
 import System.Messaging.Messages.TextDrawingMessage (setTextMsg)
 
-updatePromptForGOCount :: String -> BehaviorType
+updatePromptForGOCount :: String -> BehaviorType st
 updatePromptForGOCount prompt obj = do
     numberOfGameObjects <- asks countGOs
     pushMessage (setTextMsg (prompt ++ ": " ++ show numberOfGameObjects)) obj
 
-updateMultipleTexts :: Int -> BehaviorType
+updateMultipleTexts :: Int -> BehaviorType st
 updateMultipleTexts count obj = liftM normalFunction monadic
     where
         monadic = pushNamedMessage "title"    (setTextMsg $ "This is the title:" ++ show count) obj >>=
@@ -30,7 +30,7 @@ updateMultipleTexts count obj = liftM normalFunction monadic
         normalFunction = setBehaviorT (updateMultipleTexts (count + 1))
 
 
-updateTextWithMousePosition :: BehaviorType
+updateTextWithMousePosition :: BehaviorType st
 updateTextWithMousePosition obj = do
     (Vec2f x y) <- asks (mousePos . input)
     let txt = "mouse: (" ++ show x ++ ", " ++ show y ++ ")"

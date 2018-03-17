@@ -14,7 +14,7 @@ import Component.Behavior.Behaviors (encloseByWrapAroundB)
 
 import Paths_AHaskellGame
 
-createAnimatedBlueBird :: Vec2f -> Vec2f -> GameObjectCreation
+createAnimatedBlueBird :: Vec2f -> Vec2f -> GameObjectCreation st
 createAnimatedBlueBird pos vel = do
     liftIO $ putStrLn "Creating an animated blue bird"
 

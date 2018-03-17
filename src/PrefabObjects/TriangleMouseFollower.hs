@@ -29,7 +29,7 @@ import Vec2.Vec2Math (zero)
 import Command.ResetCommand (resetCommand)
 
 
-createMouseFollowerEqTriangle :: GameObjectCreation
+createMouseFollowerEqTriangle :: GameObjectCreation st
 createMouseFollowerEqTriangle = do
     liftIO $ putStrLn "Creating a follower eq triangle"
     let factor = 25.0
@@ -53,18 +53,18 @@ createTextDrawing = do
     liftIO $ runMessageT (setOriginMsg (Vec2f 0 (-20))) text
     return $ createSingleFlagDrawing namedText NoRotationUpdates
 
-followsAndDiesCloseToMouse :: Int -> BehaviorType
+followsAndDiesCloseToMouse :: Int -> BehaviorType st
 followsAndDiesCloseToMouse counter obj = do
     newObj <- followPointingMouse obj
     distanceToMouse <- mouseDistance newObj
     behaviorPred (distanceToMouse < 5.0) (resetAndAddScore counter) (followsAndDiesCloseToMouse counter) newObj
 
-resetAndAddScore :: Int -> BehaviorType
+resetAndAddScore :: Int -> BehaviorType st
 resetAndAddScore score = do
     let newScore = score + 1
     behaveOnceAndThen (resetBehavior newScore) (followsAndDiesCloseToMouse newScore)
 
-resetBehavior :: Int -> BehaviorType
+resetBehavior :: Int -> BehaviorType st
 resetBehavior counter obj = 
     addCommandM (Command resetCommand) obj >>=
     pushNamedMessage "counter" (setTextMsg ("Score: " ++ show counter))

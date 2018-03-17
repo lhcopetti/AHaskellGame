@@ -38,68 +38,68 @@ import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveAll
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.InputBehavior (behaveOnKeyPress)
 
-encloseToBoxB :: Behavior
+encloseToBoxB :: Behavior st
 encloseToBoxB = Behavior encloseToBox
 
-encloseByWrapAroundB :: Behavior
+encloseByWrapAroundB :: Behavior st
 encloseByWrapAroundB = Behavior encloseByWrapAround
 
-noopB :: Behavior 
+noopB :: Behavior st 
 noopB = Behavior noopBehavior
 
-deadManWalkingB :: Behavior
+deadManWalkingB :: Behavior st
 deadManWalkingB = Behavior dieBehavior
 
-mousePositionCopierB :: Behavior 
+mousePositionCopierB :: Behavior st 
 mousePositionCopierB = Behavior mousePositionCopier
 
-mouseFollowerB :: Behavior
+mouseFollowerB :: Behavior st
 mouseFollowerB = Behavior mouseFollower
 
-rotateB :: Float -> Behavior
+rotateB :: Float -> Behavior st
 rotateB f = Behavior (rotate f)
 
-mousePointerB :: Behavior
+mousePointerB :: Behavior st
 mousePointerB = Behavior mousePointer
 
-followPointingMouseB :: Behavior
+followPointingMouseB :: Behavior st
 followPointingMouseB = Behavior followPointingMouse
 
-updatePromptForGOCountB :: String -> Behavior
+updatePromptForGOCountB :: String -> Behavior st
 updatePromptForGOCountB prompt = Behavior (updatePromptForGOCount prompt)
 
-deathByUpdatesB :: Behavior 
+deathByUpdatesB :: Behavior st 
 deathByUpdatesB = Behavior (deathByUpdates 500)
 
-deathByHitsOnWallB :: Behavior 
+deathByHitsOnWallB :: Behavior st 
 deathByHitsOnWallB = Behavior (deathByHitsOnWall 5)
 
-updateTextWithMousePositionB :: Behavior
+updateTextWithMousePositionB :: Behavior st
 updateTextWithMousePositionB = Behavior updateTextWithMousePosition
 
-behaveOnceB :: Behavior -> Behavior
+behaveOnceB :: Behavior st -> Behavior st
 behaveOnceB (Behavior behType) = Behavior (behaveOnce behType)
 
-behaveBothB :: Behavior -> Behavior -> Behavior
+behaveBothB :: Behavior st -> Behavior st -> Behavior st
 behaveBothB (Behavior first) (Behavior second) = Behavior (behaveBoth first second)
 
-addChildB :: GameObjectCreation -> Behavior
+addChildB :: GameObjectCreation st -> Behavior st
 addChildB child = Behavior (addChildBehavior child)
 
-updateMultipleTextsB :: Behavior
+updateMultipleTextsB :: Behavior st
 updateMultipleTextsB = Behavior (updateMultipleTexts 0)
 
-behaveAllB :: [BehaviorType] -> Behavior
+behaveAllB :: [BehaviorType st] -> Behavior st
 behaveAllB xs = Behavior (behaveAll xs)
 
-behaveEveryB :: Int -> BehaviorType -> Behavior
+behaveEveryB :: Int -> BehaviorType st -> Behavior st
 behaveEveryB counter beh = Behavior (behaveEvery counter beh)
 
-addCommandBehaviorB :: Command -> Behavior
+addCommandBehaviorB :: Command st -> Behavior st
 addCommandBehaviorB comm = Behavior (addCommandBehavior comm)
 
-behaveOnKeyPressB :: KeyCode -> BehaviorType -> Behavior
+behaveOnKeyPressB :: KeyCode -> BehaviorType st -> Behavior st
 behaveOnKeyPressB key beh = Behavior (behaveOnKeyPress key beh)
 
-chooseBehaviorB :: Bool -> Behavior -> Behavior -> Behavior
+chooseBehaviorB :: Bool -> Behavior st -> Behavior st -> Behavior st
 chooseBehaviorB pred (Behavior first) (Behavior second) = Behavior (chooseBehavior pred first second)

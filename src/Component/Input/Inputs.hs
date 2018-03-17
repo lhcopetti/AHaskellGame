@@ -9,7 +9,7 @@ import GameObject.GameObjectTypes
 
 import Command.Commands (dieCommand)
 
-dieOnKeyPressing :: KeyCode -> GoUpdateType
+dieOnKeyPressing :: KeyCode -> GoUpdateType st
 dieOnKeyPressing key obj = do
     res <- isPressed key
     if res then dieCommand obj else return obj

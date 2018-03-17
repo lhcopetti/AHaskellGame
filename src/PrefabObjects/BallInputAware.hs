@@ -21,7 +21,7 @@ import Vec2.Vec2Math (zero)
 
 import Component.Input.Inputs (dieOnKeyPressing)
 
-createBallInputAware :: Vec2f -> GameObjectCreation
+createBallInputAware :: Vec2f -> GameObjectCreation st
 createBallInputAware pos = do
     liftIO $ putStrLn "Creating a ball input aware"
     circle <- createCenteredCircle 10 green

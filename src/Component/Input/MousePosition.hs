@@ -6,14 +6,14 @@ module Component.Input.MousePosition
 import SFML.System.Vector2
 import Control.Monad.Reader (asks)
 
-import GameObject.GameObjectTypes
 import GameEnv
 import Input.Mouse
+import Updatable
 
 data MousePositionState = WithinBounds | OutOfBounds
     deriving (Eq)
 
-getMouseState :: GoUpdateMStack MousePositionState
+getMouseState :: UpdateMStack MousePositionState st
 getMouseState = do
     pos <- asks (mousePos . input)
     bounds <- asks gameArea

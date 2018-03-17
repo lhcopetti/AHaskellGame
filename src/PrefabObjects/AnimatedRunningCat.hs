@@ -15,7 +15,7 @@ import Component.Behavior.Behaviors (encloseByWrapAroundB)
 
 import Paths_AHaskellGame
 
-createAnimatedRunningCat :: Vec2f -> Vec2f -> GameObjectCreation
+createAnimatedRunningCat :: Vec2f -> Vec2f -> GameObjectCreation st
 createAnimatedRunningCat pos vel = do
     liftIO $ putStrLn "Creating an animated running cat"
 

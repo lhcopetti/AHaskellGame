@@ -25,7 +25,7 @@ stepPhysics :: Float -> PhysicsWorld -> [GameObject st] -> IO [GameObject st]
 stepPhysics deltaTime physicsWorld objs = stepWorld deltaTime physicsWorld >>
     mapM updatePhysics objs
 
-stepGameObjects :: GameEnvironment -> [GameObject GoVoidState] -> GoVoidState -> IO ([GameObject GoVoidState], [GameObject GoVoidState], GoVoidState)
+stepGameObjects :: GameEnvironment -> [GameObject st] -> st -> IO ([GameObject st], [GameObject st], st)
 stepGameObjects env objs state = do
     let (newObjs, newState) = runMStack env state objs
     childrenObj <- getAllChildren newObjs
@@ -33,13 +33,13 @@ stepGameObjects env objs state = do
     return (map removeChildren newObjs', childrenObj, newState)
 
 
-getAllChildren :: [GameObject GoVoidState] -> IO [GameObject GoVoidState]
+getAllChildren :: [GameObject st] -> IO [GameObject st]
 getAllChildren objs = do
     let childrenCreation = concatMap getChildren objs
     createdChildren <- createObjects childrenCreation
     return $ fromMaybe [] createdChildren
 
-createObjects :: [GameObjectCreation] -> IO (Maybe [GameObject GoVoidState])
+createObjects :: [GameObjectCreation st] -> IO (Maybe [GameObject st])
 createObjects action = do
     newObjs <- forM action runMaybeT
     return (sequence newObjs)

@@ -11,7 +11,7 @@ import Component.Physics.Physics ()
 
 import Vec2.Vec2Math (zero)
 
-resetCommand :: CommandType
+resetCommand :: CommandType st
 resetCommand obj = let
     newObj = setPosition obj zero
     newObj' = setVelocity newObj zero

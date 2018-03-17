@@ -24,7 +24,7 @@ import GameObject.GameObjectTypes
 import Command.Command (runCommands)
 import Physics.DestroyObject (destroyPhysics)
 
-instance Updatable (GameObject GoVoidState) GoVoidState where
+instance Updatable (GameObject st) st where
     update go = do 
         let noDrawingMsgs = clearInbox go
         updatedObj <- runInput (inputComp go) noDrawingMsgs
@@ -32,7 +32,7 @@ instance Updatable (GameObject GoVoidState) GoVoidState where
         updatedObj'' <- runCommands updatedObj'
         updateDrawing updatedObj''
 
-updateDrawing :: GoUpdateType
+updateDrawing :: GoUpdateType st
 updateDrawing obj@GameObject{ drawComp } = do
     newDrawing <- update drawComp
     return $ obj { drawComp = newDrawing }
@@ -62,11 +62,11 @@ instance DrawingInbox (GameObject a) where
     addInbox msg obj@GameObject { inbox } = obj { inbox = msg : inbox }
     clearInbox g = g { inbox = [] }
 
-instance Behavioral (GameObject a) where
+instance Behavioral (GameObject st) st where
     setBehavior behav g = g { behavior = behav }
     setBehaviorT behav g = g { behavior = Behavior behav }
 
-instance ChildBearer (GameObject a) where
+instance ChildBearer (GameObject st) st where
     getChildren = childObjects
     removeChildren obj = obj { childObjects = [] }
     addChild child obj@GameObject { childObjects } = obj { childObjects = child : childObjects }
@@ -75,8 +75,8 @@ instance ZOrderable (GameObject a) where
     getZ GameObject { drawComp } = getZ drawComp
     setZ z obj@GameObject { drawComp } = obj { drawComp = setZ z drawComp }
 
-addCommand :: Command -> GameObject a -> GameObject a
+addCommand :: Command st -> GameObject st -> GameObject st
 addCommand comm obj@GameObject { commands } = obj { commands = comm : commands }
 
-addCommandM :: Command -> CommandType
+addCommandM :: Command st -> CommandType st
 addCommandM comm obj = return (addCommand comm obj)

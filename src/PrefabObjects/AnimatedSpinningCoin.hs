@@ -14,7 +14,7 @@ import Component.Behavior.Behaviors (encloseByWrapAroundB)
 
 import Paths_AHaskellGame
 
-createSpinningCoin :: Vec2f -> Vec2f -> GameObjectCreation
+createSpinningCoin :: Vec2f -> Vec2f -> GameObjectCreation st
 createSpinningCoin pos vel = do
     liftIO $ putStrLn "Creating an animated spinning coin"
     

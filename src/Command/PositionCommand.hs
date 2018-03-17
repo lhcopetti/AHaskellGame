@@ -15,22 +15,22 @@ import GameObject.GameObjectTypes (CommandType)
 import GameObject.GameObject ()
 import GameEnv (gameArea)
 
-positionTopLeftCommand :: CommandType
+positionTopLeftCommand :: CommandType st
 positionTopLeftCommand = return . (`setPosition` zero)
 
-positionTopRightCommand :: CommandType
+positionTopRightCommand :: CommandType st
 positionTopRightCommand obj = do
     (Vec2u width _) <- asks gameArea
     let topRight = Vec2f (fromIntegral width) 0
     return $ setPosition obj topRight
 
-positionBottomLeftCommand :: CommandType
+positionBottomLeftCommand :: CommandType st
 positionBottomLeftCommand obj = do
     (Vec2u _ height) <- asks gameArea
     let bottomLeft = Vec2f 0 (fromIntegral height)
     return $ setPosition obj bottomLeft
 
-positionBottomRightCommand :: CommandType
+positionBottomRightCommand :: CommandType st
 positionBottomRightCommand obj = do
     (Vec2u width height) <- asks gameArea
     let bottomRight = Vec2f (fromIntegral width) (fromIntegral height)
