@@ -4,7 +4,6 @@ module Updatable
     ( Updatable
     , update
     , UpdateType
-    , SceneState (..)
     , UpdateMStack
     , runMStack
     ) where
@@ -12,9 +11,7 @@ module Updatable
 import GameEnv (GameEnvironment)
 import Control.Monad.Reader (Reader, runReader)
 import Control.Monad.Trans.State (StateT, runStateT)
-import Conway
 
-data SceneState = SceneState ConwayWorld Bool
 type UpdateMStack obj st = StateT st (Reader GameEnvironment) obj
 type UpdateType obj st = obj -> UpdateMStack obj st
 

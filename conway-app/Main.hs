@@ -21,7 +21,6 @@ import Component.Behavior.Behavior (setBehaviorT)
 import Component.Behavior.Behaviors
 import ObjectsFactory
 import GridGameObjectFactory
-import Updatable
 import Component.Draw.ZOrderable
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
@@ -34,6 +33,8 @@ import Data.Time (getCurrentTime)
 
 defaultGravity :: Float
 defaultGravity = 30
+
+data SceneState = SceneState ConwayWorld Bool
 
 main :: IO ()
 main = do
