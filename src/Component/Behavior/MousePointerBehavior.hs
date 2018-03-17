@@ -42,7 +42,7 @@ mousePointer obj = do
 followPointingMouse :: BehaviorType
 followPointingMouse = behaveBoth mousePointer mouseFollower
 
-mouseDistance :: GameObject -> UpdateMStack Float
+mouseDistance :: GameObject st -> UpdateMStack Float st
 mouseDistance obj = do
     mousePosition <- asks (mousePos . input)
     let objPosition = getPosition obj

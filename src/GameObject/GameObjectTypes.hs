@@ -1,5 +1,9 @@
 module GameObject.GameObjectTypes
     ( GameObject (..)
+    , GameObjectST
+    , GoUpdateType
+    , GoUpdateMStack
+    , GoVoidState (..)
     , BehaviorType
     , Behavior (..)
     , Creation
@@ -31,34 +35,43 @@ import qualified Data.List.NonEmpty as LNE
 
 import Updatable (UpdateType, UpdateMStack)
 
-data GameObject = GameObject { drawComp     :: ZDrawing
-                             , behavior     :: Behavior
-                             , physicsComp  :: Physics
-                             , inputComp    :: Input
-                             , position     :: Vec2f
-                             , rotation     :: Float
-                             , inbox        :: [DrawingMessage]
-                             , childObjects :: [GameObjectCreation]
-                             , commands     :: [Command]
-                             , alive        :: Bool
-                             }
+data GameObject st = GameObject { drawComp     :: ZDrawing
+                                , behavior     :: Behavior
+                                , physicsComp  :: Physics
+                                , inputComp    :: Input
+                                , position     :: Vec2f
+                                , rotation     :: Float
+                                , inbox        :: [DrawingMessage]
+                                , childObjects :: [GameObjectCreation]
+                                , commands     :: [Command]
+                                , alive        :: Bool
+                                }
 
-type BehaviorType = UpdateType GameObject
+data GoVoidState = GVS
+
+type GoUpdateType = UpdateType (GameObject GoVoidState) GoVoidState
+type GoUpdateMStack obj = UpdateMStack obj GoVoidState
+
+type GameObjectST = GameObject GoVoidState
+
+type BehaviorType = GoUpdateType
 
 type Creation a = MaybeT IO a
-type GameObjectCreation  = Creation  GameObject
-type GameObjectsCreation = Creation [GameObject]
+type GameObjectCreation  = Creation  (GameObject GoVoidState)
+type GameObjectsCreation = Creation [GameObject GoVoidState]
 
 data Behavior = Behavior {  behave :: BehaviorType
                          }
 
+-- data BehaviorState a = BehaviorState    { behaveState :: GameObject -> State a GameObject
+--                                         }
 
-type CommandType    = UpdateType GameObject
-type InputType a    = GameObject -> UpdateMStack a
+type CommandType    = UpdateType (GameObject GoVoidState) GoVoidState
+type InputType a    = GoUpdateType
 
 data Command = Command CommandType
 
-data Input = Input { runInput :: UpdateType GameObject
+data Input = Input { runInput :: GoUpdateType
                    }
 
 data Animation = Animation  { createDrawing :: Drawing -> Drawing
@@ -103,3 +116,7 @@ data DrawingMessage = MSG DrawingMessageType
 
 data Physics = SimplePhy Vec2f Float
              | LibraryPhy PhyObject
+
+
+-- updateWithState :: GameObject -> StateT a (Reader GameEnvironment) GameObject
+-- updateWithState = undefined

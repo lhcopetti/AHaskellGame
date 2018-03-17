@@ -13,13 +13,12 @@ import Drawable
 import Synchronizable
 import NativeResource
 import Component.Draw.ZOrderable
-import Updatable (SceneState)
 import GameEnv (GameEnvironment (..))
 import GameObject.GameObjectTypes
 
 data GameScene = GameScene  { physicsWorld :: PhysicsWorld
-                            , gameObjects  :: [GameObject]
-                            , gameState    :: SceneState
+                            , gameObjects  :: [GameObject GoVoidState]
+                            , gameState    :: GoVoidState
                             }
 
 
@@ -35,7 +34,7 @@ instance NativeResource GameScene where
     free GameScene {..} = mapM_ free gameObjects >> free physicsWorld
 
 
-updateGameScene :: GameScene -> GameEnvironment -> IO (GameScene, [GameObject])
+updateGameScene :: GameScene -> GameEnvironment -> IO (GameScene, [GameObject GoVoidState])
 updateGameScene GameScene {..} env = do
     objs' <- stepPhysics (1 / 60) physicsWorld gameObjects
     (newObjs, childrenObj, newState) <- stepGameObjects env objs' gameState

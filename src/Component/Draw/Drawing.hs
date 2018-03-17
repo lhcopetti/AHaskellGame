@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Component.Draw.Drawing
     ( Drawing (..)
     , syncDrawing
@@ -28,7 +29,7 @@ instance Drawable Drawing where
     draw wnd (PhysicsDebugDrawing drw _) = draw wnd drw
     draw _   EmptyDrawing                = return ()
 
-instance Updatable Drawing where
+instance Updatable Drawing GoVoidState where
     update drw = return (updateDrawing drw)
 
 updateDrawing :: Drawing -> Drawing
