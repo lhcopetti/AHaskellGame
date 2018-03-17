@@ -12,12 +12,12 @@ import GameObject.GameObject ()
 import GameEnv
 
 
-encloseToBox :: BehaviorType
+encloseToBox :: BehaviorType st
 encloseToBox obj = do
         dimension <- asks gameArea
         return (boundToDimension obj dimension)
 
-encloseByWrapAround :: BehaviorType
+encloseByWrapAround :: BehaviorType st
 encloseByWrapAround obj = do
     dimension <- asks gameArea
     return (wrapAround obj dimension)

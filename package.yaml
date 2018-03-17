@@ -30,7 +30,6 @@ dependencies:
 - StateVar
 - monadplus
 - hspec
-- ConwayLib
 - time
 
 library:
@@ -54,7 +53,6 @@ executables:
     - -Werror
     dependencies:
     - AHaskellGame
-    - ConwayLib
     other-modules:
     - Paths_AHaskellGame
 

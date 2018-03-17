@@ -6,5 +6,5 @@ import GameObject.GameObjectTypes (GameObjectCreation, BehaviorType)
 import GameObject.GameObject ()
 import qualified ChildBearer as CB
 
-addChildBehavior :: GameObjectCreation -> BehaviorType
+addChildBehavior :: GameObjectCreation st -> BehaviorType st
 addChildBehavior action obj = return (CB.addChild action obj)

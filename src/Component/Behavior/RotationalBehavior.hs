@@ -7,7 +7,7 @@ import Component.Behavior.Behavior
 import GameObject.GameObject ()
 import Component.Position
 
-rotate :: Float -> BehaviorType
+rotate :: Float -> BehaviorType st
 rotate degree obj = let
     currentDegree = getRotation obj
     newDegree = currentDegree + degree 

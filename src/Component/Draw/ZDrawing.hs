@@ -1,3 +1,5 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Component.Draw.ZDrawing
     ( syncZDrawing
     , mkZDrawing
@@ -17,7 +19,7 @@ import GameObject.GameObjectTypes
 instance Drawable ZDrawing where
     draw wnd (ZDrawing drw _) = draw wnd drw
 
-instance Updatable ZDrawing where
+instance Updatable ZDrawing st where
     update (ZDrawing drw f) = liftM (`ZDrawing` f) (update drw)
 
 syncZDrawing :: (Pos.Position a, DrawingInbox a) => ZDrawing -> a -> IO ()

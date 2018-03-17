@@ -33,116 +33,116 @@ import Command.PositionCommand
 import Vec2.Vec2Math (zero)
 import Math.Square (unitSquarePointsScaled)
 
-createMiniBall :: Vec2f -> Vec2f -> GameObjectCreation
+createMiniBall :: Vec2f -> Vec2f -> GameObjectCreation st
 createMiniBall pos vel = do
     liftIO $ putStrLn $ "Creating mini ball at " ++ show pos
     let color = blue
     shape <- createCircle 2 color
     return (createSimplePhysicsGO shape encloseToBoxB pos vel)
 
-createBall :: Vec2f -> Vec2f -> GameObjectCreation
+createBall :: Vec2f -> Vec2f -> GameObjectCreation st
 createBall pos vel = do 
     liftIO $ putStrLn $ "Creating ball at " ++ show pos
     let color = blue
     shape <- createCircle 25 color
     return (createSimplePhysicsGO shape encloseToBoxB pos vel)
 
-createRedBall :: Vec2f -> Vec2f -> GameObjectCreation
+createRedBall :: Vec2f -> Vec2f -> GameObjectCreation st
 createRedBall pos vel = do 
     liftIO $ putStrLn $ "Creating red ball at " ++ show pos
     drawComponent <- createCircle 10 red
     return (createSimplePhysicsGO drawComponent encloseToBoxB pos vel)
 
-createSquareObject :: Float -> Color -> Vec2f -> GameObjectCreation
+createSquareObject :: Float -> Color -> Vec2f -> GameObjectCreation st
 createSquareObject side color pos = do
     liftIO $ putStrLn $ "Creating square at " ++ show pos
     draw <- createSquare side color
     return (createStaticGameObject draw pos) 
 
-createYellowSquare :: Vec2f -> Vec2f -> GameObjectCreation
+createYellowSquare :: Vec2f -> Vec2f -> GameObjectCreation st
 createYellowSquare pos vel = do
     liftIO $ putStrLn $ "Creating yellow square at " ++ show pos
     drawComponent <- createSquare 5 yellow
     return (createSimplePhysicsGO drawComponent encloseByWrapAroundB pos vel)
 
-createMagentaWrapAroundBall :: Vec2f -> Vec2f -> GameObjectCreation
+createMagentaWrapAroundBall :: Vec2f -> Vec2f -> GameObjectCreation st
 createMagentaWrapAroundBall pos vel = do
     liftIO $ putStrLn $ "Creating magenta ball at " ++ show pos
     drawComponent <- createCircle 5 magenta
     return (createSimplePhysicsGO drawComponent encloseByWrapAroundB pos vel)
 
-createWhiteNoopBall :: Vec2f -> GameObjectCreation
+createWhiteNoopBall :: Vec2f -> GameObjectCreation st
 createWhiteNoopBall pos = do
     liftIO $ putStrLn $ "Creating white noop ball " ++ show pos
     drawComponent <- createCircle 5 white
     return (createStaticGameObject drawComponent pos)
 
-createDeadManWalking :: Vec2f -> GameObjectCreation
+createDeadManWalking :: Vec2f -> GameObjectCreation st
 createDeadManWalking pos = do
     liftIO $ putStrLn $ "Creating dead man walking noop triangle " ++ show pos
     drawComponent <- createConvex white [Vec2f 55 30, Vec2f 70 60, Vec2f 40 60]
     return (createSimplePhysicsGO drawComponent deadManWalkingB pos zero)
 
-createSimpleHexagon :: Vec2f -> GameObjectCreation
+createSimpleHexagon :: Vec2f -> GameObjectCreation st
 createSimpleHexagon pos = do
     liftIO $ putStrLn $ "Creating a simple hexagon " ++ show pos
     drawComponent <- createHexagon 25.0 white
     return (createSimplePhysicsGO drawComponent (rotateB 1.0) pos zero)
 
-createMousePositionCopier :: GameObjectCreation
+createMousePositionCopier :: GameObjectCreation st
 createMousePositionCopier = do
     liftIO $ putStrLn "Creating mouse pointer"
     drawComponent <- createCenteredCircle 3 green
     return (createSimplePhysicsGO drawComponent mousePositionCopierB zero zero)
 
-createMouseFollower :: Vec2f -> GameObjectCreation
+createMouseFollower :: Vec2f -> GameObjectCreation st
 createMouseFollower pos = do
     liftIO $ putStrLn "Creating mouse follower"
     drawComponent <- createCenteredCircle 10 blue
     return (createSimplePhysicsGO drawComponent mouseFollowerB pos zero)
 
-createSimpleText :: Vec2f -> String -> GameObjectCreation
+createSimpleText :: Vec2f -> String -> GameObjectCreation st
 createSimpleText pos text = do
     liftIO $ putStrLn "Creating simple text"
     drawComponent <- createText 30 text
     return (createStaticGameObject drawComponent pos)
 
-createLiveGameObjectCounter :: Vec2f -> GameObjectCreation
+createLiveGameObjectCounter :: Vec2f -> GameObjectCreation st
 createLiveGameObjectCounter pos = do
     liftIO $ putStrLn "Creating live GameObject counter"
     drawComponent <- createEmptyText 15
     let behavior = updatePromptForGOCountB "GameObjects"
     return (createStaticGameObjectB drawComponent pos behavior)
 
-createDeathByUpdates :: Vec2f -> GameObjectCreation
+createDeathByUpdates :: Vec2f -> GameObjectCreation st
 createDeathByUpdates pos = do
     liftIO $ putStrLn "Creating object that dies from updates"
     drawComponent <- createCenteredCircle 10 blue
     let behavior = deathByUpdatesB
     return (createStaticGameObjectB drawComponent pos behavior)
 
-createDeathByHitsOnWall :: Vec2f -> Vec2f -> GameObjectCreation
+createDeathByHitsOnWall :: Vec2f -> Vec2f -> GameObjectCreation st
 createDeathByHitsOnWall pos vel = do
     liftIO $ putStrLn "Creating object that dies from hitting on walls"
     drawComponent <- createCenteredCircle 15 green
     let behavior = deathByHitsOnWallB
     return (createSimplePhysicsGO drawComponent behavior pos vel)
 
-createSprite :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation
+createSprite :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation st
 createSprite path pos vel = do
     liftIO $ putStrLn ("Creating a Sprite GameObject from " ++ path)
     drawComponent <- createSpriteDrawing path
     let behavior = encloseByWrapAroundB
     return (createSimplePhysicsGO drawComponent behavior pos vel)
 
-createBehaveOnce :: Vec2f -> GameObjectCreation
+createBehaveOnce :: Vec2f -> GameObjectCreation st
 createBehaveOnce pos = do
     liftIO $ putStrLn "Creating object that behaves once"
     drawComponent <- createCenteredCircle 5 white
     let behavior = behaveOnceB (addChildB $ createWhiteNoopBall (Vec2f 600 230))
     return (createSimplePhysicsGO drawComponent behavior pos zero )
 
-createNamedMessagesDemo :: Vec2f -> GameObjectCreation
+createNamedMessagesDemo :: Vec2f -> GameObjectCreation st
 createNamedMessagesDemo pos = do 
     liftIO $ putStrLn "Creating object that sends named messages"
     circle <- createCenteredCircle 5 white
@@ -155,7 +155,7 @@ createNamedMessagesDemo pos = do
     let behavior = updateMultipleTextsB
     return (createSimplePhysicsGO allTogether behavior pos zero )
 
-createUsesBehaveAll :: GameObjectCreation
+createUsesBehaveAll :: GameObjectCreation st
 createUsesBehaveAll = do
     liftIO $ putStrLn "Creates object that blinks in the four regions of the screen"
     drw <- createCenteredCircle 15 green
@@ -169,13 +169,13 @@ createUsesBehaveAll = do
     let allTogether = behaveAllB (cycle behaviors)
     return (createSimplePhysicsGO drw allTogether (Vec2f 200 200) zero)
 
-createHipPhysicsBall :: Vec2f -> Float -> PhysicsWorld -> GameObjectCreation
+createHipPhysicsBall :: Vec2f -> Float -> PhysicsWorld -> GameObjectCreation st
 createHipPhysicsBall pos radius space = do
     liftIO $ putStrLn "Creating Hipmunk physics ball"
     (physics, drw) <- mkCirclePhysicsD radius pos space
     return (createGameObject drw encloseByWrapAroundB physics pos)
 
-createPhysicsLine :: Float -> (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation
+createPhysicsLine :: Float -> (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreation st
 createPhysicsLine thickness line space = do
     liftIO $ putStrLn $ "Creating Hipmunk physics line at: " ++ show line
     (physics, draw) <- mkLinePhysicsD line thickness space
@@ -183,23 +183,23 @@ createPhysicsLine thickness line space = do
         obj = createGameObject draw noopB physics (Vec2f 0 0)
     return (obj { inputComp = input })
 
-createLine' :: (Vec2f, Vec2f) -> Float -> GameObjectCreation
+createLine' :: (Vec2f, Vec2f) -> Float -> GameObjectCreation st
 createLine' line thickness = do
     liftIO $ putStrLn $ "Creating a line at: " ++ show line ++ " with T: " ++ show thickness
     let color = white
     drw <- createLine line thickness color
     return (createStaticGameObject drw (Vec2f 0 0))
 
-createLines :: [(Vec2f, Vec2f, Float)] -> GameObjectsCreation
+createLines :: [(Vec2f, Vec2f, Float)] -> GameObjectsCreation st
 createLines = mapM (\(s, e, t) -> createLine' (s, e) t)
 
-createBox :: Vec2f -> Float -> PhysicsWorld -> GameObjectCreation
+createBox :: Vec2f -> Float -> PhysicsWorld -> GameObjectCreation st
 createBox pos size world = do
     liftIO $ putStrLn $ "Creating box S: " ++ show size ++ " at " ++ show pos
     (physics, draw) <- mkPolygonPhysicsD pos (unitSquarePointsScaled size) world
     return (createGameObject draw noopB physics pos)
 
-createLogicGO :: Behavior -> GameObjectCreation
+createLogicGO :: Behavior st -> GameObjectCreation st
 createLogicGO behavior = do
     liftIO $ putStrLn "Creating logic gameObject"
     return (createLogicGameObject behavior)

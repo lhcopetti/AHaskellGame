@@ -14,7 +14,7 @@ import System.Messaging.Messages.TextDrawingMessage (setTextColorMsg)
 import System.Messaging.Handler.PushMessageHandler (pushMessage)
 import Vec2.Vec2Math (zero)
 
-mkMousePrinter :: GameObjectCreation
+mkMousePrinter :: GameObjectCreation st
 mkMousePrinter = do
     drawing <- createEmptyText 10
     let beh = Behavior (mouseBehavior WithinBounds)
@@ -24,7 +24,7 @@ transitionTo :: MousePositionState -> DrawingMessageType
 transitionTo WithinBounds = setTextColorMsg white
 transitionTo OutOfBounds  = setTextColorMsg red
 
-mouseBehavior :: MousePositionState -> BehaviorType
+mouseBehavior :: MousePositionState -> BehaviorType st
 mouseBehavior currState obj = do
     updated <- behave updateTextWithMousePositionB obj
     newState <- getMouseState

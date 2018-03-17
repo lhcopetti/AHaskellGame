@@ -5,11 +5,11 @@ module Component.Input.Inputs
 import SFML.Window.Keyboard (KeyCode)
 
 import Component.Input.Input (isPressed)
-import GameObject.GameObjectTypes (GameObject, InputType)
+import GameObject.GameObjectTypes
 
 import Command.Commands (dieCommand)
 
-dieOnKeyPressing :: KeyCode -> InputType GameObject
+dieOnKeyPressing :: KeyCode -> GoUpdateType st
 dieOnKeyPressing key obj = do
     res <- isPressed key
     if res then dieCommand obj else return obj

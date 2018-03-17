@@ -10,12 +10,12 @@ import Control.Monad.Reader (asks)
 import GameObject.GameObjectTypes
 import GameEnv (GameEnvironment (..))
 import System.InputSnapshot (InputSnapshot (..))
-import Updatable (UpdateMStack)
+import Updatable
 
-emptyInput :: Input
+emptyInput :: Input st
 emptyInput = Input return
 
-isPressed :: KeyCode -> UpdateMStack Bool
+isPressed :: KeyCode -> UpdateMStack Bool st
 isPressed key = do
     pressedKeys <- asks (pressed . inputSnapshot)
     return (key `elem` pressedKeys)

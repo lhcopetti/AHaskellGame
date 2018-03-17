@@ -14,7 +14,7 @@ import GameObject.GameObjectTypes
 import GameObjectFactory
 import Vec2.Vec2Math (zero)
 
-createTextGO :: Int -> Color -> String -> GameObjectCreation
+createTextGO :: Int -> Color -> String -> GameObjectCreation st
 createTextGO size color text = do
     txt <- createText size text
     liftIO $ runMessageT (setTextColorMsg color) txt

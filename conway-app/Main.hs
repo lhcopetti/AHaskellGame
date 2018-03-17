@@ -21,7 +21,6 @@ import Component.Behavior.Behavior (setBehaviorT)
 import Component.Behavior.Behaviors
 import ObjectsFactory
 import GridGameObjectFactory
-import Updatable
 import Component.Draw.ZOrderable
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
@@ -34,6 +33,8 @@ import Data.Time (getCurrentTime)
 
 defaultGravity :: Float
 defaultGravity = 30
+
+data SceneState = SceneState ConwayWorld Bool
 
 main :: IO ()
 main = do
@@ -70,7 +71,7 @@ main = do
                             startGame world scene gameEnv 
                             putStrLn "This is the End!"
 
-createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO (ConwayWorld, [GameObject])
+createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO (ConwayWorld, [GameObject SceneState])
 createObjects _ _ = do
     let gridSize = (15, 15)
     board <- newConwayWorld gridSize
@@ -93,7 +94,7 @@ initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)
                         , (3, 6), (4, 6), (6, 6), (7, 6)
                         , (2, 7), (8, 7) ]
 
-mkConwayCell :: Position -> MaybeT IO GameObject
+mkConwayCell :: Position -> MaybeT IO (GameObject SceneState)
 mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
     where
         fx = fromIntegral x
@@ -104,7 +105,7 @@ mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
         updateBehavior = setBehaviorT (setConwayColorBehavior gpos)
         createObject   = createSquareObject squareSize white pos
 
-stepConway :: Int -> Behavior
+stepConway :: Int -> Behavior SceneState
 stepConway interval = behaveEveryB interval $ \go -> do
     (SceneState _ shouldUpdate) <- get
     behave (chooseBehaviorB shouldUpdate should shouldNot) go
@@ -112,7 +113,7 @@ stepConway interval = behaveEveryB interval $ \go -> do
             should      = Behavior $ \go -> modify tickState >> return go
             shouldNot   = noopB
 
-resetConwayB :: KeyCode -> Behavior
+resetConwayB :: KeyCode -> Behavior SceneState
 resetConwayB key = behaveOnKeyPressB key $ \go -> do
     modify resetState
     return go
@@ -123,13 +124,13 @@ tickState (SceneState b autoUpdate) = SceneState (tick b) autoUpdate
 resetState :: SceneState -> SceneState
 resetState (SceneState b autoUpdate) = SceneState (initialBoard . reset $ b) autoUpdate
 
-setConwayColorBehavior :: Position -> BehaviorType
+setConwayColorBehavior :: Position -> BehaviorType SceneState
 setConwayColorBehavior pos go = do
     isLive <- gets (isLiveCellAt pos)
     let color = if isLive then white else red
     pushMessage (setFillColorMsg color) go
 
-singleStepB :: KeyCode -> Behavior
+singleStepB :: KeyCode -> Behavior SceneState
 singleStepB key = behaveOnKeyPressB key $ \go -> do
     modify tickState
     return go
@@ -137,26 +138,26 @@ singleStepB key = behaveOnKeyPressB key $ \go -> do
 isLiveCellAt :: Position -> SceneState -> Bool
 isLiveCellAt pos (SceneState s _) = isLive pos s
 
-turnOnAutoUpdateB :: KeyCode -> Behavior
+turnOnAutoUpdateB :: KeyCode -> Behavior SceneState
 turnOnAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
     (SceneState b _) <- get
     put (SceneState b True)
     return go
 
-turnOffAutoUpdateB :: KeyCode -> Behavior
+turnOffAutoUpdateB :: KeyCode -> Behavior SceneState
 turnOffAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
     (SceneState b _) <- get
     put (SceneState b False)
     return go
 
 
-createInstructions :: MaybeT IO [GameObject]
+createInstructions :: MaybeT IO [GameObject SceneState]
 createInstructions = do
     let pos = genPositions (Vec2f 420 30) (onY (+30))
     objs <- createLabels
     return (zipWith Pos.setPosition objs pos)
 
-createLabels :: MaybeT IO [GameObject]
+createLabels :: MaybeT IO [GameObject SceneState]
 createLabels = do
     autoOn      <- newText "Auto ON: 'A'"
     autoOff     <- newText "Auto OFF: 'Z'"

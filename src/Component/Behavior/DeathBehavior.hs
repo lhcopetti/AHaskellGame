@@ -15,7 +15,7 @@ import ExtSFML.SFMLInstances ()
 import Killable (die)
 
 
-deathByHitsOnWall :: Int -> BehaviorType
+deathByHitsOnWall :: Int -> BehaviorType st
 deathByHitsOnWall x obj
         | x < 0 = return $ setBehaviorT dieBehavior obj
         | otherwise = do
@@ -25,8 +25,8 @@ deathByHitsOnWall x obj
             let newCount = if oldVel /= newVel then x - 1 else x
             return $ setBehaviorT (deathByHitsOnWall newCount) newObj
 
-deathByUpdates :: Int -> BehaviorType
+deathByUpdates :: Int -> BehaviorType st
 deathByUpdates x = behaviorPred (x < 0) dieBehavior (deathByUpdates (x - 1))
 
-dieBehavior :: BehaviorType
+dieBehavior :: BehaviorType st
 dieBehavior = return . die

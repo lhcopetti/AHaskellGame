@@ -5,16 +5,15 @@ module Command.Command
 
 import Control.Monad (foldM)
 
-import GameObject.GameObjectTypes (GameObject (..), Command (..))
-import Updatable (UpdateType)
+import GameObject.GameObjectTypes
 
-runCommands :: UpdateType GameObject
+runCommands :: GoUpdateType st
 runCommands obj@GameObject { commands } = do
     let goWithoutCommands = cleanCommands obj
     foldM (flip executeCommand) goWithoutCommands commands
 
-cleanCommands :: GameObject -> GameObject
+cleanCommands :: GameObject a -> GameObject a
 cleanCommands obj = obj { commands = [] }
 
-executeCommand :: Command -> UpdateType GameObject
+executeCommand :: Command st -> GoUpdateType st
 executeCommand (Command f) = f

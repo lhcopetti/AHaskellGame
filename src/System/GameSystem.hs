@@ -21,13 +21,13 @@ import Synchronizable
 import Drawable
 import NativeResource
 
-startGame :: GameWorld -> GameScene -> GameEnvironment -> IO ()
+startGame :: GameWorld -> GameScene a -> GameEnvironment -> IO ()
 startGame world scene gameEnv = do
     endScene <- loop world scene gameEnv
     free endScene
     free world
 
-loop :: GameWorld -> GameScene -> GameEnvironment -> IO GameScene
+loop :: GameWorld -> GameScene a -> GameEnvironment -> IO (GameScene a)
 loop (GameWorld wnd) scene@GameScene { gameObjects } env = do 
 
     evts <- pollAllEvents wnd
@@ -52,13 +52,13 @@ loop (GameWorld wnd) scene@GameScene { gameObjects } env = do
         loop (GameWorld wnd) updatedScene env
 
 
-gameLoop :: GameScene -> GameEnvironment -> IO GameScene
+gameLoop :: GameScene a -> GameEnvironment -> IO (GameScene a)
 gameLoop scene env = do
     threadDelay (10 * 10^3)
     (scene', orphanChildren) <- updateGameScene scene env
     return $ adoptChildren scene' orphanChildren
 
-updateScreen :: RenderWindow -> GameScene -> IO ()
+updateScreen :: RenderWindow -> GameScene a -> IO ()
 updateScreen window scene = do
     synchronize scene
     clearRenderWindow window black

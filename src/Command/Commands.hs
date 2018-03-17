@@ -7,9 +7,8 @@ import GameObject.GameObjectTypes
 import GameObject.GameObject (addCommand)
 
 import Killable (die)
-import Updatable (UpdateType)
 
-dieCommand :: UpdateType GameObject
+dieCommand :: CommandType st
 dieCommand obj = let
     comm = Command (return . die)
     in

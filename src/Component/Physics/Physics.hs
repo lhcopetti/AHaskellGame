@@ -1,4 +1,4 @@
-{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE NamedFieldPuns, FlexibleInstances #-}
 module Component.Physics.Physics
     ( Physics (..)
     , updatePosition
@@ -22,7 +22,7 @@ instance PhysicsClass Physics where
 
     updatePhysics = return
 
-instance PhysicsClass GameObject where
+instance PhysicsClass (GameObject a) where
     getVelocity = getVelocity . physicsComp
     setVelocity go@GameObject { physicsComp } newVel = go { physicsComp = setVelocity physicsComp newVel }
     updatePhysics = updatePhysicsComponent
@@ -34,10 +34,10 @@ updatePosition obj = let
     newPos = addVec2f pos vel
     in setPosition obj newPos
 
-updatePhysicsComponent :: GameObject -> IO GameObject
+updatePhysicsComponent :: GameObject a -> IO (GameObject a)
 updatePhysicsComponent go = case physicsComp go of
     SimplePhy  { } -> updateSimplePhysics go
     LibraryPhy pl  -> updateObjectPhysics pl go
 
-updateSimplePhysics :: GameObject -> IO GameObject
+updateSimplePhysics :: GameObject a -> IO (GameObject a)
 updateSimplePhysics = return . updatePosition

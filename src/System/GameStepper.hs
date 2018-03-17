@@ -10,7 +10,7 @@ import Control.Monad.Trans.Maybe (runMaybeT)
 
 import GameEnv (GameEnvironment (..))
 import GameObject.GameObject ()
-import GameObject.GameObjectTypes (GameObjectCreation, GameObject)
+import GameObject.GameObjectTypes
 import Physics.PhysicsWorld (stepWorld)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Updatable
@@ -21,11 +21,11 @@ import Component.Physics.PhysicsClass
 import Component.Physics.Physics ()
 
 
-stepPhysics :: Float -> PhysicsWorld -> [GameObject] -> IO [GameObject]
+stepPhysics :: Float -> PhysicsWorld -> [GameObject st] -> IO [GameObject st]
 stepPhysics deltaTime physicsWorld objs = stepWorld deltaTime physicsWorld >>
     mapM updatePhysics objs
 
-stepGameObjects :: GameEnvironment -> [GameObject] -> SceneState -> IO ([GameObject], [GameObject], SceneState)
+stepGameObjects :: GameEnvironment -> [GameObject st] -> st -> IO ([GameObject st], [GameObject st], st)
 stepGameObjects env objs state = do
     let (newObjs, newState) = runMStack env state objs
     childrenObj <- getAllChildren newObjs
@@ -33,18 +33,18 @@ stepGameObjects env objs state = do
     return (map removeChildren newObjs', childrenObj, newState)
 
 
-getAllChildren :: [GameObject] -> IO [GameObject]
+getAllChildren :: [GameObject st] -> IO [GameObject st]
 getAllChildren objs = do
     let childrenCreation = concatMap getChildren objs
     createdChildren <- createObjects childrenCreation
     return $ fromMaybe [] createdChildren
 
-createObjects :: [GameObjectCreation] -> IO (Maybe [GameObject])
+createObjects :: [GameObjectCreation st] -> IO (Maybe [GameObject st])
 createObjects action = do
     newObjs <- forM action runMaybeT
     return (sequence newObjs)
 
-removeAllDead :: [GameObject] -> IO [GameObject]
+removeAllDead :: [GameObject st] -> IO [GameObject st]
 removeAllDead objs = do 
     let (alive, dead) = partition isAlive objs
     forM_ dead free

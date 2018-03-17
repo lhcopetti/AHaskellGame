@@ -1,4 +1,5 @@
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE MultiParamTypeClasses, FlexibleInstances #-}
 module GameObject.GameObject
     ( GameObject (..)
     , draw
@@ -23,7 +24,7 @@ import GameObject.GameObjectTypes
 import Command.Command (runCommands)
 import Physics.DestroyObject (destroyPhysics)
 
-instance Updatable GameObject where
+instance Updatable (GameObject st) st where
     update go = do 
         let noDrawingMsgs = clearInbox go
         updatedObj <- runInput (inputComp go) noDrawingMsgs
@@ -31,51 +32,51 @@ instance Updatable GameObject where
         updatedObj'' <- runCommands updatedObj'
         updateDrawing updatedObj''
 
-updateDrawing :: UpdateType GameObject
+updateDrawing :: GoUpdateType st
 updateDrawing obj@GameObject{ drawComp } = do
     newDrawing <- update drawComp
     return $ obj { drawComp = newDrawing }
 
-instance Synchronizable GameObject where
+instance Synchronizable (GameObject a) where
     synchronize go = syncZDrawing (drawComp go) go
 
-instance Drawable GameObject where 
+instance Drawable (GameObject a) where 
     draw wnd GameObject { drawComp } = draw wnd drawComp
 
-instance Pos.Position GameObject where
+instance Pos.Position (GameObject a) where
     getPosition = position
     setPosition go newPosition = go { position = newPosition } 
     getRotation = rotation
     setRotation newRotation go = go { rotation = newRotation }
 
-instance Killable GameObject where 
+instance Killable (GameObject a) where 
     isAlive = alive
     die g = g { alive = False }
 
-instance NativeResource GameObject where
+instance NativeResource (GameObject a) where
     free GameObject { drawComp, physicsComp } =
         free drawComp >> destroyPhysics physicsComp
 
-instance DrawingInbox GameObject where
+instance DrawingInbox (GameObject a) where
     getInbox = inbox
     addInbox msg obj@GameObject { inbox } = obj { inbox = msg : inbox }
     clearInbox g = g { inbox = [] }
 
-instance Behavioral GameObject where
+instance Behavioral (GameObject st) st where
     setBehavior behav g = g { behavior = behav }
     setBehaviorT behav g = g { behavior = Behavior behav }
 
-instance ChildBearer GameObject where
+instance ChildBearer (GameObject st) st where
     getChildren = childObjects
     removeChildren obj = obj { childObjects = [] }
     addChild child obj@GameObject { childObjects } = obj { childObjects = child : childObjects }
 
-instance ZOrderable GameObject where
+instance ZOrderable (GameObject a) where
     getZ GameObject { drawComp } = getZ drawComp
     setZ z obj@GameObject { drawComp } = obj { drawComp = setZ z drawComp }
 
-addCommand :: Command -> GameObject -> GameObject
+addCommand :: Command st -> GameObject st -> GameObject st
 addCommand comm obj@GameObject { commands } = obj { commands = comm : commands }
 
-addCommandM :: Command -> CommandType
+addCommandM :: Command st -> CommandType st
 addCommandM comm obj = return (addCommand comm obj)
