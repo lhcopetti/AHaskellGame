@@ -7,7 +7,6 @@ module System.GameScene
 import Control.Monad (forM_)
 
 import System.GameStepper (stepPhysics, stepGameObjects)
-import GameObject.AnyGameObject (AnyGameObject)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.PhysicsWorld ()
 import Drawable
@@ -16,9 +15,10 @@ import NativeResource
 import Component.Draw.ZOrderable
 import Updatable (SceneState)
 import GameEnv (GameEnvironment (..))
+import GameObject.GameObjectTypes
 
 data GameScene = GameScene  { physicsWorld :: PhysicsWorld
-                            , gameObjects  :: [AnyGameObject]
+                            , gameObjects  :: [GameObject]
                             , gameState    :: SceneState
                             }
 
@@ -35,7 +35,7 @@ instance NativeResource GameScene where
     free GameScene {..} = mapM_ free gameObjects >> free physicsWorld
 
 
-updateGameScene :: GameScene -> GameEnvironment -> IO (GameScene, [AnyGameObject])
+updateGameScene :: GameScene -> GameEnvironment -> IO (GameScene, [GameObject])
 updateGameScene GameScene {..} env = do
     objs' <- stepPhysics (1 / 60) physicsWorld gameObjects
     (newObjs, childrenObj, newState) <- stepGameObjects env objs' gameState

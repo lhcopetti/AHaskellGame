@@ -15,7 +15,6 @@ import System.Messaging.Messages.ShapeMessage
 import System.Messaging.Handler.PushMessageHandler
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
-import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes
 import GameObject.TextGameObject (createTextGO, createTextGO)
 import Component.Behavior.Behavior (setBehaviorT)
@@ -66,9 +65,8 @@ main = do
         Nothing -> putStrLn "Error creating game objects"
         Just (b, objects) -> do
                             let n = SceneState (initialBoard b) False
-                                anyObjs = map AGO objects
                                 world = GameWorld wnd
-                                scene = GameScene physicsWorld anyObjs n
+                                scene = GameScene physicsWorld objects n
                             startGame world scene gameEnv 
                             putStrLn "This is the End!"
 

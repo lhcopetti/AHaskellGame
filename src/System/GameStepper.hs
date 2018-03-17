@@ -5,10 +5,10 @@ module System.GameStepper
 
 import Control.Monad (forM, forM_)
 import Data.List (partition)
+import Data.Maybe (fromMaybe)
 import Control.Monad.Trans.Maybe (runMaybeT)
 
 import GameEnv (GameEnvironment (..))
-import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObject ()
 import GameObject.GameObjectTypes (GameObjectCreation, GameObject)
 import Physics.PhysicsWorld (stepWorld)
@@ -21,31 +21,31 @@ import Component.Physics.PhysicsClass
 import Component.Physics.Physics ()
 
 
-stepPhysics :: Float -> PhysicsWorld -> [AnyGameObject] -> IO [AnyGameObject]
+stepPhysics :: Float -> PhysicsWorld -> [GameObject] -> IO [GameObject]
 stepPhysics deltaTime physicsWorld objs = stepWorld deltaTime physicsWorld >>
     mapM updatePhysics objs
 
-stepGameObjects :: GameEnvironment -> [AnyGameObject] -> SceneState -> IO ([AnyGameObject], [AnyGameObject], SceneState)
+stepGameObjects :: GameEnvironment -> [GameObject] -> SceneState -> IO ([GameObject], [GameObject], SceneState)
 stepGameObjects env objs state = do
     let (newObjs, newState) = runMStack env state objs
-    childrenObj <- getChildrenAnyGameObjects newObjs
-    newObjs' <- removeDeadAnyGameObjects newObjs
+    childrenObj <- getAllChildren newObjs
+    newObjs' <- removeAllDead newObjs
     return (map removeChildren newObjs', childrenObj, newState)
 
 
-getChildrenAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
-getChildrenAnyGameObjects objs = do
+getAllChildren :: [GameObject] -> IO [GameObject]
+getAllChildren objs = do
     let childrenCreation = concatMap getChildren objs
     createdChildren <- createObjects childrenCreation
-    return $ maybe [] (map AGO) createdChildren
+    return $ fromMaybe [] createdChildren
 
 createObjects :: [GameObjectCreation] -> IO (Maybe [GameObject])
 createObjects action = do
     newObjs <- forM action runMaybeT
     return (sequence newObjs)
 
-removeDeadAnyGameObjects :: [AnyGameObject] -> IO [AnyGameObject]
-removeDeadAnyGameObjects objs = do 
+removeAllDead :: [GameObject] -> IO [GameObject]
+removeAllDead objs = do 
     let (alive, dead) = partition isAlive objs
     forM_ dead free
     return alive

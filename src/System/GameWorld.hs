@@ -8,8 +8,8 @@ module System.GameWorld
 import SFML.Graphics.Types (RenderWindow)
 import SFML.Graphics.RenderWindow (destroy)
 
+import GameObject.GameObjectTypes
 import System.GameScene (GameScene (..))
-import GameObject.AnyGameObject
 import NativeResource
 
 
@@ -20,7 +20,7 @@ data GameWorld = GameWorld  { window :: RenderWindow
 -- This two-part system to add child objects to the GameWorld happens because 
 -- we don't want to synchronize or draw objects that have not had their first update
 -- cycle yet.
-adoptChildren :: GameScene -> [AnyGameObject] -> GameScene
+adoptChildren :: GameScene -> [GameObject] -> GameScene
 adoptChildren scene@ GameScene { gameObjects } orphanChildren = scene { gameObjects = gameObjects ++ orphanChildren }
 
 

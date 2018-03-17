@@ -19,7 +19,6 @@ import Updatable
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
-import GameObject.AnyGameObject (AnyGameObject (..))
 import GameObject.GameObjectTypes (GameObjectCreation, Ratio (..))
 import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
 import PrefabObjects.AnimatedBlueBird (createAnimatedBlueBird)
@@ -83,9 +82,8 @@ main = do
         Just balls -> case newConwayWorld (5, 5) of 
                         Just b -> do
                             let sceneState = SceneState b True
-                                anyBalls = map AGO balls
                                 world = GameWorld wnd
-                                scene = GameScene physicsWorld anyBalls sceneState
+                                scene = GameScene physicsWorld balls sceneState
                             startGame world scene gameEnv
                             putStrLn "This is the End!"
                         Nothing -> do
