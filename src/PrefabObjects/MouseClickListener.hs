@@ -13,6 +13,7 @@ import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Handler.PushMessageHandler (pushNamedMessage)
 import System.Messaging.Messages.TransformableMessage (setOriginMsg)
 import System.Messaging.Messages.ShapeMessage (setFillColorMsg)
+import qualified System.MouseSnapshot as M (MButton (..))
 import Component.Input.Input
 import Component.Draw.Drawing ()
 import Component.Draw.CircleDrawing (createCircle)
@@ -33,15 +34,24 @@ mkMouseClickListener = do
     liftIO $ runMessageT (setOriginMsg (Vec2f 10 0)) lCircle
     liftIO $ runMessageT (setOriginMsg (Vec2f (-10) 0)) rCircle
     drw <- createComposite [lCircle, mCircle, rCircle, text]
-    let beh = Behavior changeColorOnLeftMousePress
+    let beh = Behavior changeColorOnRightMousePress
     let go = createSimplePhysicsGO drw beh (Vec2f 0 0) zero
     return go
 
 changeColorOnLeftMousePress :: BehaviorType st
 changeColorOnLeftMousePress obj = do
-    pressed <- isLeftMousePressed
+    pressed <- isMousePressed M.MLeft
     let color
             | pressed       = blue
             | otherwise     = white
         msg = setFillColorMsg color
     pushNamedMessage "left" msg obj
+
+changeColorOnRightMousePress :: BehaviorType st
+changeColorOnRightMousePress obj = do
+    pressed <- isMousePressed M.MRight
+    let color
+            | pressed       = blue
+            | otherwise     = white
+        msg = setFillColorMsg color
+    pushNamedMessage "right" msg obj

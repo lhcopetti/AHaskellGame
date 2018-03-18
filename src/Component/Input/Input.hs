@@ -1,7 +1,7 @@
 module Component.Input.Input
     ( isPressed
-    , isLeftMousePressed
-    , isLeftJustPressed
+    , isMousePressed
+    , isJustPressed
     , emptyInput
     ) where
 
@@ -12,7 +12,7 @@ import Control.Monad.Reader (asks)
 import GameObject.GameObjectTypes
 import GameEnv (GameEnvironment (..))
 import System.InputSnapshot (InputSnapshot (..))
-import qualified System.MouseSnapshot as M (left)
+import qualified System.MouseSnapshot as M (getButton, MButton)
 import qualified System.InputState as I (isPressed, justPressed)
 import Updatable
 
@@ -24,8 +24,8 @@ isPressed key = do
     pressedKeys <- asks (pressed . inputSnapshot)
     return (key `elem` pressedKeys)
 
-isLeftMousePressed :: UpdateMStack Bool st
-isLeftMousePressed = asks (I.isPressed . M.left . mouse . inputSnapshot)
+isMousePressed :: M.MButton -> UpdateMStack Bool st
+isMousePressed btn = asks (I.isPressed . M.getButton btn . mouse . inputSnapshot)
 
-isLeftJustPressed :: UpdateMStack Bool st
-isLeftJustPressed = asks (I.justPressed . M.left . mouse . inputSnapshot)
+isJustPressed :: M.MButton -> UpdateMStack Bool st
+isJustPressed btn = asks (I.justPressed . M.getButton btn . mouse . inputSnapshot)

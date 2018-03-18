@@ -1,7 +1,8 @@
 module System.MouseSnapshot
     ( MButton (..)
-    , MouseSnapshot (..)
-    , MouseEvt (..)
+    , MouseSnapshot
+    , mkMouseSnapshot
+    , getButton
     , emptySnapshot
     , reduceEvents
     , stepMouseSnapshot
@@ -13,25 +14,33 @@ import SFML.Window.Mouse
 import qualified System.InputState as I
 
 data MouseSnapshot = MouseSnapshot  { left :: I.State
+                                    , right :: I.State
                                     } deriving (Eq, Show)
 
-data MButton = Left | Right
+mkMouseSnapshot :: I.State -> I.State -> MouseSnapshot
+mkMouseSnapshot = MouseSnapshot
+
+data MButton = MLeft | MRight
     deriving (Eq, Show)
 
-emptySnapshot :: MouseSnapshot
-emptySnapshot = MouseSnapshot { left = I.emptyState }
+getButton :: MButton -> MouseSnapshot -> I.State
+getButton MLeft = left
+getButton MRight = right
 
-data MouseEvt = Pressed | Released | Nil
-    deriving (Show, Eq)
+emptySnapshot :: MouseSnapshot
+emptySnapshot = MouseSnapshot { left = I.emptyState, right = I.emptyState }
 
 stepMouseSnapshot :: MouseSnapshot -> [SFEvent] -> MouseSnapshot
-stepMouseSnapshot snap evts = MouseSnapshot { left = update (left snap) }
+stepMouseSnapshot snap evts = MouseSnapshot 
+    { left = update MouseLeft (left snap)
+    , right = update MouseRight (right snap) 
+    }
     where
-        update st = I.stepState st . I.reduceEvents $ evts
+        update bt st = I.stepState st (reduceEvents bt evts)
 
-reduceEvents :: [SFEvent] -> MouseEvt
-reduceEvents = foldl go Nil
+reduceEvents :: MouseButton -> [SFEvent] -> I.Event
+reduceEvents mb = foldl go I.Nil
     where
-        go _ (SFEvtMouseButtonPressed MouseLeft _ _)  = Pressed
-        go _ (SFEvtMouseButtonReleased MouseLeft _ _) = Released
+        go v (SFEvtMouseButtonPressed  mb' _ _)  = if mb' == mb then I.Pressed else v
+        go v (SFEvtMouseButtonReleased mb' _ _)  = if mb' == mb then I.Released else v 
         go v _ = v
