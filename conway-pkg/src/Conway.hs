@@ -8,6 +8,7 @@ module Conway
     , cellAt
     , tick
     , isLive
+    , toggleAt
     , BoardSize
     , ConwayWorld
     , Position
@@ -36,6 +37,9 @@ setLive pos ConwayWorld { world } = ConwayWorld (setLiveCell pos world)
 
 setLives :: [Position] -> ConwayWorld -> ConwayWorld
 setLives pos ConwayWorld { world } = ConwayWorld (setLiveCells pos world)
+
+toggleAt :: Position -> ConwayWorld -> ConwayWorld
+toggleAt pos ConwayWorld { world } = ConwayWorld (toggleCell pos world)
 
 setDead :: Position -> ConwayWorld -> ConwayWorld
 setDead pos ConwayWorld { world } = ConwayWorld (setDeadCell pos world)

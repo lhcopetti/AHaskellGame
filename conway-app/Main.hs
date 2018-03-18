@@ -6,7 +6,7 @@ import SFML.Graphics.RenderWindow
 import SFML.Graphics.Color
 import SFML.Graphics.Rect (FloatRect (..), floatRectContains)
 
-import Control.Monad (liftM)
+import Control.Monad (liftM, when)
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.State
 
@@ -123,11 +123,10 @@ mkCellRect (x, y) side (Vec2f ox oy) padding = let
 toggleCellBehavior :: Position -> FloatRect -> BehaviorType SceneState
 toggleCellBehavior pos rect obj = do
     press <- isJustPressed M.MLeft
-    (Vec2f x y) <- mousePosition
-    if press && floatRectContains x y rect then do
-        modify (toggleBoard pos) >> return obj
-    else
-        return obj
+    (Vec2f mx my) <- mousePosition
+    let shouldToggle = press && floatRectContains mx my rect
+    when shouldToggle (modify $ toggleBoard pos)
+    return obj
 
 stepConway :: Int -> Behavior SceneState
 stepConway interval = behaveEveryB interval $ \go -> do
@@ -146,7 +145,7 @@ tickState :: SceneState -> SceneState
 tickState (SceneState b autoUpdate) = SceneState (tick b) autoUpdate
 
 toggleBoard :: Position -> SceneState -> SceneState
-toggleBoard pos (SceneState b a) = SceneState (setLive pos b) a
+toggleBoard pos (SceneState b a) = SceneState (toggleAt pos b) a
 
 resetState :: SceneState -> SceneState
 resetState (SceneState b autoUpdate) = SceneState (initialBoard . reset $ b) autoUpdate
