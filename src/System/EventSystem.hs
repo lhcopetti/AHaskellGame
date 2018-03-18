@@ -41,6 +41,5 @@ pollEventT = MaybeT . pollEvent
 
 shouldCloseWindow :: SFEvent -> Bool
 shouldCloseWindow SFEvtClosed                           = True
-shouldCloseWindow SFEvtMouseButtonPressed {}            = True
 shouldCloseWindow (SFEvtKeyPressed KeyEscape _ _ _ _)   = True
 shouldCloseWindow _                                     = False
