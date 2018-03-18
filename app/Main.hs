@@ -25,6 +25,7 @@ import PrefabObjects.BallInputAware (createBallInputAware)
 import PrefabObjects.AnimatedRunningCat (createAnimatedRunningCat)
 import PrefabObjects.AnimatedSpinningCoin (createSpinningCoin)
 import PrefabObjects.MousePositionPrinter (mkMousePrinter)
+import PrefabObjects.MouseClickListener (mkMouseClickListener)
 import ObjectsFactory
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
@@ -97,6 +98,7 @@ createObjects gen env space = do
     hex <- createSimpleHexagon (Vec2f 200 200)
     eqT <- createMouseFollowerEqTriangle
     inputAware <- createBallInputAware (Vec2f 50 400)
+    mouseListener <- liftM (`Pos.setPosition` Vec2f 450 200) mkMouseClickListener
     mousePointer <- createMousePositionCopier
     mousePrinter <- liftM (`Pos.setPosition` Vec2f 500 0) mkMousePrinter
     simpleText <- createSimpleText (Vec2f 100 100) "AHaskellGame"
@@ -121,7 +123,7 @@ createObjects gen env space = do
         (Vec2f 560 20, Vec2f 570 40, 5)]
     box1 <- createBox (Vec2f 40  350) 15 space
     box2 <- createBox (Vec2f 600 350) 15 space
-    return (box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
+    return (mouseListener : box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
 
 createPhysicsBalls :: PhysicsWorld -> MaybeT IO [GameObject st]
 createPhysicsBalls physicsWorld = 

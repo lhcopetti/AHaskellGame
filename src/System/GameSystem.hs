@@ -49,7 +49,7 @@ loop (GameWorld wnd) scene@GameScene { gameObjects } env = do
         do  putStrLn ("Closing event: " ++ show evts)
             return updatedScene
     else
-        loop (GameWorld wnd) updatedScene env
+        loop (GameWorld wnd) updatedScene newEnv
 
 
 gameLoop :: GameScene a -> GameEnvironment -> IO (GameScene a)
