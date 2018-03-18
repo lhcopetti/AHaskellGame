@@ -12,7 +12,8 @@ import Control.Monad.Reader (asks)
 import GameObject.GameObjectTypes
 import GameEnv (GameEnvironment (..))
 import System.InputSnapshot (InputSnapshot (..))
-import System.MouseSnapshot (leftIsPressed, leftJustPressed)
+import qualified System.MouseSnapshot as M (left)
+import qualified System.InputState as I (isPressed, justPressed)
 import Updatable
 
 emptyInput :: Input st
@@ -24,7 +25,7 @@ isPressed key = do
     return (key `elem` pressedKeys)
 
 isLeftMousePressed :: UpdateMStack Bool st
-isLeftMousePressed = asks (leftIsPressed . mouse . inputSnapshot)
+isLeftMousePressed = asks (I.isPressed . M.left . mouse . inputSnapshot)
 
 isLeftJustPressed :: UpdateMStack Bool st
-isLeftJustPressed = asks (leftJustPressed . mouse . inputSnapshot)
+isLeftJustPressed = asks (I.justPressed . M.left . mouse . inputSnapshot)
