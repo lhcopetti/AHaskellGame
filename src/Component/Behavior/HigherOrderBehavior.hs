@@ -3,7 +3,7 @@ module Component.Behavior.HigherOrderBehavior
     , behaveOnceAndThen
     , behaveOnce
     , behaveBoth
-    , behaveAll
+    , behaveSequence
     , behaveEvery
     , chooseBehavior
     ) where
@@ -37,9 +37,9 @@ behaveOnce beh = behaveOnceAndThen beh noopBehavior
 behaveBoth :: BehaviorType st -> BehaviorType st -> BehaviorType st
 behaveBoth first second = (second =<<) . first
 
-behaveAll :: [BehaviorType st] -> BehaviorType st
-behaveAll [] obj = noopBehavior obj
-behaveAll (beh:behs) obj = liftM (setBehaviorT (behaveAll behs)) (beh obj)
+behaveSequence :: [BehaviorType st] -> BehaviorType st
+behaveSequence [] obj = noopBehavior obj
+behaveSequence (beh:behs) obj = liftM (setBehaviorT (behaveSequence behs)) (beh obj)
 
 behaveEvery :: Int -> BehaviorType st -> BehaviorType st
 behaveEvery counter = go counter counter

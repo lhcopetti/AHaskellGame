@@ -155,8 +155,8 @@ createNamedMessagesDemo pos = do
     let behavior = updateMultipleTextsB
     return (createSimplePhysicsGO allTogether behavior pos zero )
 
-createUsesBehaveAll :: GameObjectCreation st
-createUsesBehaveAll = do
+createUsesbehaveSequence :: GameObjectCreation st
+createUsesbehaveSequence = do
     liftIO $ putStrLn "Creates object that blinks in the four regions of the screen"
     drw <- createCenteredCircle 15 green
     let commands = map (addCommandBehavior . Command)   [ positionTopLeftCommand
@@ -166,7 +166,7 @@ createUsesBehaveAll = do
                                                         ]
     let breaks = replicate (length commands) . replicate 50 $ noopBehavior
     let behaviors = concat $ zipWith (:) commands breaks
-    let allTogether = behaveAllB (cycle behaviors)
+    let allTogether = behaveSequenceB (cycle behaviors)
     return (createSimplePhysicsGO drw allTogether (Vec2f 200 200) zero)
 
 createHipPhysicsBall :: Vec2f -> Float -> PhysicsWorld -> GameObjectCreation st

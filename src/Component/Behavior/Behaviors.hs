@@ -16,7 +16,7 @@ module Component.Behavior.Behaviors
     , behaveBothB
     , addChildB
     , updateMultipleTextsB
-    , behaveAllB
+    , behaveSequenceB
     , behaveEveryB
     , addCommandBehaviorB
     , behaveOnKeyPressB
@@ -34,7 +34,7 @@ import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMo
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
-import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveAll, behaveEvery, chooseBehavior)
+import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveSequence, behaveEvery, chooseBehavior)
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.InputBehavior (behaveOnKeyPress)
 
@@ -89,8 +89,8 @@ addChildB child = Behavior (addChildBehavior child)
 updateMultipleTextsB :: Behavior st
 updateMultipleTextsB = Behavior (updateMultipleTexts 0)
 
-behaveAllB :: [BehaviorType st] -> Behavior st
-behaveAllB xs = Behavior (behaveAll xs)
+behaveSequenceB :: [BehaviorType st] -> Behavior st
+behaveSequenceB xs = Behavior (behaveSequence xs)
 
 behaveEveryB :: Int -> BehaviorType st -> Behavior st
 behaveEveryB counter beh = Behavior (behaveEvery counter beh)

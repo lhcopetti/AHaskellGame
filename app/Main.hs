@@ -109,7 +109,7 @@ createObjects gen env space = do
     sprites <- createSprites
     behaveOnce <- createBehaveOnce (Vec2f 568 200)
     namedObjects <- createNamedMessagesDemo (Vec2f 468 300)
-    behavesAll <- createUsesBehaveAll
+    behavesAll <- createUsesbehaveSequence
     hipmunkBalls <- createPhysicsBalls space
     hipmunkLine <- createPhysicsLine 20.0 (Vec2f 0 400, Vec2f 640 400) space
     hLines <- createLines [(Vec2f 400 20, Vec2f 500 20, 1), (Vec2f 400 30, Vec2f 500 30, 3), (Vec2f 400 40, Vec2f 500 40, 5)]
