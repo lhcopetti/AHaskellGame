@@ -20,6 +20,7 @@ import Component.Draw.CircleDrawing (createCircle)
 import Component.Draw.CompositeDrawing (createComposite)
 import Component.Draw.TextDrawing (createText)
 import Component.Draw.NamedDrawing (createNamedDrawingM)
+import Component.Behavior.Behaviors (behaveAllB)
 import Vec2.Vec2Math (zero)
 
 mkMouseClickListener :: GameObjectCreation st
@@ -34,8 +35,8 @@ mkMouseClickListener = do
     liftIO $ runMessageT (setOriginMsg (Vec2f 10 0)) lCircle
     liftIO $ runMessageT (setOriginMsg (Vec2f (-10) 0)) rCircle
     drw <- createComposite [lCircle, mCircle, rCircle, text]
-    let beh = Behavior changeColorOnRightMousePress
-    let go = createSimplePhysicsGO drw beh (Vec2f 0 0) zero
+    let behs = Behavior <$> [changeColorOnRightMousePress, changeColorOnLeftMousePress]
+    let go = createSimplePhysicsGO drw (behaveAllB behs) (Vec2f 0 0) zero
     return go
 
 changeColorOnLeftMousePress :: BehaviorType st

@@ -6,6 +6,7 @@ module Component.Behavior.HigherOrderBehavior
     , behaveSequence
     , behaveEvery
     , chooseBehavior
+    , behaveAll
     ) where
 
 import Control.Monad (liftM)
@@ -46,3 +47,6 @@ behaveEvery counter = go counter counter
     where go max counter beh obj
             | counter == 0 = liftM (setBehaviorT (behaveEvery max beh)) (beh obj) 
             | otherwise = return $ setBehaviorT (go max (counter -1) beh) obj
+
+behaveAll :: [BehaviorType st] -> BehaviorType st
+behaveAll behs obj = foldr (=<<) (return obj) behs

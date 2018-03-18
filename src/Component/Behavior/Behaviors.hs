@@ -21,6 +21,7 @@ module Component.Behavior.Behaviors
     , addCommandBehaviorB
     , behaveOnKeyPressB
     , chooseBehaviorB
+    , behaveAllB
     ) where
 
 import SFML.Window.Keyboard (KeyCode)
@@ -34,7 +35,7 @@ import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMo
 import Component.Behavior.NoopBehavior (noopBehavior)
 import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
-import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveSequence, behaveEvery, chooseBehavior)
+import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveSequence, behaveEvery, chooseBehavior, behaveAll)
 import Component.Behavior.CommandBehavior (addCommandBehavior)
 import Component.Behavior.InputBehavior (behaveOnKeyPress)
 
@@ -103,3 +104,6 @@ behaveOnKeyPressB key beh = Behavior (behaveOnKeyPress key beh)
 
 chooseBehaviorB :: Bool -> Behavior st -> Behavior st -> Behavior st
 chooseBehaviorB pred (Behavior first) (Behavior second) = Behavior (chooseBehavior pred first second)
+
+behaveAllB :: [Behavior st] -> Behavior st
+behaveAllB = Behavior . behaveAll . map behave
