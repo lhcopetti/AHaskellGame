@@ -7,6 +7,7 @@ module ConwayCell
     , stepCell
     , stepDeadCell
     , stepLiveCell
+    , toggle
     )
     where
 
@@ -23,6 +24,9 @@ liveCell = ConwayCell { alive = True }
 
 deadCell :: ConwayCell
 deadCell = ConwayCell { alive = False }
+
+toggle :: ConwayCell -> ConwayCell
+toggle c @ ConwayCell { alive } = c { alive = not alive }
 
 isAlive :: ConwayCell -> Bool
 isAlive ConwayCell { alive } = alive

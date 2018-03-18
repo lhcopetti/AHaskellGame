@@ -35,6 +35,8 @@ spec = do
     blockStillLifeTest
     blinkerOscillatorTest
 
+    toggleCellTest
+
 singleCellBoardTests :: Spec
 singleCellBoardTests = describe "Single cell board tests" $ do
     let board = setLiveCell (0, 0) . unsafeNewBoard $ (1, 1)
@@ -166,6 +168,18 @@ blinkerOscillatorTest = describe "Should behave like an oscillator with a period
         let seed = setLiveCells blinkSnd (unsafeNewBoard (5, 5))
             fstIteration = tickBoard seed
         fstIteration `shouldBe` setLiveCells blinkFst (unsafeNewBoard (5, 5))
+
+toggleCellTest :: Spec
+toggleCellTest = describe "Toggles cells on boards" $ do
+    let seed = setLiveCells [(0, 0), (1, 1)] (unsafeNewBoard (2, 2))
+    it "should kill the living cell" $
+        toggleCell (0, 0) seed `shouldBe` setLiveCells [(1, 1)] (unsafeNewBoard (2, 2))
+    it "should reanimate the dead cell" $
+        toggleCell (0, 1) seed `shouldBe` setLiveCells [(0, 0), (0, 1), (1, 1)] (unsafeNewBoard (2, 2))
+    it "should kill all cells" $ do
+        let f = toggleCell (0, 0)
+            g = toggleCell (1, 1)
+        fmap f g seed `shouldBe` unsafeNewBoard (2, 2)
 
 unsafeNewBoard :: BoardSize -> Board
 unsafeNewBoard = fromJust . newBoard

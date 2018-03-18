@@ -41,6 +41,12 @@ setDeadCell pos = setCellAt pos deadCell
 isLiveCell :: Position -> Board -> Maybe Bool
 isLiveCell = (liftM isAlive .) . atPosition
 
+toggleCell :: Position -> Board -> Board
+toggleCell pos b = case atPosition pos b of
+    Nothing -> b
+    Just c  -> setCellAt pos (toggle c) b
+
+
 atPosition :: Position -> Board -> Maybe ConwayCell
 atPosition pos@(x, y) b = do
     guard (x >= 0 && y >= 0)

@@ -15,7 +15,7 @@ spec :: Spec
 spec = do
     stepDeadCellTests
     stepLiveCellTests
-
+    toggleTests
 
 stepDeadCellTests :: Spec
 stepDeadCellTests = describe "Stepping a dead cell" $ do
@@ -34,3 +34,10 @@ stepLiveCellTests = describe "Stepping a living cell" $ do
         map (`stepLiveCell` liveCell) [2, 3] `shouldBe` replicate 2 liveCell
     it "should kill cells with more then 3 neighbours" $
         map (`stepLiveCell` liveCell) [4, 5 .. 8] `shouldBe` replicate 5 deadCell
+
+toggleTests :: Spec
+toggleTests = describe "Toggle cell tests" $ do
+    it "should kill living cells" $
+        toggle liveCell `shouldBe` deadCell
+    it "should reanimate dead cells" $
+        toggle deadCell `shouldBe` liveCell

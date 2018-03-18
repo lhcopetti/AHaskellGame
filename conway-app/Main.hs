@@ -4,6 +4,7 @@ module Main where
 import SFML.Window
 import SFML.Graphics.RenderWindow
 import SFML.Graphics.Color
+import SFML.Graphics.Rect (FloatRect (..), floatRectContains)
 
 import Control.Monad (liftM)
 import Control.Monad.Trans.Maybe (MaybeT (..))
@@ -17,14 +18,16 @@ import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.GameObjectTypes
 import GameObject.TextGameObject (createTextGO, createTextGO)
-import Component.Behavior.Behavior (setBehaviorT)
+import Component.Behavior.Behavior (setBehavior)
 import Component.Behavior.Behaviors
+import Component.Input.Input (isJustPressed, mousePosition)
 import ObjectsFactory
 import GridGameObjectFactory
 import Component.Draw.ZOrderable
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
+import qualified System.MouseSnapshot as M (MButton (..))
 import Vec2.Vec2Math
 import PrefabObjects.MousePositionPrinter (mkMousePrinter)
 import PrefabObjects.RunningTime (mkRunningTime)
@@ -95,15 +98,36 @@ initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)
                         , (2, 7), (8, 7) ]
 
 mkConwayCell :: Position -> MaybeT IO (GameObject SceneState)
-mkConwayCell gpos@(x, y) = liftM updateBehavior createObject
+mkConwayCell gpos@(x, y) = liftM (setBehavior behaviors) createObject
     where
         fx = fromIntegral x
         fy = fromIntegral y
         squareSize = 25
         sizeDrawings = 25 + 2 -- padding
         pos = addVec2f (Vec2f 2 2) (Vec2f (fx * sizeDrawings) (fy * sizeDrawings))
-        updateBehavior = setBehaviorT (setConwayColorBehavior gpos)
+        cellRect = mkCellRect gpos squareSize (Vec2f 2 2) 2
+        setColorB = Behavior (setConwayColorBehavior gpos)
+        mouseToggleB = Behavior (toggleCellBehavior gpos cellRect)
+        behaviors = behaveAllB [setColorB, mouseToggleB]
         createObject   = createSquareObject squareSize white pos
+
+mkCellRect :: Position -> Float -> Vec2f -> Float -> FloatRect
+mkCellRect (x, y) side (Vec2f ox oy) padding = let
+    fx = fromIntegral x
+    fy = fromIntegral y
+    left = ox + fx * (side + padding)
+    top =  oy + fy * (side + padding)
+    in 
+        FloatRect left top side side
+
+toggleCellBehavior :: Position -> FloatRect -> BehaviorType SceneState
+toggleCellBehavior pos rect obj = do
+    press <- isJustPressed M.MLeft
+    (Vec2f x y) <- mousePosition
+    if press && floatRectContains x y rect then do
+        modify (toggleBoard pos) >> return obj
+    else
+        return obj
 
 stepConway :: Int -> Behavior SceneState
 stepConway interval = behaveEveryB interval $ \go -> do
@@ -120,6 +144,9 @@ resetConwayB key = behaveOnKeyPressB key $ \go -> do
 
 tickState :: SceneState -> SceneState
 tickState (SceneState b autoUpdate) = SceneState (tick b) autoUpdate
+
+toggleBoard :: Position -> SceneState -> SceneState
+toggleBoard pos (SceneState b a) = SceneState (setLive pos b) a
 
 resetState :: SceneState -> SceneState
 resetState (SceneState b autoUpdate) = SceneState (initialBoard . reset $ b) autoUpdate
