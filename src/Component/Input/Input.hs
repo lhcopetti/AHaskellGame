@@ -1,6 +1,7 @@
 module Component.Input.Input
     ( isPressed
     , isLeftMousePressed
+    , isLeftJustPressed
     , emptyInput
     ) where
 
@@ -11,7 +12,7 @@ import Control.Monad.Reader (asks)
 import GameObject.GameObjectTypes
 import GameEnv (GameEnvironment (..))
 import System.InputSnapshot (InputSnapshot (..))
-import System.MouseSnapshot (leftIsPressed)
+import System.MouseSnapshot (leftIsPressed, leftJustPressed)
 import Updatable
 
 emptyInput :: Input st
@@ -24,3 +25,6 @@ isPressed key = do
 
 isLeftMousePressed :: UpdateMStack Bool st
 isLeftMousePressed = asks (leftIsPressed . mouse . inputSnapshot)
+
+isLeftJustPressed :: UpdateMStack Bool st
+isLeftJustPressed = asks (leftJustPressed . mouse . inputSnapshot)
