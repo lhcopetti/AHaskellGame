@@ -14,7 +14,7 @@ import Control.Concurrent (threadDelay)
 import System.GameWorld (GameWorld (..), adoptChildren)
 import System.GameScene (GameScene (..), updateGameScene)
 import System.EventSystem (pollAllEvents, shouldCloseWindow)
-import System.InputSnapshot (createSnapshot)
+import System.InputSnapshot (stepSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..), updateGameEnv)
 import Synchronizable
@@ -34,11 +34,11 @@ loop (GameWorld wnd) scene@GameScene { gameObjects } env = do
 
     mouse <- getMouseInput wnd
 
-    let snapshot = createSnapshot evts
+    let newSnap = stepSnapshot (inputSnapshot env) evts
     let liveGameObjects = fromIntegral . length $ gameObjects
-    newEnv <- updateGameEnv env mouse liveGameObjects snapshot
+    newEnv <- updateGameEnv env mouse liveGameObjects newSnap
 
-    unless (null evts) $ do 
+    unless (null evts) $ do
         putStrLn $ "These are the events: " ++ show evts
         putStrLn $ "This is the snapshot: " ++ show (inputSnapshot newEnv)
 
