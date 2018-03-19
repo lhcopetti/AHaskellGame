@@ -1,4 +1,4 @@
-module System.MouseSnapshotSpec
+module System.Input.MouseSnapshotSpec
     ( main
     , spec
     ) where
@@ -9,8 +9,8 @@ import SFML.Window.Mouse
 import Test.Hspec
 import Test.Hspec.Runner
 
-import System.MouseSnapshot
-import qualified System.InputState as I
+import System.Input.MouseSnapshot
+import qualified System.Input.InputState as I
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True } spec

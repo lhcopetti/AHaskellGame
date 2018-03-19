@@ -1,4 +1,4 @@
-module System.InputStateSpec
+module System.Input.InputStateSpec
     ( main
     , spec
     ) where
@@ -6,7 +6,7 @@ module System.InputStateSpec
 import Test.Hspec
 import Test.Hspec.Runner
 
-import System.InputState
+import System.Input.InputState
 
 main :: IO ()
 main = hspecWith defaultConfig { configFastFail = True } spec
