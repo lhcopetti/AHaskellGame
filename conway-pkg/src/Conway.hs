@@ -14,7 +14,6 @@ module Conway
     , Position
     ) where
 
-import Data.List (intercalate, intersperse)
 import Control.Monad (liftM, MonadPlus)
 import Data.Maybe (fromMaybe)
 
@@ -30,25 +29,31 @@ newConwayWorld :: (MonadPlus m) => BoardSize -> m ConwayWorld
 newConwayWorld dimensions = liftM ConwayWorld (newBoard dimensions)
 
 reset :: ConwayWorld -> ConwayWorld
-reset ConwayWorld { world } = ConwayWorld { world = resetBoard world }
+reset = mapOnBoard resetBoard
 
 setLive :: Position -> ConwayWorld -> ConwayWorld
-setLive pos ConwayWorld { world } = ConwayWorld (setLiveCell pos world)
+setLive = mapOnBoard . setLiveCell
 
 setLives :: [Position] -> ConwayWorld -> ConwayWorld
-setLives pos ConwayWorld { world } = ConwayWorld (setLiveCells pos world)
+setLives = mapOnBoard . setLiveCells
 
 toggleAt :: Position -> ConwayWorld -> ConwayWorld
-toggleAt pos ConwayWorld { world } = ConwayWorld (toggleCell pos world)
+toggleAt = mapOnBoard . toggleCell
 
 setDead :: Position -> ConwayWorld -> ConwayWorld
-setDead pos ConwayWorld { world } = ConwayWorld (setDeadCell pos world)
+setDead = mapOnBoard . setDeadCell
 
 tick :: ConwayWorld -> ConwayWorld
-tick ConwayWorld { world } = ConwayWorld { world = tickBoard world }
+tick = mapOnBoard tickBoard
 
 cellAt :: Position -> ConwayWorld -> Maybe ConwayCell
-cellAt pos ConwayWorld { world } = atPosition pos world
+cellAt = onBoard . atPosition
 
 isLive :: Position -> ConwayWorld -> Bool
-isLive pos ConwayWorld { world } = fromMaybe False (isLiveCell pos world)
+isLive pos = fromMaybe False . onBoard (isLiveCell pos)
+
+mapOnBoard :: (Board -> Board) -> ConwayWorld -> ConwayWorld
+mapOnBoard f ConwayWorld { world } = ConwayWorld { world = f world }
+
+onBoard :: (Board -> a) -> ConwayWorld -> a
+onBoard f ConwayWorld { world } = f world
