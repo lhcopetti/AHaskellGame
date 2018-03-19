@@ -20,6 +20,7 @@ import Component.Draw.ZOrderable
 import Component.Draw.ZDrawing
 import Component.Behavior.Behavior
 import System.Messaging.DrawingMessage
+import qualified System.Messaging.PhysicsMessage as PM
 import GameObject.GameObjectTypes
 import Command.Command (runCommands)
 import Physics.DestroyObject (destroyPhysics)
@@ -61,6 +62,11 @@ instance DrawingInbox (GameObject a) where
     getInbox = inbox
     addInbox msg obj@GameObject { inbox } = obj { inbox = msg : inbox }
     clearInbox g = g { inbox = [] }
+
+instance PM.PhysicsInbox (GameObject a) where
+    getInbox = physicsInbox
+    addInbox msg obj@GameObject { physicsInbox } = obj { physicsInbox = msg : physicsInbox }
+    clearInbox g = g { physicsInbox = [] }
 
 instance Behavioral (GameObject st) st where
     setBehavior behav g = g { behavior = behav }

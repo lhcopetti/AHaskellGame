@@ -19,6 +19,8 @@ module GameObject.GameObjectTypes
     , Drawing (..)
     , DrawingMessageType
     , DrawingMessage (..)
+    , PhysicsMessageType
+    , PhysicsMessage (..)
     , Physics (..)
     ) where
 
@@ -39,6 +41,7 @@ data GameObject st = GameObject { drawComp     :: ZDrawing
                                 , position     :: Vec2f
                                 , rotation     :: Float
                                 , inbox        :: [DrawingMessage]
+                                , physicsInbox :: [PhysicsMessage]
                                 , childObjects :: [GameObjectCreation st]
                                 , commands     :: [Command st]
                                 , alive        :: Bool
@@ -112,6 +115,5 @@ data DrawingMessage = MSG DrawingMessageType
 data Physics = SimplePhy Vec2f Float
              | LibraryPhy PhyObject
 
-
--- updateWithState :: GameObject -> StateT a (Reader GameEnvironment) GameObject
--- updateWithState = undefined
+type PhysicsMessageType = PhyObject -> IO ()
+data PhysicsMessage = PMSG PhysicsMessageType

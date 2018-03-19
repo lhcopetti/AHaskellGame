@@ -23,8 +23,9 @@ createGameObject drw beh physics pos = let
     noCommands = []
     input = emptyInput
     emptyInbox = []
+    emptyPhysicsInbox = []
     zdrw = mkZDrawing drw
-    in GameObject zdrw beh physics input pos initialRotation emptyInbox children noCommands live
+    in GameObject zdrw beh physics input pos initialRotation emptyInbox emptyPhysicsInbox children noCommands live
 
 createSimplePhysicsGO :: Drawing -> Behavior st -> Vec2f -> Vec2f -> GameObject st
 createSimplePhysicsGO drw beh pos vel = 

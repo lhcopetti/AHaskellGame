@@ -15,6 +15,7 @@ import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
+import Physics.PhysicsMessage
 
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
@@ -30,6 +31,7 @@ import ObjectsFactory
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
+import System.Messaging.PhysicsMessage
 import Random.Random
 import Data.Time
 
@@ -123,7 +125,14 @@ createObjects gen env space = do
         (Vec2f 560 20, Vec2f 570 40, 5)]
     box1 <- createBox (Vec2f 40  350) 15 space
     box2 <- createBox (Vec2f 600 350) 15 space
-    return (mouseListener : box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
+    forceBall <- userControlledPhysicsBall space
+    return (forceBall : mouseListener : box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
+
+userControlledPhysicsBall :: PhysicsWorld -> MaybeT IO (GameObject st)
+userControlledPhysicsBall world = do
+    ball <- createHipPhysicsBall (Vec2f 100 0) 15 world
+    let phyMessage = PMSG $ applyForce (Vec2f 0 (-450)) (Vec2f 0 0)
+    return (addInbox phyMessage ball)
 
 createPhysicsBalls :: PhysicsWorld -> MaybeT IO [GameObject st]
 createPhysicsBalls physicsWorld = 
