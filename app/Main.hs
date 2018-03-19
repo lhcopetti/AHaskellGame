@@ -8,15 +8,17 @@ import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
 import Control.Monad.Trans.Class
-import Control.Monad (liftM)
+import Control.Monad (liftM, when)
 import Control.Monad.IO.Class (liftIO)
 
 import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
+import Component.Input.Input
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.PhysicsMessage
 
+import Vec2.Vec2Math (zero)
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.GameObjectTypes
@@ -131,8 +133,24 @@ createObjects gen env space = do
 userControlledPhysicsBall :: PhysicsWorld -> MaybeT IO (GameObject st)
 userControlledPhysicsBall world = do
     ball <- createHipPhysicsBall (Vec2f 100 0) 15 world
-    let phyMessage = PMSG $ applyForce (Vec2f 0 (-450)) (Vec2f 0 0)
-    return (addInbox phyMessage ball)
+    let beh = Behavior mkBehaviorBall
+    return (ball { behavior = beh })
+
+mkBehaviorBall :: BehaviorType st
+mkBehaviorBall obj = do
+    let applyForceMsg v = PMSG $ applyForce v zero
+        addVec v = modify (v:)
+        resetMsg = PMSG resetForces
+    up      <- isPressed KeyW
+    left    <- isPressed KeyA
+    right   <- isPressed KeyD
+    let forces = (`execState` []) $ do
+            when up     $ addVec (Vec2f 0 (-4050))
+            when left   $ addVec (Vec2f (-4000) 0)
+            when right  $ addVec (Vec2f 4000 0)
+    let msgs = resetMsg : map applyForceMsg forces
+    return $ foldr addInbox obj msgs
+
 
 createPhysicsBalls :: PhysicsWorld -> MaybeT IO [GameObject st]
 createPhysicsBalls physicsWorld = 

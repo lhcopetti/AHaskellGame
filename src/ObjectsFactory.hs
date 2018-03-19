@@ -179,7 +179,7 @@ createPhysicsLine :: Float -> (Vec2f, Vec2f) -> PhysicsWorld -> GameObjectCreati
 createPhysicsLine thickness line space = do
     liftIO $ putStrLn $ "Creating Hipmunk physics line at: " ++ show line
     (physics, draw) <- mkLinePhysicsD line thickness space
-    let input = Input (dieOnKeyPressing KeyW)
+    let input = Input (dieOnKeyPressing KeyQ)
         obj = createGameObject draw noopB physics (Vec2f 0 0)
     return (obj { inputComp = input })
 
