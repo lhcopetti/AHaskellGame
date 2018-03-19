@@ -1,4 +1,4 @@
-module System.Messaging.DrawingMessage
+module System.Messaging.DrawingInbox
     ( DrawingInbox
     , getInbox
     , addInbox

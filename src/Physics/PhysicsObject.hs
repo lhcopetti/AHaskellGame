@@ -7,7 +7,7 @@ import Physics.PhysicsTypes
 import GameObject.GameObjectTypes
 
 import Component.Position
-import System.Messaging.PhysicsMessage
+import System.Messaging.PhysicsInbox
 
 updateObjectPhysics :: (Position a, PhysicsInbox a) => PhyObject -> a -> IO a
 updateObjectPhysics phyObj obj = executeMessages phyObj obj >>= HMP.updateObjectPhysics phyObj

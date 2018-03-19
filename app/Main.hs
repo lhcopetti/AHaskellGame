@@ -31,7 +31,7 @@ import ObjectsFactory
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
-import System.Messaging.PhysicsMessage
+import System.Messaging.PhysicsInbox
 import Random.Random
 import Data.Time
 

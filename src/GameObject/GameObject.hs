@@ -19,8 +19,8 @@ import qualified Component.Position as Pos
 import Component.Draw.ZOrderable
 import Component.Draw.ZDrawing
 import Component.Behavior.Behavior
-import System.Messaging.DrawingMessage
-import qualified System.Messaging.PhysicsMessage as PM
+import System.Messaging.DrawingInbox
+import qualified System.Messaging.PhysicsInbox as PM
 import GameObject.GameObjectTypes
 import Command.Command (runCommands)
 import Physics.DestroyObject (destroyPhysics)

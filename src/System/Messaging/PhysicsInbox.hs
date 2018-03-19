@@ -1,4 +1,4 @@
-module System.Messaging.PhysicsMessage
+module System.Messaging.PhysicsInbox
     ( PhysicsInbox
     , getInbox
     , addInbox

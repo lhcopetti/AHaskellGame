@@ -3,8 +3,8 @@ module Command.MessageCommand
     , sendPhyMsgCommand
     ) where
 
-import System.Messaging.DrawingMessage (addInbox)
-import qualified System.Messaging.PhysicsMessage as PM (addInbox)
+import System.Messaging.DrawingInbox (addInbox)
+import qualified System.Messaging.PhysicsInbox as PM (addInbox)
 import GameObject.GameObjectTypes (CommandType, DrawingMessage, PhysicsMessage)
 import GameObject.GameObject ()
 

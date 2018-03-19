@@ -13,7 +13,7 @@ import SFML.Graphics.Texture ()
 import SFML.Graphics.SFTransformable
 
 import qualified Component.Position as Pos
-import System.Messaging.DrawingMessage
+import System.Messaging.DrawingInbox
 import System.Messaging.Handler.RunMessageHandler (runMessages)
 import GameObject.GameObjectTypes (Drawing (..))
 

@@ -13,7 +13,7 @@ import Component.Draw.ZOrderable
 import Drawable
 import Updatable
 import NativeResource
-import System.Messaging.DrawingMessage
+import System.Messaging.DrawingInbox
 import GameObject.GameObjectTypes
 
 instance Drawable ZDrawing where

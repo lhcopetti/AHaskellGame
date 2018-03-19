@@ -13,7 +13,7 @@ import Component.Draw.DrawingSync (executeUpdateOnDrawing)
 import Drawable
 import NativeResource
 import Updatable
-import System.Messaging.DrawingMessage
+import System.Messaging.DrawingInbox
 import GameObject.GameObjectTypes
 import Component.Draw.Animation.AnimationDrawing (updateAnimation)
 
