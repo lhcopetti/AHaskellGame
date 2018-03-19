@@ -27,7 +27,7 @@ import Component.Draw.ZOrderable
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
-import qualified System.MouseSnapshot as M (MButton (..))
+import qualified System.Input.MouseSnapshot as M (MButton (..))
 import Vec2.Vec2Math
 import PrefabObjects.MousePositionPrinter (mkMousePrinter)
 import PrefabObjects.RunningTime (mkRunningTime)

@@ -13,7 +13,7 @@ import System.Messaging.Handler.RunMessageHandler (runMessageT)
 import System.Messaging.Handler.PushMessageHandler (pushNamedMessage)
 import System.Messaging.Messages.TransformableMessage (setOriginMsg)
 import System.Messaging.Messages.ShapeMessage (setFillColorMsg)
-import qualified System.MouseSnapshot as M (MButton (..))
+import qualified System.Input.MouseSnapshot as M (MButton (..))
 import Component.Input.Input
 import Component.Draw.Drawing ()
 import Component.Draw.CircleDrawing (createCircle)

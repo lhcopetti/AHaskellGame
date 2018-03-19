@@ -1,5 +1,5 @@
 {-# LANGUAGE NamedFieldPuns #-}
-module System.InputSnapshot
+module System.Input.InputSnapshot
     ( InputSnapshot (..)
     , stepSnapshot
     , emptySnapshot
@@ -11,7 +11,7 @@ import Data.Maybe (catMaybes)
 import SFML.Window.Keyboard (KeyCode)
 import SFML.Window.Event (SFEvent (..))
 
-import qualified System.MouseSnapshot as MS
+import qualified System.Input.MouseSnapshot as MS
 
 data InputSnapshot = InputSnapshot  { pressed :: [KeyCode]
                                     , mouse :: MS.MouseSnapshot

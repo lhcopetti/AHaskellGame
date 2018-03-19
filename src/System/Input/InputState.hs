@@ -1,4 +1,4 @@
-module System.InputState
+module System.Input.InputState
     ( State (..)
     , Event (..)
     , emptyState

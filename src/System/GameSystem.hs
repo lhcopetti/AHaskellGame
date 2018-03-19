@@ -14,7 +14,7 @@ import Control.Concurrent (threadDelay)
 import System.GameWorld (GameWorld (..), adoptChildren)
 import System.GameScene (GameScene (..), updateGameScene)
 import System.EventSystem (pollAllEvents, shouldCloseWindow)
-import System.InputSnapshot (stepSnapshot)
+import System.Input.InputSnapshot (stepSnapshot)
 import Input.Mouse (getMouseInput)
 import GameEnv (GameEnvironment (..), updateGameEnv)
 import Synchronizable

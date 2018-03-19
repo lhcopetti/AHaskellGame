@@ -1,4 +1,4 @@
-module System.MouseSnapshot
+module System.Input.MouseSnapshot
     ( MButton (..)
     , MouseSnapshot
     , mkMouseSnapshot
@@ -11,7 +11,7 @@ module System.MouseSnapshot
 import SFML.Window.Event (SFEvent (..))
 import SFML.Window.Mouse
 
-import qualified System.InputState as I
+import qualified System.Input.InputState as I
 
 data MouseSnapshot = MouseSnapshot  { left :: I.State
                                     , right :: I.State

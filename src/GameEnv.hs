@@ -10,7 +10,7 @@ module GameEnv
 import SFML.System.Vector2 (Vec2u)
 
 import Input.Mouse (MouseInput (..))
-import System.InputSnapshot (InputSnapshot, emptySnapshot)
+import System.Input.InputSnapshot (InputSnapshot, emptySnapshot)
 import Vec2.Vec2Math (zero)
 import Data.Time
 

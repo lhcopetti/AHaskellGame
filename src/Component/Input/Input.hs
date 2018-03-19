@@ -13,10 +13,10 @@ import Control.Monad.Reader (asks)
 
 import GameObject.GameObjectTypes
 import GameEnv (GameEnvironment (..))
-import System.InputSnapshot (InputSnapshot (..))
+import System.Input.InputSnapshot (InputSnapshot (..))
 import Input.Mouse (mousePos)
-import qualified System.MouseSnapshot as M (getButton, MButton)
-import qualified System.InputState as I (isPressed, justPressed)
+import qualified System.Input.MouseSnapshot as M (getButton, MButton)
+import qualified System.Input.InputState as I (isPressed, justPressed)
 import Updatable
 
 emptyInput :: Input st
