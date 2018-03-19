@@ -18,5 +18,4 @@ updateObjectPhysics :: Position a => PhysicsObject -> a -> IO a
 updateObjectPhysics PL{..} go =
         do  position <- liftM hVectorToVec2f . get . H.position $ body
             angle    <- liftM realToFrac     . get . H.angle    $ body
-            putStrLn $ "This is the position" ++ show position ++ show angle
             liftM ((`setPosition` position) . setRotation angle) (return go)
