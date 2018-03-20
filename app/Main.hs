@@ -13,7 +13,7 @@ import Control.Monad.IO.Class (liftIO)
 
 import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
-import Component.Input.Input
+import qualified Component.Input.Input as I
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.PhysicsMessage
@@ -141,13 +141,15 @@ mkBehaviorBall obj = do
     let applyForceMsg v = PMSG $ applyForce v zero
         addVec v = modify (v:)
         resetMsg = PMSG resetForces
-    up      <- isPressed KeyW
-    left    <- isPressed KeyA
-    right   <- isPressed KeyD
+    up      <- I.isKeyPressed KeyW
+    left    <- I.isKeyPressed KeyA
+    right   <- I.isKeyPressed KeyD
+    down    <- I.isKeyPressed KeyS
     let forces = (`execState` []) $ do
             when up     $ addVec (Vec2f 0 (-4050))
             when left   $ addVec (Vec2f (-4000) 0)
             when right  $ addVec (Vec2f 4000 0)
+            when down   $ addVec (Vec2f 0 4000)
     let msgs = resetMsg : map applyForceMsg forces
     return $ foldr addInbox obj msgs
 

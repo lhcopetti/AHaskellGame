@@ -98,7 +98,15 @@ stepKeyboardTests = describe "Testing the keyboard snapshot" $ do
         let input  = M.singleton KeyQ (I.State True True)
             output = M.singleton KeyQ (I.emptyState { I.isPressed = True })
         stepKeyboard input [] `shouldBe` output
+    it "should release key on unpress event" $ do
+        let input  = M.singleton KeyK (I.State True True)
+            output = M.singleton KeyK I.emptyState
+        stepKeyboard input [kRelease] `shouldBe` output
     it "should step justPressed entries for all keys" $ do
         let input  = M.fromList [(KeyQ, I.State True True), (KeyK, I.State True True)]
             output = M.fromList [(KeyQ, I.emptyState { I.isPressed = True }), (KeyK, I.emptyState { I.isPressed = True })]
         stepKeyboard input [] `shouldBe` output
+    it "should release the key on unpress event" $ do
+        let input  = M.fromList [(KeyQ, I.State True True), (KeyK, I.State True True)]
+            output = M.fromList [(KeyQ, I.emptyState), (KeyK, I.emptyState { I.isPressed = True })]
+        stepKeyboard input [qRelease] `shouldBe` output

@@ -7,11 +7,12 @@ module System.Input.KeyboardSnapshot
     , unifyMaps
     , stepKeyboard
     , stepKeyboardSnapshot
+    , getKey
     ) where
 
 import SFML.Window.Event (SFEvent (..))
 import SFML.Window.Keyboard
-        
+
 import qualified Data.Map as M
 
 import qualified System.Input.InputState as I
@@ -23,8 +24,8 @@ data KeyboardSnapshot = KeyboardSnapshot    { keys :: M.Map KeyCode I.State
 mkKeyboardSnapshot :: KeyboardSnapshot
 mkKeyboardSnapshot = KeyboardSnapshot M.empty
 
--- getKey :: KeyCode -> KeyboardSnapshot -> I.State
--- getKey key KeyboardSnapshot { keys } = M.findWithDefault I.emptyState key keys
+getKey :: KeyCode -> KeyboardSnapshot -> I.State
+getKey key KeyboardSnapshot { keys } = M.findWithDefault I.emptyState key keys
 
 reduceEvents :: [SFEvent] -> M.Map KeyCode [I.Event]
 reduceEvents = foldr go M.empty
