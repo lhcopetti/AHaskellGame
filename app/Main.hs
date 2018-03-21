@@ -141,6 +141,7 @@ mkBehaviorBall obj = do
     let applyForceMsg v = PMSG $ applyForce v zero
         addVec v = modify (v:)
         resetMsg = PMSG resetForces
+        angleMsg = PMSG $ setAngleVelocity 50.0
     up      <- I.isKeyPressed KeyW
     left    <- I.isKeyPressed KeyA
     right   <- I.isKeyPressed KeyD
@@ -150,7 +151,7 @@ mkBehaviorBall obj = do
             when left   $ addVec (Vec2f (-4000) 0)
             when right  $ addVec (Vec2f 4000 0)
             when down   $ addVec (Vec2f 0 4000)
-    let msgs = resetMsg : map applyForceMsg forces
+    let msgs = resetMsg : angleMsg : map applyForceMsg forces
     return $ foldr addInbox obj msgs
 
 

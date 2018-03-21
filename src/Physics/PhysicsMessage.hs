@@ -1,6 +1,8 @@
 module Physics.PhysicsMessage
     ( applyForce
     , applyOnlyForce
+    , applyTorque
+    , setAngleVelocity
     , resetForces
     ) where
 
@@ -16,11 +18,17 @@ applyForce force offset = HMP.applyForce force' offset'
             force'  = vec2fToHVector force
             offset' = vec2fToHVector offset
 
+applyTorque :: Float -> PhyObject -> IO ()
+applyTorque = HMP.applyTorque . realToFrac
+
 applyOnlyForce :: Vec2f -> Vec2f -> PhyObject -> IO ()
 applyOnlyForce force offset = HMP.applyOnlyForce force' offset'
         where
             force'  = vec2fToHVector force
             offset' = vec2fToHVector offset
+
+setAngleVelocity :: Float -> PhyObject -> IO ()
+setAngleVelocity = HMP.setAngleVelocity . realToFrac
 
 resetForces :: PhyObject -> IO ()
 resetForces = HMP.resetForces
