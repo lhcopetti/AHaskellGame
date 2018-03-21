@@ -137,7 +137,7 @@ stepConway interval = behaveEveryB interval $ \go -> do
             shouldNot   = noopB
 
 resetConwayB :: KeyCode -> Behavior SceneState
-resetConwayB key = behaveOnKeyPressB key $ \go -> do
+resetConwayB key = behaveOnKeyJustPressedB key $ \go -> do
     modify resetState
     return go
 
@@ -157,7 +157,7 @@ setConwayColorBehavior pos go = do
     pushMessage (setFillColorMsg color) go
 
 singleStepB :: KeyCode -> Behavior SceneState
-singleStepB key = behaveOnKeyPressB key $ \go -> do
+singleStepB key = behaveOnKeyJustPressedB key $ \go -> do
     modify tickState
     return go
 

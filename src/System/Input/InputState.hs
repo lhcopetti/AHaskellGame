@@ -16,6 +16,9 @@ emptyState :: State
 emptyState = State { justPressed = False, isPressed = False }
 
 stepState :: State -> Event -> State
-stepState _ Pressed = State { justPressed = True, isPressed = True }
+stepState s Pressed = 
+    let isPressed' = True 
+        justPressed' = not . isPressed $ s
+    in State { isPressed = isPressed', justPressed = justPressed' }
 stepState _ Released = emptyState
 stepState state Nil = emptyState { isPressed = isPressed state }

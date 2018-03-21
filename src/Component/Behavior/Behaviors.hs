@@ -20,6 +20,7 @@ module Component.Behavior.Behaviors
     , behaveEveryB
     , addCommandBehaviorB
     , behaveOnKeyPressB
+    , behaveOnKeyJustPressedB
     , chooseBehaviorB
     , behaveAllB
     ) where
@@ -37,7 +38,7 @@ import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHit
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
 import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveSequence, behaveEvery, chooseBehavior, behaveAll)
 import Component.Behavior.CommandBehavior (addCommandBehavior)
-import Component.Behavior.InputBehavior (behaveOnKeyPress)
+import Component.Behavior.InputBehavior (behaveOnKeyPress, behaveOnKeyJustPressed)
 
 encloseToBoxB :: Behavior st
 encloseToBoxB = Behavior encloseToBox
@@ -101,6 +102,9 @@ addCommandBehaviorB comm = Behavior (addCommandBehavior comm)
 
 behaveOnKeyPressB :: KeyCode -> BehaviorType st -> Behavior st
 behaveOnKeyPressB key beh = Behavior (behaveOnKeyPress key beh)
+
+behaveOnKeyJustPressedB :: KeyCode -> BehaviorType st -> Behavior st
+behaveOnKeyJustPressedB key beh = Behavior (behaveOnKeyJustPressed key beh)
 
 chooseBehaviorB :: Bool -> Behavior st -> Behavior st -> Behavior st
 chooseBehaviorB pred (Behavior first) (Behavior second) = Behavior (chooseBehavior pred first second)
