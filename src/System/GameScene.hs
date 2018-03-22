@@ -13,7 +13,7 @@ import Drawable
 import Synchronizable
 import NativeResource
 import Component.Draw.ZOrderable
-import GameEnv (GameEnvironment (..))
+import GameEnv (GameEnvironment (..), GameTime (..))
 import GameObject.GameObjectTypes
 
 data GameScene a = GameScene    { physicsWorld :: PhysicsWorld
@@ -36,6 +36,8 @@ instance NativeResource (GameScene a) where
 
 updateGameScene :: GameScene a -> GameEnvironment -> IO (GameScene a, [GameObject a])
 updateGameScene GameScene {..} env = do
-    objs' <- stepPhysics (1 / 60) physicsWorld gameObjects
+    objs' <- stepPhysics dt physicsWorld gameObjects
     (newObjs, childrenObj, newState) <- stepGameObjects env objs' gameState
     return (GameScene physicsWorld newObjs newState, childrenObj)
+        where
+            dt = realToFrac . deltaTime . time $ env

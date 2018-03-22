@@ -24,13 +24,17 @@ data GameEnvironment = GameEnvironment { gameArea :: Vec2u
 
 data GameTime = GameTime { startTime    :: UTCTime
                          , runningTime  :: NominalDiffTime
+                         , deltaTime    :: NominalDiffTime
                          }
 
 setRunningTime :: UTCTime -> GameTime -> GameTime
-setRunningTime utc (GameTime st _) = let
-    diff = diffUTCTime utc st
+setRunningTime utcTime (GameTime st _ dt) = let
+    diff = diffUTCTime utcTime st
     in
-        GameTime st diff
+        GameTime st diff dt
+
+setDeltaTime :: NominalDiffTime -> GameTime -> GameTime
+setDeltaTime dt g = g { deltaTime = dt }
 
 createGameEnv :: Vec2u -> UTCTime -> GameEnvironment
 createGameEnv screenArea time = GameEnvironment 
@@ -39,17 +43,17 @@ createGameEnv screenArea time = GameEnvironment
                                 (MouseInput zero)  
                                 emptySnapshot
                                 0
-                                (GameTime time 0)
+                                (GameTime time 0 0)
 
 initialScore :: Integer
 initialScore = 0
 
-updateGameEnv :: GameEnvironment -> MouseInput -> Integer -> InputSnapshot -> IO GameEnvironment
-updateGameEnv env@GameEnvironment { time } mouse liveGameObjects snapshot = do
+updateGameEnv :: GameEnvironment -> NominalDiffTime -> MouseInput -> Integer -> InputSnapshot -> IO GameEnvironment
+updateGameEnv env@GameEnvironment { time } dt mouse liveGameObjects snapshot = do
     now <- getCurrentTime
     return $ env    
             { input = mouse
             , countGOs = liveGameObjects
             , inputSnapshot = snapshot
-            , time = setRunningTime now time
+            , time = setDeltaTime dt . setRunningTime now $ time
             } 

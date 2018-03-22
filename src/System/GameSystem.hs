@@ -51,7 +51,7 @@ loop world gameState currentTime acc = do
 update :: GameWorld -> GameState st -> Int -> IO (Maybe (GameState st))
 update world st num = runMaybeT $ foldM (flip ($)) st updateFunctions
     where
-        updateFunctions = replicate num (updateGameState world)
+        updateFunctions = replicate num (updateGameState world deltaTime)
 
 render :: GameWorld -> GameState a -> IO ()
 render (GameWorld wnd) (GS scene _) = do
