@@ -4,63 +4,58 @@ module System.GameSystem
     ) where
 
 
-import SFML.Graphics.Types (RenderWindow)
 import SFML.Graphics.RenderWindow (display, clearRenderWindow)
 import SFML.Graphics.Color (black)
 
-import Control.Monad (unless)
-import Control.Concurrent (threadDelay)
+import Control.Monad (foldM)
+import Control.Monad.Trans.Maybe (runMaybeT)
+import Data.Time
 
-import System.GameWorld (GameWorld (..), adoptChildren)
-import System.GameScene (GameScene (..), updateGameScene)
-import System.EventSystem (pollAllEvents, shouldCloseWindow)
-import System.Input.InputSnapshot (stepSnapshot)
-import Input.Mouse (getMouseInput)
-import GameEnv (GameEnvironment (..), updateGameEnv)
+import System.GameWorld (GameWorld (..))
+import System.GameScene (GameScene (..))
+import System.GameState (GameState (..), updateGameState)
+import GameEnv (GameEnvironment (..))
 import Synchronizable
 import Drawable
 import NativeResource
 
 startGame :: GameWorld -> GameScene a -> GameEnvironment -> IO ()
 startGame world scene gameEnv = do
-    endScene <- loop world scene gameEnv
+    let state = GS scene gameEnv
+    time <- getCurrentTime
+    endScene <- loop world state time 0
     free endScene
     free world
 
-loop :: GameWorld -> GameScene a -> GameEnvironment -> IO (GameScene a)
-loop (GameWorld wnd) scene@GameScene { gameObjects } env = do 
+deltaTime :: NominalDiffTime
+deltaTime = 0.01
 
-    evts <- pollAllEvents wnd
+loop :: GameWorld -> GameState st -> UTCTime -> NominalDiffTime -> IO (GameScene st)
+loop world gameState currentTime acc = do 
 
-    mouse <- getMouseInput wnd
+    newTime <- getCurrentTime
 
-    let newSnap = stepSnapshot (inputSnapshot env) evts
-    let liveGameObjects = fromIntegral . length $ gameObjects
-    newEnv <- updateGameEnv env mouse liveGameObjects newSnap
+    let frameTime = diffUTCTime newTime currentTime
+        acc' = acc + frameTime
+        numUpdates = floor (acc' / deltaTime) :: Int
 
-    unless (null evts) $ do
-        putStrLn $ "These are the events: " ++ show evts
-        putStrLn $ "This is the snapshot: " ++ show (inputSnapshot newEnv)
+    gameState' <- update world gameState numUpdates
 
-    updatedScene <- gameLoop scene newEnv
-    updateScreen wnd updatedScene
-
-    if any shouldCloseWindow evts then
-        do  putStrLn ("Closing event: " ++ show evts)
-            return updatedScene
-    else
-        loop (GameWorld wnd) updatedScene newEnv
+    case gameState' of 
+        Nothing -> return (scene gameState)
+        Just newState -> do
+            render world newState
+            loop world newState newTime (acc' - realToFrac numUpdates * deltaTime)
 
 
-gameLoop :: GameScene a -> GameEnvironment -> IO (GameScene a)
-gameLoop scene env = do
-    threadDelay (10 * 10^3)
-    (scene', orphanChildren) <- updateGameScene scene env
-    return $ adoptChildren scene' orphanChildren
+update :: GameWorld -> GameState st -> Int -> IO (Maybe (GameState st))
+update world st num = runMaybeT $ foldM (flip ($)) st updateFunctions
+    where
+        updateFunctions = replicate num (updateGameState world)
 
-updateScreen :: RenderWindow -> GameScene a -> IO ()
-updateScreen window scene = do
+render :: GameWorld -> GameState a -> IO ()
+render (GameWorld wnd) (GS scene _) = do
     synchronize scene
-    clearRenderWindow window black
-    draw window scene
-    display window
+    clearRenderWindow wnd black
+    draw wnd scene
+    display wnd
