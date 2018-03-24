@@ -6,7 +6,11 @@ module Physics.Library.Hipmunk.PhysicsTypes
 
 import qualified Physics.Hipmunk as H
 
-data PhysicsWorld = PhysicsWorld H.Space
+import Data.IORef (IORef)
+
+data PhysicsWorld = PhysicsWorld    { space         :: H.Space
+                                    , collCallback  :: IORef PhyCollisionData
+                                    }
 
 data PhysicsObject  = PL {  body        :: H.Body
                          ,  shape       :: H.Shape

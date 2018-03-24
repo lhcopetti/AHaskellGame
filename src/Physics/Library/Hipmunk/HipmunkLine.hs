@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module Physics.Library.Hipmunk.HipmunkLine
     ( mkLinePhysics
     ) where
@@ -8,7 +9,7 @@ import GameObject.GameObjectTypes (Physics (..))
 import Physics.Library.Hipmunk.PhysicsTypes
 
 mkLinePhysics  :: (H.Vector, H.Vector) -> Double -> PhysicsWorld -> IO Physics
-mkLinePhysics (start, end) thickness (PhysicsWorld space) = do
+mkLinePhysics (start, end) thickness PhysicsWorld { space } = do
     let t = H.LineSegment start end thickness
     body <- H.newBody H.infinity H.infinity
     shape <- H.newShape body t 0

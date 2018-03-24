@@ -6,7 +6,11 @@ module Physics.Library.Hipmunk.HipmunkWorld
 
 import qualified Physics.Hipmunk as H
 
-import Physics.Library.Hipmunk.PhysicsTypes (PhysicsWorld (..))
+import Control.Monad.IO.Class (liftIO)
+import Data.IORef
+
+import Physics.Library.Hipmunk.PhysicsTypes
+import Physics.Library.Hipmunk.HipmunkCollision
 import Data.StateVar
 
 import NativeResource
@@ -18,10 +22,30 @@ createWorld :: Float -> IO PhysicsWorld
 createWorld gravity = do
     space <- H.newSpace
     H.gravity space $= H.Vector 0 (realToFrac gravity)
-    return (PhysicsWorld space)
+    collData <- newIORef emptyCollisionData
+    H.setDefaultCollisionHandler space (defaultHandler collData)
+    return (PhysicsWorld space collData)
+
+defaultHandler :: IORef PhyCollisionData -> H.CollisionHandler
+defaultHandler dataRef = 
+    H.Handler  { H.beginHandler      = Nothing                     -- Library default
+                , H.preSolveHandler  = Nothing                     -- Library default
+                , H.postSolveHandler = Just (phyCallback dataRef)
+                , H.separateHandler  = Nothing                     -- Library default
+                }
+
+phyCallback :: (H.NotSeparate ns) => IORef PhyCollisionData -> H.Callback ns ()
+phyCallback collData = do
+    ps <- H.points
+    liftIO $ modifyIORef collData (appendPoints ps)
 
 instance NativeResource PhysicsWorld where
-    free (PhysicsWorld space) = H.freeSpace space
+    free = H.freeSpace . space
 
 stepWorld :: Float -> PhysicsWorld -> IO ()
-stepWorld delta (PhysicsWorld sp) = H.step sp (realToFrac delta)
+stepWorld delta world = do
+    clearCollisionInformation world
+    H.step (space world) (realToFrac delta)
+
+clearCollisionInformation :: PhysicsWorld -> IO ()
+clearCollisionInformation = (`writeIORef` emptyCollisionData) . collCallback

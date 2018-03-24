@@ -22,7 +22,8 @@ import Component.Physics.Physics ()
 
 
 stepPhysics :: Float -> PhysicsWorld -> [GameObject st] -> IO [GameObject st]
-stepPhysics deltaTime physicsWorld objs = stepWorld deltaTime physicsWorld >>
+stepPhysics deltaTime physicsWorld objs = do
+    stepWorld deltaTime physicsWorld
     mapM updatePhysics objs
 
 stepGameObjects :: GameEnvironment -> [GameObject st] -> st -> IO ([GameObject st], [GameObject st], st)

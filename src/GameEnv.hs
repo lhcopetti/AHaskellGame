@@ -4,6 +4,7 @@ module GameEnv
     , GameTime (..)
     , createGameEnv
     , updateGameEnv
+    , updateCollisionData
     )
     where
 
@@ -60,4 +61,8 @@ updateGameEnv env@GameEnvironment { time } dt mouse liveGameObjects snapshot = d
             , countGOs = liveGameObjects
             , inputSnapshot = snapshot
             , time = setDeltaTime dt . setRunningTime now $ time
-            } 
+            }
+
+updateCollisionData :: PhyCollisionData -> GameEnvironment -> GameEnvironment
+updateCollisionData newCollData g@GameEnvironment { collisionData }
+    = g { collisionData = newCollData }
