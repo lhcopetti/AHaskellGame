@@ -29,6 +29,7 @@ import PrefabObjects.AnimatedRunningCat (createAnimatedRunningCat)
 import PrefabObjects.AnimatedSpinningCoin (createSpinningCoin)
 import PrefabObjects.MousePositionPrinter (mkMousePrinter)
 import PrefabObjects.MouseClickListener (mkMouseClickListener)
+import PrefabObjects.CollisionPointsCounter (mkCollisionPointsCounter)
 import ObjectsFactory
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
@@ -128,7 +129,8 @@ createObjects gen env space = do
     box1 <- createBox (Vec2f 40  350) 15 space
     box2 <- createBox (Vec2f 600 350) 15 space
     forceBall <- userControlledPhysicsBall space
-    return (forceBall : mouseListener : box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
+    collisionPointCounter <- liftM (`Pos.setPosition` Vec2f 450 100) mkCollisionPointsCounter
+    return (collisionPointCounter : forceBall : mouseListener : box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
 
 userControlledPhysicsBall :: PhysicsWorld -> MaybeT IO (GameObject st)
 userControlledPhysicsBall world = do
