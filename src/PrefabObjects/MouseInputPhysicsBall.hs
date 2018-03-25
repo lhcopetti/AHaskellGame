@@ -18,6 +18,8 @@ import Vec2.Vec2Math (zero)
 import ChildBearer
 import Physics.PhysicsTypes
 import Physics.CirclePhysics (mkCirclePhysicsD)
+import Physics.PhysicsLayer (setLayers)
+import System.Messaging.PhysicsInbox
 
 mkMouseInputPhysicsBall :: GameObjectCreation st
 mkMouseInputPhysicsBall = do
@@ -39,4 +41,6 @@ createPhyBall :: Vec2f -> PhysicsWorld -> GameObjectCreation st
 createPhyBall pos world = do
     (phy, drw) <- mkCirclePhysicsD 5.0 pos world
     let beh = Behavior (onCollision dieBehavior)
-    return (createGameObject drw beh phy pos)
+        msg = PMSG $ setLayers 2
+        obj = createGameObject drw beh phy pos
+    return (addInbox msg obj)

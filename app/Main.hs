@@ -17,6 +17,7 @@ import qualified Component.Input.Input as I
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.PhysicsMessage
+import Physics.PhysicsLayer (setLayers)
 
 import Vec2.Vec2Math (zero)
 import GameEnv (GameEnvironment (..), createGameEnv)
@@ -118,6 +119,7 @@ createObjects gen env space = do
     behavesAll <- createUsesbehaveSequence
     hipmunkBalls <- createPhysicsBalls space
     hipmunkLine <- createPhysicsLine 20.0 (Vec2f 0 400, Vec2f 640 400) space
+    hipmunkLine' <- createSndPlatform space
     hLines <- createLines [(Vec2f 400 20, Vec2f 500 20, 1), (Vec2f 400 30, Vec2f 500 30, 3), (Vec2f 400 40, Vec2f 500 40, 5)]
     vLines <- createLines [
         (Vec2f 510 20, Vec2f 510 40, 1), 
@@ -132,7 +134,14 @@ createObjects gen env space = do
     forceBall <- userControlledPhysicsBall space
     collisionPointCounter <- liftM (`Pos.setPosition` Vec2f 450 100) mkCollisionPointsCounter
     mouseInputPhysicsBall <- mkMouseInputPhysicsBall
-    return (mouseInputPhysicsBall : collisionPointCounter : forceBall : mouseListener : box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
+    return (hipmunkLine' : mouseInputPhysicsBall : collisionPointCounter : forceBall : mouseListener : box1 : box2 : hipmunkLine : inputAware : behavesAll : namedObjects : behaveOnce : mousePrinter : willHitAndDie: willDieSoon : goCounter : simpleText : eqT : hex : mousePointer : balls ++ dots ++ triangles ++ randomObjects ++ sprites ++ hLines ++ vLines ++ dLines ++ hipmunkBalls)
+
+
+createSndPlatform :: PhysicsWorld -> MaybeT IO (GameObject st)
+createSndPlatform world = do
+    line <- createPhysicsLine 10.0 (Vec2f 0 200, Vec2f 200 200) world
+    let layerMsg = PMSG $ setLayers 1
+    return (addInbox layerMsg line)
 
 userControlledPhysicsBall :: PhysicsWorld -> MaybeT IO (GameObject st)
 userControlledPhysicsBall world = do
