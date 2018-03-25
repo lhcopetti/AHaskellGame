@@ -3,19 +3,19 @@ module PrefabObjects.MouseInputPhysicsBall
     ) where
 
 import SFML.System.Vector2
-import SFML.Graphics.Color
 
-import GameObjectFactory (createStaticGameObject, createSimplePhysicsGO)
+import GameObjectFactory (createGameObject, createSimplePhysicsGO)
 import GameObject.GameObjectTypes
 import qualified System.Input.MouseSnapshot as M (MButton (..))
 import Component.Input.Input
 import Component.Draw.Drawing ()
-import Component.Draw.CircleDrawing (createCenteredCircle)
 import Component.Draw.TextDrawing (createText)
-import Component.Behavior.Behaviors (behaveAllB)
+import Component.Behavior.Behaviors (behaveAllB, noopB)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier)
 import Vec2.Vec2Math (zero)
 import ChildBearer
+import Physics.PhysicsTypes
+import Physics.CirclePhysics (mkCirclePhysicsD)
 
 mkMouseInputPhysicsBall :: GameObjectCreation st
 mkMouseInputPhysicsBall = do
@@ -29,11 +29,11 @@ createPhysicsBallsOnClick obj = do
     pressed <- isJustPressed M.MLeft
     mousePos <- mousePosition
     let newObj
-            | pressed = addChild (createPhyBall mousePos) obj
+            | pressed = addChildP (createPhyBall mousePos) obj
             | otherwise = obj
     return newObj
 
-createPhyBall :: Vec2f -> GameObjectCreation st
-createPhyBall pos = do
-    drw <- createCenteredCircle 10.0 blue
-    return (createStaticGameObject drw pos)
+createPhyBall :: Vec2f -> PhysicsWorld -> GameObjectCreation st
+createPhyBall pos world = do
+    (phy, drw) <- mkCirclePhysicsD 5.0 pos world
+    return (createGameObject drw noopB phy pos)
