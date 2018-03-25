@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 module System.GameStepper
     ( stepPhysics
     , stepGameObjects
@@ -22,27 +23,33 @@ import Component.Physics.Physics ()
 
 
 stepPhysics :: Float -> PhysicsWorld -> [GameObject st] -> IO [GameObject st]
-stepPhysics deltaTime physicsWorld objs = stepWorld deltaTime physicsWorld >>
+stepPhysics deltaTime physicsWorld objs = do
+    stepWorld deltaTime physicsWorld
     mapM updatePhysics objs
 
-stepGameObjects :: GameEnvironment -> [GameObject st] -> st -> IO ([GameObject st], [GameObject st], st)
-stepGameObjects env objs state = do
-    let (newObjs, newState) = runMStack env state objs
-    childrenObj <- getAllChildren newObjs
+stepGameObjects :: GameEnvironment -> GameScene st -> IO ([GameObject st], [GameObject st], st)
+stepGameObjects env GameScene {..} = do
+    let (newObjs, newState) = runMStack env gameState gameObjects
+    childrenObj <- createAllChildren physicsWorld newObjs
     newObjs' <- removeAllDead newObjs
     return (map removeChildren newObjs', childrenObj, newState)
 
 
-getAllChildren :: [GameObject st] -> IO [GameObject st]
-getAllChildren objs = do
+createAllChildren :: PhysicsWorld -> [GameObject st] -> IO [GameObject st]
+createAllChildren phyWorld objs = do
     let childrenCreation = concatMap getChildren objs
-    createdChildren <- createObjects childrenCreation
+    createdChildren <- createObjects phyWorld childrenCreation
     return $ fromMaybe [] createdChildren
 
-createObjects :: [GameObjectCreation st] -> IO (Maybe [GameObject st])
-createObjects action = do
-    newObjs <- forM action runMaybeT
+createObjects :: PhysicsWorld -> [ChildGameObjectCreation st] -> IO (Maybe [GameObject st])
+createObjects phyWorld action = do
+    newObjs <- forM action (runGameObjectCreation phyWorld)
     return (sequence newObjs)
+
+runGameObjectCreation :: PhysicsWorld -> ChildGameObjectCreation st -> IO (Maybe (GameObject st))
+runGameObjectCreation _ (CGOC action) = runMaybeT action
+runGameObjectCreation phyWorld (PGOC action) = runMaybeT (action phyWorld)
+
 
 removeAllDead :: [GameObject st] -> IO [GameObject st]
 removeAllDead objs = do 

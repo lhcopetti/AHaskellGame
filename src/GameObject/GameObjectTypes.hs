@@ -6,6 +6,7 @@ module GameObject.GameObjectTypes
     , Creation
     , GameObjectCreation
     , GameObjectsCreation
+    , ChildGameObjectCreation (..)
     , CommandType
     , Command (..)
     , InputType
@@ -22,6 +23,7 @@ module GameObject.GameObjectTypes
     , PhysicsMessageType
     , PhysicsMessage (..)
     , Physics (..)
+    , GameScene (..)
     ) where
 
 
@@ -42,15 +44,12 @@ data GameObject st = GameObject { drawComp     :: ZDrawing
                                 , rotation     :: Float
                                 , inbox        :: [DrawingMessage]
                                 , physicsInbox :: [PhysicsMessage]
-                                , childObjects :: [GameObjectCreation st]
+                                , childObjects :: [ChildGameObjectCreation st]
                                 , commands     :: [Command st]
                                 , alive        :: Bool
                                 }
 
 type GoUpdateType st = UpdateType (GameObject st) st
--- type GoUpdateMStack obj = UpdateMStack obj GoVoidState
-
--- type GameObjectST = GameObject GoVoidState
 
 type BehaviorType st = GoUpdateType st
 
@@ -58,11 +57,11 @@ type Creation a = MaybeT IO a
 type GameObjectCreation st  = Creation  (GameObject st)
 type GameObjectsCreation st = Creation [GameObject st]
 
-data Behavior st = Behavior {  behave :: BehaviorType st
-                         }
+data ChildGameObjectCreation st = CGOC (Creation (GameObject st))
+                                | PGOC (PhysicsWorld -> Creation (GameObject st))
 
--- data BehaviorState a = BehaviorState    { behaveState :: GameObject -> State a GameObject
---                                         }
+data Behavior st = Behavior {  behave :: BehaviorType st
+                            }
 
 type CommandType st    = GoUpdateType st
 type InputType st    = GoUpdateType st
@@ -117,3 +116,8 @@ data Physics = SimplePhy Vec2f Float
 
 type PhysicsMessageType = PhyObject -> IO ()
 data PhysicsMessage = PMSG PhysicsMessageType
+
+data GameScene a = GameScene    { physicsWorld :: PhysicsWorld
+                                , gameObjects  :: [GameObject a]
+                                , gameState    :: a
+                                }

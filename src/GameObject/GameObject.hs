@@ -75,7 +75,8 @@ instance Behavioral (GameObject st) st where
 instance ChildBearer (GameObject st) st where
     getChildren = childObjects
     removeChildren obj = obj { childObjects = [] }
-    addChild child obj@GameObject { childObjects } = obj { childObjects = child : childObjects }
+    addChild  child obj@GameObject { childObjects } = obj { childObjects = CGOC child : childObjects }
+    addChildP child obj@GameObject { childObjects } = obj { childObjects = PGOC child : childObjects }
 
 instance ZOrderable (GameObject a) where
     getZ GameObject { drawComp } = getZ drawComp

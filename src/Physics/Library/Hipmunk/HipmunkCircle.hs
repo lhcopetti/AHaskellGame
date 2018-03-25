@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module Physics.Library.Hipmunk.HipmunkCircle
     ( mkCirclePhysics
     ) where
@@ -8,7 +9,7 @@ import GameObject.GameObjectTypes
 import Physics.Library.Hipmunk.PhysicsTypes
 
 mkCirclePhysics :: Double -> H.Vector -> PhysicsWorld -> IO Physics
-mkCirclePhysics radius pos (PhysicsWorld space) = do
+mkCirclePhysics radius pos PhysicsWorld { space } = do
     let mass = 20
         t = H.Circle radius
     body <- newCircleBody mass radius

@@ -1,3 +1,4 @@
+{-# LANGUAGE NamedFieldPuns #-}
 module Physics.Library.Hipmunk.HipmunkPolygon
     ( mkPolygonPhysics
     ) where
@@ -8,7 +9,7 @@ import GameObject.GameObjectTypes
 import Physics.Library.Hipmunk.PhysicsTypes
 
 mkPolygonPhysics :: H.Vector -> [H.Vector] -> PhysicsWorld -> IO Physics
-mkPolygonPhysics pos points (PhysicsWorld space) = do
+mkPolygonPhysics pos points PhysicsWorld { space } = do
     let mass = 50
         t = H.Polygon points
     body <- H.newBody mass $ H.momentForShape mass t 0

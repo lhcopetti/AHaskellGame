@@ -154,6 +154,14 @@
 
 01/03/2018
 
+	Diary:
+		Parametric GameObject (I thought I would break)
+		Write modules for qualified imports
+		Functional dependencies
+		
+		behaveAll :: [BehaviorType st] -> BehaviorType st
+		behaveAll behs obj = foldr (=<<) (return obj) behs
+
 	encloseByWrapAround should a physics version to actually update the underlying hipmunk library
 
 	TODO: Start to abstract SFML away from the code base just like with Hipmunk
