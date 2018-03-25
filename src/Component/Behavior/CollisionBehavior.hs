@@ -1,5 +1,6 @@
 module Component.Behavior.CollisionBehavior
-    ( getCollisionPointCount
+    ( onCollision
+    , getCollisionPointCount
     , hasCollided
     ) where
 
@@ -17,6 +18,11 @@ import qualified Physics.PhysicsCollision as PC (collisionPoints, hasCollided)
 
 getCollisionPointCount :: UpdateMStack [Vec2f] st
 getCollisionPointCount = asks (PC.collisionPoints . collisionData)
+
+onCollision :: BehaviorType st -> BehaviorType st
+onCollision beh obj = do
+    collided <- hasCollided obj
+    if collided then beh obj else return obj
 
 hasCollided :: GameObject st -> UpdateMStack Bool st
 hasCollided obj = do
