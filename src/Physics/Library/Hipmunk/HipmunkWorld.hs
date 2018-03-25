@@ -37,7 +37,8 @@ defaultHandler dataRef =
 phyCallback :: (H.NotSeparate ns) => IORef PhyCollisionData -> H.Callback ns ()
 phyCallback collData = do
     ps <- H.points
-    liftIO $ modifyIORef collData (appendPoints ps)
+    ss <- H.shapes
+    liftIO $ modifyIORef collData (appendCollData (ss, ps))
 
 instance NativeResource PhysicsWorld where
     free = H.freeSpace . space

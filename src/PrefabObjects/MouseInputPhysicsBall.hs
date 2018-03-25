@@ -10,8 +10,10 @@ import qualified System.Input.MouseSnapshot as M (MButton (..))
 import Component.Input.Input
 import Component.Draw.Drawing ()
 import Component.Draw.TextDrawing (createText)
-import Component.Behavior.Behaviors (behaveAllB, noopB)
+import Component.Behavior.Behaviors (behaveAllB)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier)
+import Component.Behavior.CollisionBehavior (onCollision)
+import Component.Behavior.DeathBehavior (dieBehavior)
 import Vec2.Vec2Math (zero)
 import ChildBearer
 import Physics.PhysicsTypes
@@ -36,4 +38,5 @@ createPhysicsBallsOnClick obj = do
 createPhyBall :: Vec2f -> PhysicsWorld -> GameObjectCreation st
 createPhyBall pos world = do
     (phy, drw) <- mkCirclePhysicsD 5.0 pos world
-    return (createGameObject drw noopB phy pos)
+    let beh = Behavior (onCollision dieBehavior)
+    return (createGameObject drw beh phy pos)

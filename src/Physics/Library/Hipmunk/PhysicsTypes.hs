@@ -19,4 +19,5 @@ data PhysicsObject  = PL {  body        :: H.Body
                          }
 
 data PhyCollisionData = CD  { points :: [H.Position]
+                            , shapes :: [(H.Shape, H.Shape)]
                             }
