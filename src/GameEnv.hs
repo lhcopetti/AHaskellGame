@@ -64,5 +64,5 @@ updateGameEnv env@GameEnvironment { time } dt mouse liveGameObjects snapshot = d
             }
 
 updateCollisionData :: PhyCollisionData -> GameEnvironment -> GameEnvironment
-updateCollisionData newCollData g@GameEnvironment { collisionData }
+updateCollisionData newCollData g
     = g { collisionData = newCollData }
