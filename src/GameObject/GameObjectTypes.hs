@@ -6,6 +6,7 @@ module GameObject.GameObjectTypes
     , Creation
     , GameObjectCreation
     , GameObjectsCreation
+    , ChildGameObjectCreation (..)
     , CommandType
     , Command (..)
     , InputType
@@ -42,7 +43,7 @@ data GameObject st = GameObject { drawComp     :: ZDrawing
                                 , rotation     :: Float
                                 , inbox        :: [DrawingMessage]
                                 , physicsInbox :: [PhysicsMessage]
-                                , childObjects :: [GameObjectCreation st]
+                                , childObjects :: [ChildGameObjectCreation st]
                                 , commands     :: [Command st]
                                 , alive        :: Bool
                                 }
@@ -57,6 +58,8 @@ type BehaviorType st = GoUpdateType st
 type Creation a = MaybeT IO a
 type GameObjectCreation st  = Creation  (GameObject st)
 type GameObjectsCreation st = Creation [GameObject st]
+
+data ChildGameObjectCreation st = CGOC (Creation (GameObject st))
 
 data Behavior st = Behavior {  behave :: BehaviorType st
                          }

@@ -7,9 +7,9 @@ module ChildBearer
     , addChild
     ) where
 
-import GameObject.GameObjectTypes (GameObjectCreation)
+import GameObject.GameObjectTypes (ChildGameObjectCreation, GameObjectCreation)
 
 class ChildBearer obj st | obj -> st where
-    getChildren :: obj -> [GameObjectCreation st]
+    getChildren :: obj -> [ChildGameObjectCreation st]
     addChild :: GameObjectCreation st -> obj -> obj
     removeChildren :: obj -> obj

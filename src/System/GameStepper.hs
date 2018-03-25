@@ -40,10 +40,14 @@ getAllChildren objs = do
     createdChildren <- createObjects childrenCreation
     return $ fromMaybe [] createdChildren
 
-createObjects :: [GameObjectCreation st] -> IO (Maybe [GameObject st])
+createObjects :: [ChildGameObjectCreation st] -> IO (Maybe [GameObject st])
 createObjects action = do
-    newObjs <- forM action runMaybeT
+    newObjs <- forM action runGameObjectCreation
     return (sequence newObjs)
+
+runGameObjectCreation :: ChildGameObjectCreation st -> IO (Maybe (GameObject st))
+runGameObjectCreation (CGOC action) = runMaybeT action
+
 
 removeAllDead :: [GameObject st] -> IO [GameObject st]
 removeAllDead objs = do 
