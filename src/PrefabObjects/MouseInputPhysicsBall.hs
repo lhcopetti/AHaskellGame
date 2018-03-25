@@ -12,8 +12,10 @@ import Component.Draw.Drawing ()
 import Component.Draw.TextDrawing (createText)
 import Component.Behavior.Behaviors (behaveAllB, noopB)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier)
+import Component.Behavior.CollisionBehavior (hasCollided)
 import Vec2.Vec2Math (zero)
 import ChildBearer
+import Killable
 import Physics.PhysicsTypes
 import Physics.CirclePhysics (mkCirclePhysicsD)
 
@@ -36,4 +38,10 @@ createPhysicsBallsOnClick obj = do
 createPhyBall :: Vec2f -> PhysicsWorld -> GameObjectCreation st
 createPhyBall pos world = do
     (phy, drw) <- mkCirclePhysicsD 5.0 pos world
-    return (createGameObject drw noopB phy pos)
+    let beh = Behavior diesOnCollision
+    return (createGameObject drw beh phy pos)
+
+diesOnCollision :: BehaviorType st
+diesOnCollision obj = do
+    collided <- hasCollided obj
+    return $ if collided then die obj else obj
