@@ -12,8 +12,8 @@ import Control.Monad.Trans.Maybe (runMaybeT)
 import Data.Time
 
 import System.GameWorld (GameWorld (..))
-import System.GameScene (GameScene (..))
 import System.GameState (GameState (..), updateGameState)
+import GameObject.GameObjectTypes (GameScene (..))
 import GameEnv (GameEnvironment (..))
 import Synchronizable
 import Drawable

@@ -9,8 +9,9 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Maybe (MaybeT)
 import Data.Time
 
+import GameObject.GameObjectTypes (GameScene (..))
 import System.GameWorld (GameWorld (..), adoptChildren)
-import System.GameScene (GameScene (..), updateGameScene)
+import System.GameScene (updateGameScene)
 import System.EventSystem (pollAllEvents, shouldCloseWindow)
 import System.Input.InputSnapshot (stepSnapshot)
 import Input.Mouse (getMouseInput)

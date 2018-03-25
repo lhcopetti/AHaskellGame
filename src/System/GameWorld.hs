@@ -9,7 +9,6 @@ import SFML.Graphics.Types (RenderWindow)
 import SFML.Graphics.RenderWindow (destroy)
 
 import GameObject.GameObjectTypes
-import System.GameScene (GameScene (..))
 import NativeResource
 
 

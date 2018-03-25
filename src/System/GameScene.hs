@@ -1,13 +1,11 @@
 {-# LANGUAGE RecordWildCards #-}
 module System.GameScene
-    ( GameScene (..)
-    , updateGameScene
+    ( updateGameScene
     ) where
 
 import Control.Monad (forM_)
 
 import System.GameStepper (stepPhysics, stepGameObjects)
-import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.PhysicsWorld (getCollisionData)
 import Drawable
 import Synchronizable
@@ -15,12 +13,6 @@ import NativeResource
 import Component.Draw.ZOrderable
 import GameEnv (GameEnvironment (..), GameTime (..), updateCollisionData)
 import GameObject.GameObjectTypes
-
-data GameScene a = GameScene    { physicsWorld :: PhysicsWorld
-                                , gameObjects  :: [GameObject a]
-                                , gameState    :: a
-                                }
-
 
 instance Drawable (GameScene a) where
     draw wnd scene = 
@@ -38,8 +30,11 @@ updateGameScene :: GameScene a -> GameEnvironment -> IO (GameScene a, [GameObjec
 updateGameScene GameScene {..} env = do
     objs' <- stepPhysics dt physicsWorld gameObjects
     collData <- getCollisionData physicsWorld
+
     let collEnv = updateCollisionData collData env
-    (newObjs, childrenObj, newState) <- stepGameObjects collEnv objs' gameState
+        newScene = GameScene physicsWorld objs' gameState
+
+    (newObjs, childrenObj, newState) <- stepGameObjects collEnv newScene
     return (GameScene physicsWorld newObjs newState, childrenObj)
         where
             dt = realToFrac . deltaTime . time $ env
