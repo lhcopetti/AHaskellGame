@@ -18,7 +18,6 @@ import Physics.PhysicsTypes (PhyCollisionData)
 import Physics.PhysicsCollision (emptyCollisionData)
 
 data GameEnvironment = GameEnvironment { gameArea :: Vec2u
-                                       , score :: Integer
                                        , input :: MouseInput
                                        , inputSnapshot :: InputSnapshot
                                        , countGOs :: Integer
@@ -43,15 +42,11 @@ setDeltaTime dt g = g { deltaTime = dt }
 createGameEnv :: Vec2u -> UTCTime -> GameEnvironment
 createGameEnv screenArea time = GameEnvironment 
                                 screenArea
-                                initialScore
                                 (MouseInput zero)  
                                 emptySnapshot
                                 0
                                 (GameTime time 0 0)
                                 emptyCollisionData
-
-initialScore :: Integer
-initialScore = 0
 
 updateGameEnv :: GameEnvironment -> NominalDiffTime -> MouseInput -> Integer -> InputSnapshot -> IO GameEnvironment
 updateGameEnv env@GameEnvironment { time } dt mouse liveGameObjects snapshot = do
