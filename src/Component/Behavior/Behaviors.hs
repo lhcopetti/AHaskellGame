@@ -1,6 +1,7 @@
 module Component.Behavior.Behaviors
     ( encloseToBoxB
     , encloseByWrapAroundB
+    , behaveOutOfBoundsB
     , noopB
     , deadManWalkingB
     , mousePositionCopierB
@@ -30,7 +31,7 @@ import SFML.Window.Keyboard (KeyCode)
 
 import GameObject.GameObjectTypes (GameObjectCreation, Command)
 import Component.Behavior.Behavior
-import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
+import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround, behaveOutOfBounds)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer, followPointingMouse)
 import Component.Behavior.RotationalBehavior (rotate)
 import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMousePosition, updateMultipleTexts)
@@ -46,6 +47,9 @@ encloseToBoxB = Behavior encloseToBox
 
 encloseByWrapAroundB :: Behavior st
 encloseByWrapAroundB = Behavior encloseByWrapAround
+
+behaveOutOfBoundsB :: Behavior st -> Behavior st
+behaveOutOfBoundsB (Behavior beh) = Behavior (behaveOutOfBounds beh)
 
 noopB :: Behavior st 
 noopB = Behavior noopBehavior
