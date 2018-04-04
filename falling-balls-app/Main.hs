@@ -18,17 +18,21 @@ import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 import Component.Draw.CircleDrawing (createCenteredCircle)
 import Component.Input.Input (mousePosition)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier)
+import Component.Behavior.Behaviors (noopB)
+import Component.Behavior.DeathBehavior (dieBehavior)
+import Component.Behavior.EnclosedBehavior (behaveOutOfBounds)
 import qualified Component.Input.Input as I
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.PhysicsMessage
 import Physics.PhysicsLayer (setLayers)
+import Physics.CirclePhysics (mkCirclePhysicsD)
 
 import Vec2.Vec2Math (zero)
 import GameEnv (GameEnvironment (..), createGameEnv)
 import GameObject.GameObject (GameObject)
 import GameObject.GameObjectTypes
-import GameObjectFactory (createStaticGameObjectB)
+import GameObjectFactory (createStaticGameObjectB, createGameObject)
 import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
 import PrefabObjects.AnimatedBlueBird (createAnimatedBlueBird)
 import PrefabObjects.BallInputAware (createBallInputAware)
@@ -39,7 +43,7 @@ import PrefabObjects.MouseClickListener (mkMouseClickListener)
 import PrefabObjects.CollisionPointsCounter (mkCollisionPointsCounter)
 import PrefabObjects.MouseInputPhysicsBall (mkMouseInputPhysicsBall)
 import ObjectsFactory
-import Component.Position
+import Killable
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
@@ -94,18 +98,29 @@ createObjects gen env space = do
     mousePrinter <- liftM (`Pos.setPosition` Vec2f 500 0) mkMousePrinter
     goCounter <- createLiveGameObjectCounter (Vec2f 20 20)
     ballOnMouse <- ballAtMousePosition
-    return [ballOnMouse, mouseListener, mousePrinter, goCounter]
+    enemy <- mkEnemy space
+    return [enemy, ballOnMouse, mouseListener, mousePrinter, goCounter]
 
-mouseXPosition :: BehaviorType st
-mouseXPosition obj = do
+mkEnemy :: PhysicsWorld -> GameObjectCreation st
+mkEnemy world = do
+    (phy, drw) <- mkCirclePhysicsD 10.0 (Vec2f 150 0) world
+    let beh = Behavior enemyDeathBehavior
+        pos = Vec2f 0 0
+    return (createGameObject drw beh phy pos)
+
+enemyDeathBehavior :: BehaviorType st
+enemyDeathBehavior = behaveOutOfBounds dieBehavior
+
+mouseXBehavior :: BehaviorType st
+mouseXBehavior obj = do
     (Vec2f mouseX _) <- mousePosition
-    let (Vec2f _ objY) = getPosition obj
+    let (Vec2f _ objY) = Pos.getPosition obj
         newPosition = Vec2f mouseX objY
-    return (setPosition obj newPosition)
+    return (Pos.setPosition obj newPosition)
 
 ballAtMousePosition :: MaybeT IO (GameObject st)
 ballAtMousePosition = do
     drw <- createCenteredCircle 10.0 green
-    let beh = Behavior mouseXPosition
+    let beh = Behavior mouseXBehavior
         pos = shipInitialPosition
     return (createStaticGameObjectB drw pos beh)
