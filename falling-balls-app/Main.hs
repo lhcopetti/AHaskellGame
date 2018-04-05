@@ -20,11 +20,13 @@ import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 import Component.Draw.CircleDrawing (createCenteredCircle)
 import Component.Draw.TextDrawing (createText)
 import Component.Draw.ConvexDrawing (createConvex)
-import Component.Input.Input (mousePosition)
+import Component.Input.Input (mousePosition, isJustPressed)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier)
 import Component.Behavior.Behaviors (noopB, deadManWalkingB, behaveBothB, behaveOutOfBoundsB)
 import Component.Behavior.DeathBehavior (dieBehavior)
 import Component.Behavior.EnclosedBehavior (behaveOutOfBounds)
+import Component.Behavior.HigherOrderBehavior (behaveAll)
+import Component.Behavior.InputBehavior (behaveOnMouseJustPressed)
 import qualified Component.Input.Input as I
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
@@ -35,7 +37,7 @@ import Physics.PolygonPhysics (mkPolygonPhysicsD)
 
 import Vec2.Vec2Math (zero)
 import GameEnv (GameEnvironment (..), createGameEnv)
-import GameObject.GameObject (GameObject)
+import GameObject.GameObject (GameObject, addCommand)
 import GameObject.GameObjectTypes
 import GameObjectFactory (createStaticGameObjectB, createGameObject)
 import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
@@ -49,10 +51,12 @@ import PrefabObjects.CollisionPointsCounter (mkCollisionPointsCounter)
 import PrefabObjects.MouseInputPhysicsBall (mkMouseInputPhysicsBall)
 import ObjectsFactory
 import Killable
+import ChildBearer
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
 import System.Messaging.PhysicsInbox
+import System.Input.MouseSnapshot (MButton (..))
 import Random.Random
 import Data.Time
 
@@ -155,9 +159,24 @@ mouseXBehavior obj = do
 ballAtMousePosition :: MaybeT IO (GameObject st)
 ballAtMousePosition = do
     drw <- createConvex green (mkPlayerTriangle 20)
-    let beh = Behavior mouseXBehavior
+    let beh = Behavior (behaveAll [mouseXBehavior, shootMissile])
         pos = shipInitialPosition
     return (createStaticGameObjectB drw pos beh)
+
+shootMissile :: BehaviorType st
+shootMissile = behaveOnMouseJustPressed MLeft onMousePress
+    where
+        onMousePress obj = do
+            mousePos <- mousePosition
+            return $ addChildP (mkMissile mousePos) obj
+
+
+mkMissile :: Vec2f -> PhysicsWorld -> GameObjectCreation st
+mkMissile pos phyWorld = do
+    (phy, drw) <- mkCirclePhysicsD 5.0 pos phyWorld
+    let msgs = PMSG <$> [applyOnlyForce (Vec2f 0 (-5000)) zero]
+        obj = createGameObject drw noopB phy pos
+    return (foldr addInbox obj msgs)
 
 
 mkPlayerTriangle :: Float -> [Vec2f]
