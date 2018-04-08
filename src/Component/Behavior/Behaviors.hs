@@ -1,6 +1,7 @@
 module Component.Behavior.Behaviors
     ( encloseToBoxB
     , encloseByWrapAroundB
+    , behaveOutOfBoundsB
     , noopB
     , deadManWalkingB
     , mousePositionCopierB
@@ -11,6 +12,7 @@ module Component.Behavior.Behaviors
     , updatePromptForGOCountB
     , deathByUpdatesB
     , deathByHitsOnWallB
+    , deathByOutOfBoundsB
     , updateTextWithMousePositionB
     , behaveOnceB
     , behaveBothB
@@ -29,12 +31,12 @@ import SFML.Window.Keyboard (KeyCode)
 
 import GameObject.GameObjectTypes (GameObjectCreation, Command)
 import Component.Behavior.Behavior
-import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround)
+import Component.Behavior.EnclosedBehavior (encloseToBox, encloseByWrapAround, behaveOutOfBounds)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier, mouseFollower, mousePointer, followPointingMouse)
 import Component.Behavior.RotationalBehavior (rotate)
 import Component.Behavior.TextBehavior (updatePromptForGOCount, updateTextWithMousePosition, updateMultipleTexts)
 import Component.Behavior.NoopBehavior (noopBehavior)
-import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall)
+import Component.Behavior.DeathBehavior (dieBehavior, deathByUpdates, deathByHitsOnWall, deathByOutOfBounds)
 import Component.Behavior.ChildBearerBehavior (addChildBehavior)
 import Component.Behavior.HigherOrderBehavior (behaveOnce, behaveBoth, behaveSequence, behaveEvery, chooseBehavior, behaveAll)
 import Component.Behavior.CommandBehavior (addCommandBehavior)
@@ -45,6 +47,9 @@ encloseToBoxB = Behavior encloseToBox
 
 encloseByWrapAroundB :: Behavior st
 encloseByWrapAroundB = Behavior encloseByWrapAround
+
+behaveOutOfBoundsB :: Behavior st -> Behavior st
+behaveOutOfBoundsB (Behavior beh) = Behavior (behaveOutOfBounds beh)
 
 noopB :: Behavior st 
 noopB = Behavior noopBehavior
@@ -111,3 +116,6 @@ chooseBehaviorB pred (Behavior first) (Behavior second) = Behavior (chooseBehavi
 
 behaveAllB :: [Behavior st] -> Behavior st
 behaveAllB = Behavior . behaveAll . map behave
+
+deathByOutOfBoundsB :: Behavior st
+deathByOutOfBoundsB = Behavior deathByOutOfBounds

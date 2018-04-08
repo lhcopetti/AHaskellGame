@@ -14,6 +14,7 @@ import Component.Behavior.Behaviors (behaveAllB)
 import Component.Behavior.MousePointerBehavior (mousePositionCopier)
 import Component.Behavior.CollisionBehavior (onCollision)
 import Component.Behavior.DeathBehavior (dieBehavior)
+import Component.Behavior.InputBehavior (behaveOnMouseJustPressed)
 import Vec2.Vec2Math (zero)
 import ChildBearer
 import Physics.PhysicsTypes
@@ -29,13 +30,11 @@ mkMouseInputPhysicsBall = do
     return go
 
 createPhysicsBallsOnClick :: BehaviorType st
-createPhysicsBallsOnClick obj = do
-    pressed <- isJustPressed M.MLeft
-    mousePos <- mousePosition
-    let newObj
-            | pressed = addChildP (createPhyBall mousePos) obj
-            | otherwise = obj
-    return newObj
+createPhysicsBallsOnClick = behaveOnMouseJustPressed M.MLeft onMousePress
+    where
+        onMousePress obj = do
+            mousePos <- mousePosition
+            return $ addChildP (createPhyBall mousePos) obj
 
 createPhyBall :: Vec2f -> PhysicsWorld -> GameObjectCreation st
 createPhyBall pos world = do

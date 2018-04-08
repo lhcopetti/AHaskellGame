@@ -3,6 +3,7 @@ module Component.Behavior.DeathBehavior
     ( dieBehavior
     , deathByUpdates
     , deathByHitsOnWall
+    , deathByOutOfBounds
     ) where
 
 import Component.Behavior.Behavior
@@ -30,3 +31,6 @@ deathByUpdates x = behaviorPred (x < 0) dieBehavior (deathByUpdates (x - 1))
 
 dieBehavior :: BehaviorType st
 dieBehavior = return . die
+
+deathByOutOfBounds :: BehaviorType st
+deathByOutOfBounds = undefined
