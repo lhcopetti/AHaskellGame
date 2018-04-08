@@ -30,9 +30,10 @@ RUN apt-get update && \
 # Installing stack.
 RUN curl -sSL https://get.haskellstack.org/ | /bin/sh
 
-WORKDIR /home/
-RUN git clone https://github.com/lhcopetti/AHaskellGame
+COPY . /home/AHaskellGame 
+#RUN git clone https://github.com/lhcopetti/AHaskellGame
 WORKDIR /home/AHaskellGame
+#RUN git checkout feature/TravisDockerCompilation
 
 RUN stack clean
 RUN stack build
