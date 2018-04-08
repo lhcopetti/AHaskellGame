@@ -22,6 +22,6 @@ spec = describe "testGetRectFromLine" $
        map (uncurry getRectFromLine . fst) testCases `shouldBe` map snd testCases
 
 testCases :: [(((Vec2f, Vec2f), Float), [Vec2f])]
-testCases = [ ((( Vec2f 0 1, Vec2f 5 0), 3), [Vec2f 0 1.5, Vec2f 5 1.5, Vec2f 5 (-1.5), Vec2f 0 (-1.5)])
+testCases = [ ((( Vec2f 0 0, Vec2f 5 0), 3), [Vec2f 0 1.5, Vec2f 5 1.5, Vec2f 5 (-1.5), Vec2f 0 (-1.5)])
             , ((( Vec2f 10 10, Vec2f 10 20), 1), [Vec2f 9.5 10, Vec2f 9.5 20, Vec2f 10.5 20, Vec2f 10.5 10])
             ]
