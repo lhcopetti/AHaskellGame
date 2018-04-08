@@ -9,48 +9,29 @@ import SFML.System.Vector2 (Vec2f (..))
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
-import Control.Monad.Trans.Class
-import Control.Monad (liftM, when)
-import Control.Monad.IO.Class (liftIO)
+import Control.Monad (liftM)
 
 import System.Random (StdGen)
 import System.Messaging.Messages.TextDrawingMessage (setTextMsg)
 import System.Messaging.Handler.PushMessageHandler (pushMessage)
-import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
-import Component.Draw.CircleDrawing (createCenteredCircle)
 import Component.Draw.TextDrawing (createText)
 import Component.Draw.ConvexDrawing (createConvex)
-import Component.Input.Input (mousePosition, isJustPressed)
-import Component.Behavior.MousePointerBehavior (mousePositionCopier)
+import Component.Input.Input (mousePosition)
 import Component.Behavior.Behaviors (noopB, deadManWalkingB, behaveBothB, behaveOutOfBoundsB)
-import Component.Behavior.DeathBehavior (dieBehavior)
-import Component.Behavior.EnclosedBehavior (behaveOutOfBounds)
 import Component.Behavior.HigherOrderBehavior (behaveAll)
-import Component.Behavior.InputBehavior (behaveOnMouseJustPressed)
-import qualified Component.Input.Input as I
+import Component.Behavior.InputBehavior (behaveOnMousePress, behaveOnMouseJustPressed)
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
 import Physics.PhysicsMessage
-import Physics.PhysicsLayer (setLayers)
 import Physics.CirclePhysics (mkCirclePhysicsD)
-import Physics.PolygonPhysics (mkPolygonPhysicsD)
 
 import Vec2.Vec2Math (zero)
 import GameEnv (GameEnvironment (..), createGameEnv)
-import GameObject.GameObject (GameObject, addCommand)
 import GameObject.GameObjectTypes
 import GameObjectFactory (createStaticGameObjectB, createGameObject)
-import PrefabObjects.TriangleMouseFollower (createMouseFollowerEqTriangle)
-import PrefabObjects.AnimatedBlueBird (createAnimatedBlueBird)
-import PrefabObjects.BallInputAware (createBallInputAware)
-import PrefabObjects.AnimatedRunningCat (createAnimatedRunningCat)
-import PrefabObjects.AnimatedSpinningCoin (createSpinningCoin)
 import PrefabObjects.MousePositionPrinter (mkMousePrinter)
 import PrefabObjects.MouseClickListener (mkMouseClickListener)
-import PrefabObjects.CollisionPointsCounter (mkCollisionPointsCounter)
-import PrefabObjects.MouseInputPhysicsBall (mkMouseInputPhysicsBall)
 import ObjectsFactory
-import Killable
 import ChildBearer
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
@@ -105,14 +86,15 @@ runBallCreation :: StdGen -> GameEnvironment -> BallCreation a -> MaybeT IO (a, 
 runBallCreation gen env eval = runStateT (runReaderT eval env) gen
 
 createObjects :: StdGen -> GameEnvironment -> PhysicsWorld -> MaybeT IO [GameObject GameState]
-createObjects gen env space = do 
+createObjects _ _ space = do 
     mouseListener <- liftM (`Pos.setPosition` Vec2f 450 200) mkMouseClickListener
     mousePrinter <- liftM (`Pos.setPosition` Vec2f 500 0) mkMousePrinter
     goCounter <- createLiveGameObjectCounter (Vec2f 20 20)
     ballOnMouse <- ballAtMousePosition
     enemy <- mkEnemy space
     scoreCounter <- mkScoreCounter (Vec2f 100 100) 20
-    return [scoreCounter, enemy, ballOnMouse, mouseListener, mousePrinter, goCounter]
+    bounds <- createBounds space
+    return $ [scoreCounter, enemy, ballOnMouse, mouseListener, mousePrinter, goCounter] ++ bounds
 
 
 mkScoreCounter :: Vec2f -> Int -> GameObjectCreation GameState
@@ -159,12 +141,19 @@ mouseXBehavior obj = do
 ballAtMousePosition :: MaybeT IO (GameObject st)
 ballAtMousePosition = do
     drw <- createConvex green (mkPlayerTriangle 20)
-    let beh = Behavior (behaveAll [mouseXBehavior, shootMissile])
+    let beh = Behavior (behaveAll [mouseXBehavior, shootMissile, shootMissile'])
         pos = shipInitialPosition
     return (createStaticGameObjectB drw pos beh)
 
 shootMissile :: BehaviorType st
 shootMissile = behaveOnMouseJustPressed MLeft onMousePress
+    where
+        onMousePress obj = do
+            mousePos <- mousePosition
+            return $ addChildP (mkMissile mousePos) obj
+
+shootMissile' :: BehaviorType st
+shootMissile' = behaveOnMousePress MRight onMousePress
     where
         onMousePress obj = do
             mousePos <- mousePosition
@@ -183,3 +172,10 @@ mkPlayerTriangle :: Float -> [Vec2f]
 mkPlayerTriangle size = map (\f -> f size) [ \x -> Vec2f 0 (-x / 2)
                                     , \x -> Vec2f x (x / 2)
                                     , \x -> Vec2f (-x) (x / 2) ]
+
+createBounds :: PhysicsWorld -> MaybeT IO [GameObject st]
+createBounds world = do
+    left <- createPhysicsLine 10.0 (Vec2f 0 0, Vec2f 0 640) world
+    right <- createPhysicsLine 10.0 (Vec2f 640 0, Vec2f 640 480) world
+    up <- createPhysicsLine 10.0 (Vec2f 0 0, Vec2f 640 0) world
+    return [left, right, up]
