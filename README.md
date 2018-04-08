@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/lhcopetti/AHaskellGame.svg?branch=develop)](https://travis-ci.org/lhcopetti/AHaskellGame) 
+
 # AHaskellGame
 
 This is my final project for the course on Game Development I'm currently enrolled. The aim is to explore the capabilities of Game Programming on a purely functional programming language (Haskell) while at the sime time, hopefully, getting the grasp of this amazing language. 
