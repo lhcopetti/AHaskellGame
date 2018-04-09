@@ -214,6 +214,52 @@ Now, take a glimpse at the second executable (Conway's Game of Life) that I deve
 
 ## Development
 
+### Docker Support (YAY!!!!) - 08/04/2018
+
+I decided to invest some time on learning Docker and what amazed me the most was that GUI apps could also be put inside containers, amazing isn't it?
+
+Along the added ability of deploying precompilied images to run the AHaskellGame app, I was able to create an environment for realiable testing with Travis CI (Finally, I can proudly put the Travis CI build status badge on this readme file). Two birds with one stone (or whale), right?!
+
+#### Docker Environment
+
+Thanks to DockerHub, having access to this amazing piece of software could not be made easier.
+
+I should warn you though, if you attempt to run a desktop GUI application using docker, it will most likely fail. The reason behind that is because the container doesn't have access to any of the desktop servers running on the host (eg: X). To allow the X server on your host machine to listen for incoming connections from docker containers you should execute the command below (more information [here](http://wiki.ros.org/docker/Tutorials/GUI)):
+
+```
+xhost +local:root
+```
+
+`ATTENTION` Please, don't forget to disable it after you are done with the following command! Leaving the connection open might put your in danger!
+
+```
+ xhost -local:root
+```
+
+To finally run the application, execute the following:
+
+```
+docker run --rm -it --env="DISPLAY"  --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" lhcopetti/haskell-game
+```
+
+This will put you inside the container with shell access (I didn't provide any ENTRYPOINTs or CMD in the Dockerfile, but that's desired behavior). From there, you can execute:
+
+```
+stack exec AHaskellGame-exe
+or
+stack exec ConwaysGameOfLife
+or
+stack exec FallingBalls
+```
+
+to see the different demos available. Any problems or suggestions, please let me know!
+
+#### For the future:
+
+* I am aware that this is more of a development image as it carries all of the infrastructure (including the whole source code) to build the binaries.
+* Set up another image for local development using volume mappings (An interesting trick I learned from [here](https://medium.com/travis-on-docker/why-and-how-to-use-docker-for-development-a156c1de3b24))
+* Set up Travis so that the CI itself can push newly baked images into my DockerHub repository, promptly updating the hosted images.
+
 ### Setting up dependencies
 
 The first thing you should do is install the SFML libraries in your system. The compilation below will not work unless it can find all the SFML dependencies it needs (The SFML library and the CSFML bindings for the C language).
