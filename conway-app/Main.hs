@@ -129,7 +129,7 @@ toggleCellBehavior pos rect obj = do
     return obj
 
 stepConway :: Int -> Behavior SceneState
-stepConway interval = behaveEveryB interval $ \go -> do
+stepConway interval' = behaveEveryB interval' $ \go -> do
     (SceneState _ shouldUpdate) <- get
     behave (chooseBehaviorB shouldUpdate should shouldNot) go
         where

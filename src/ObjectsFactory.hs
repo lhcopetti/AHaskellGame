@@ -118,7 +118,7 @@ createDeathByUpdates :: Vec2f -> GameObjectCreation st
 createDeathByUpdates pos = do
     liftIO $ putStrLn "Creating object that dies from updates"
     drawComponent <- createCenteredCircle 10 blue
-    let behavior = deathByUpdatesB
+    let behavior = deathByUpdatesB 500
     return (createStaticGameObjectB drawComponent pos behavior)
 
 createDeathByHitsOnWall :: Vec2f -> Vec2f -> GameObjectCreation st

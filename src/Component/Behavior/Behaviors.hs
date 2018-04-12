@@ -75,8 +75,8 @@ followPointingMouseB = Behavior followPointingMouse
 updatePromptForGOCountB :: String -> Behavior st
 updatePromptForGOCountB prompt = Behavior (updatePromptForGOCount prompt)
 
-deathByUpdatesB :: Behavior st 
-deathByUpdatesB = Behavior (deathByUpdates 500)
+deathByUpdatesB :: Int -> Behavior st 
+deathByUpdatesB count = Behavior (deathByUpdates count)
 
 deathByHitsOnWallB :: Behavior st 
 deathByHitsOnWallB = Behavior (deathByHitsOnWall 5)

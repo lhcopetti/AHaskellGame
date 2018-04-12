@@ -17,7 +17,7 @@ import System.Messaging.Handler.PushMessageHandler (pushMessage)
 import Component.Draw.TextDrawing (createText)
 import Component.Draw.ConvexDrawing (createConvex)
 import Component.Input.Input (mousePosition)
-import Component.Behavior.Behaviors (noopB, deadManWalkingB, behaveBothB, behaveOutOfBoundsB)
+import Component.Behavior.Behaviors (deadManWalkingB, behaveBothB, behaveOutOfBoundsB, deathByUpdatesB)
 import Component.Behavior.HigherOrderBehavior (behaveAll)
 import Component.Behavior.InputBehavior (behaveOnMousePress, behaveOnMouseJustPressed)
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
@@ -40,6 +40,7 @@ import System.Messaging.PhysicsInbox
 import System.Input.MouseSnapshot (MButton (..))
 import Random.Random
 import Data.Time
+import Updatable
 
 data GameState = GS { score :: Integer
                     }
@@ -49,6 +50,9 @@ defaultGravity = 30
 
 shipInitialPosition :: Vec2f
 shipInitialPosition = Vec2f 0 400
+
+shipSize :: Float
+shipSize = 20
 
 main :: IO ()
 main = do
@@ -140,7 +144,7 @@ mouseXBehavior obj = do
 
 ballAtMousePosition :: MaybeT IO (GameObject st)
 ballAtMousePosition = do
-    drw <- createConvex green (mkPlayerTriangle 20)
+    drw <- createConvex green (mkPlayerTriangle shipSize)
     let beh = Behavior (behaveAll [mouseXBehavior, shootMissile, shootMissile'])
         pos = shipInitialPosition
     return (createStaticGameObjectB drw pos beh)
@@ -149,22 +153,28 @@ shootMissile :: BehaviorType st
 shootMissile = behaveOnMouseJustPressed MLeft onMousePress
     where
         onMousePress obj = do
-            mousePos <- mousePosition
+            mousePos <- mouseYLockedPosition
             return $ addChildP (mkMissile mousePos) obj
 
 shootMissile' :: BehaviorType st
 shootMissile' = behaveOnMousePress MRight onMousePress
     where
         onMousePress obj = do
-            mousePos <- mousePosition
+            mousePos <- mouseYLockedPosition
             return $ addChildP (mkMissile mousePos) obj
 
+mouseYLockedPosition :: UpdateMStack Vec2f st
+mouseYLockedPosition = do
+    (Vec2f x' _) <- mousePosition
+    let (Vec2f _ y') = shipInitialPosition
+    return $ Vec2f x' (y' - shipSize)
 
 mkMissile :: Vec2f -> PhysicsWorld -> GameObjectCreation st
 mkMissile pos phyWorld = do
     (phy, drw) <- mkCirclePhysicsD 5.0 pos phyWorld
     let msgs = PMSG <$> [applyOnlyForce (Vec2f 0 (-5000)) zero]
-        obj = createGameObject drw noopB phy pos
+        beh = deathByUpdatesB 500
+        obj = createGameObject drw beh phy pos
     return (foldr addInbox obj msgs)
 
 
