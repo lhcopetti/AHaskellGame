@@ -8,7 +8,7 @@
 # xhost +local:root
 
 # ATTENTION: Please, don't forget to disable after you are done! 
-# Leaving the connection open might put your in danger!
+# Leaving the connection open might put you in danger!
 
 # To disable after you are done:
 # xhost -local:root
