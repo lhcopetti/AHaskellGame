@@ -1,0 +1,48 @@
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04
+
+RUN apt-get update && \
+		apt-get -y upgrade && \
+		apt-get install -y \
+        build-essential \
+        g++ \
+        cmake \
+        git \
+        wget \
+        libfreetype6-dev \
+        libjpeg-dev \
+        xorg-dev \
+        libxrandr-dev \
+        xcb \
+        libx11-xcb-dev \
+        libxcb-randr0-dev \
+        libxcb-image0-dev \
+        libgl1-mesa-dev \
+        libflac-dev \
+        libogg-dev \
+        libvorbis-dev \
+        libopenal-dev \
+        libpthread-stubs0-dev \
+        curl \
+        libudev-dev \
+        libsfml-dev \
+        libcsfml-dev
+
+# Installing stack.
+RUN curl -sSL https://get.haskellstack.org/ | /bin/sh
+
+RUN stack --version
+
+WORKDIR "/app"
+
+# Download the project's build plan
+# This downloads the incorrect build-plan version
+# RUN stack clean
+
+# Provide some helpful diagnostics tool such as:
+# glxinfo and glxgears
+RUN apt-get install mesa-utils
+
+# '--allow-different-user' is necessary because the user that is 
+# logged while the container is running is 'root' and not your $user.
+#ENTRYPOINT ["stack", "--allow-different-user"]
+#CMD ["--version"]
