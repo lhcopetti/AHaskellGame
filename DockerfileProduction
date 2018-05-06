@@ -1,0 +1,59 @@
+# Builder
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04 as builder
+
+RUN apt-get update && \
+		apt-get -y upgrade && \
+		apt-get install -y \
+        build-essential \
+        g++ \
+        cmake \
+        git \
+        wget \
+        libfreetype6-dev \
+        libjpeg-dev \
+        xorg-dev \
+        libxrandr-dev \
+        xcb \
+        libx11-xcb-dev \
+        libxcb-randr0-dev \
+        libxcb-image0-dev \
+        libgl1-mesa-dev \
+        libflac-dev \
+        libogg-dev \
+        libvorbis-dev \
+        libopenal-dev \
+        libpthread-stubs0-dev \
+        curl \
+        libudev-dev \
+        libsfml-dev \
+        libcsfml-dev
+
+# Installing stack.
+RUN curl -sSL https://get.haskellstack.org/ | /bin/sh
+
+COPY . app/
+WORKDIR app/
+
+RUN stack clean
+RUN stack setup
+RUN stack build
+RUN stack install
+
+# Final Image
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04
+
+RUN apt-get update && apt-get -y upgrade
+
+# Necessary at runtime
+RUN apt-get install -y libcsfml-dev
+RUN apt-get install -y libsfml-dev
+RUN apt-get install -y libgmp10
+
+
+WORKDIR app/
+
+COPY --from=builder /root/.local/bin/AHaskellGame-exe .
+COPY --from=builder /root/.local/bin/FallingBalls .
+COPY --from=builder /root/.local/bin/ConwaysGameOfLife .
+
+CMD ["./AHaskellGame-exe"]
