@@ -23,9 +23,10 @@ script:
 # Build the package, its tests, and its docs and run the tests
 - docker run --rm -v "$(pwd):/app/" -w "/app/" lhcopetti/haskell-game:dev stack --no-terminal test --haddock --no-haddock-deps --allow-different-user
 - sudo rm -rf .stack-work/
-- sudo rm -rf .conway-pkg/.stack-work
+- sudo rm -rf conway-pkg/.stack-work
 
 deploy:
+  skip_cleanup: true
   provider: script
   script: travis-deploy.sh
   on:
