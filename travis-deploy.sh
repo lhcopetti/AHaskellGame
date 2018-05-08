@@ -6,7 +6,7 @@ echo "Building the Docker Image | Release Version"
 
 echo "Logging to DockerHub"
 
-echo "DOCKER_HUB_PASSWORD" | docker login --username "DOCKER_HUB_LOGIN" --password-stdin
+echo "$DOCKER_HUB_PASSWORD" | docker login --username "$DOCKER_HUB_LOGIN" --password-stdin
 
 currentVersion="$(cat src/version.ver)"
 imageName="lhcopetti/haskell-game:lts-${currentVersion}"
