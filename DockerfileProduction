@@ -1,4 +1,5 @@
-FROM ubuntu:16.04
+# Builder
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04 as builder
 
 RUN apt-get update && \
 		apt-get -y upgrade && \
@@ -30,10 +31,29 @@ RUN apt-get update && \
 # Installing stack.
 RUN curl -sSL https://get.haskellstack.org/ | /bin/sh
 
-COPY . /home/AHaskellGame 
-#RUN git clone https://github.com/lhcopetti/AHaskellGame
-WORKDIR /home/AHaskellGame
-#RUN git checkout feature/TravisDockerCompilation
+COPY . app/
+WORKDIR app/
 
 RUN stack clean
+RUN stack setup
 RUN stack build
+RUN stack install
+
+# Final Image
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04
+
+RUN apt-get update && apt-get -y upgrade
+
+# Necessary at runtime
+RUN apt-get install -y libcsfml-dev
+RUN apt-get install -y libsfml-dev
+RUN apt-get install -y libgmp10
+
+
+WORKDIR app/
+
+COPY --from=builder /root/.local/bin/AHaskellGame-exe .
+COPY --from=builder /root/.local/bin/FallingBalls .
+COPY --from=builder /root/.local/bin/ConwaysGameOfLife .
+
+CMD ["./AHaskellGame-exe"]
