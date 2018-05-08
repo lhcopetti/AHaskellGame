@@ -24,6 +24,7 @@ script:
 - docker run --rm -v "$(pwd):/app/" -w "/app/" lhcopetti/haskell-game:dev stack --no-terminal test --haddock --no-haddock-deps --allow-different-user
 
 deploy:
+  provider: script
   script: travis-deploy.sh
   on:
-    - branch: feature/DockerfileForDevelopment
+    branch: feature/DockerfileForDevelopment
