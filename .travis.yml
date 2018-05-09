@@ -1,29 +1,20 @@
-# This travis script was extracted from: 
-# https://raw.githubusercontent.com/commercialhaskell/stack/master/doc/travis-simple.yml
-
-# Use new container infrastructure to enable caching
 sudo: required
 
 services:
   - docker
 
-# Do not choose a language; we provide our own build tools.
 language: generic
 
-# Caching so the next build will be fast too.
 cache:
   directories:
   - $HOME/.stack
 
 before_install:
-# Download and unpack the stack executable
   - docker pull lhcopetti/haskell-game:dev
 
 script:
 # Build the package, its tests, and its docs and run the tests
 - docker run --rm -v "$(pwd):/app/" -w "/app/" lhcopetti/haskell-game:dev stack --no-terminal test --haddock --no-haddock-deps --allow-different-user
-- sudo rm -rf .stack-work/
-- sudo rm -rf conway-pkg/.stack-work
 
 deploy:
   skip_cleanup: true

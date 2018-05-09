@@ -29,20 +29,8 @@ RUN apt-get update && \
 
 # Installing stack.
 RUN curl -sSL https://get.haskellstack.org/ | /bin/sh
-
 RUN stack --version
 
 WORKDIR "/app"
 
-# Download the project's build plan
-# This downloads the incorrect build-plan version
-# RUN stack clean
-
-# Provide some helpful diagnostics tool such as:
-# glxinfo and glxgears
 RUN apt-get install mesa-utils
-
-# '--allow-different-user' is necessary because the user that is 
-# logged while the container is running is 'root' and not your $user.
-#ENTRYPOINT ["stack", "--allow-different-user"]
-#CMD ["--version"]
