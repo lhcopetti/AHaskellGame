@@ -11,14 +11,13 @@ import GameObject.GameObjectTypes (GameObjectCreation, Ratio (..))
 import Component.Draw.Animation.AnimationDrawing (createAnimation)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 import Component.Behavior.Behaviors (encloseByWrapAroundB)
-
-import Paths_AHaskellGame
+import Resources.StaticResourceResolver (getSpritePath)
 
 createSpinningCoin :: Vec2f -> Vec2f -> GameObjectCreation st
 createSpinningCoin pos vel = do
     liftIO $ putStrLn "Creating an animated spinning coin"
     
-    spriteSheetName <- liftIO $ getDataFileName "resources/sprites/spinning-coin/coin_altered.png"
+    let spriteSheetName = getSpritePath "spinning-coin/coin_altered.png"
     ss <- loadSpriteSheet spriteSheetName (Ratio 6 1)
     liftIO $ putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ ss)
 

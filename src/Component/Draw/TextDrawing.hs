@@ -19,7 +19,7 @@ createText :: Int -> String -> MaybeT IO Drawing
 createText size text = do 
     liftIO $ putStrLn $ "Creating text Font-size: " ++ show size ++ " T: " ++ show text
     t <- createShapeT SFText.createText
-    font <- loadFontT "resources/fonts/arial.ttf"
+    font <- loadFontT "arial.ttf"
     liftIO $ do 
         SFText.setTextFont t font
         SFText.setTextString t text
