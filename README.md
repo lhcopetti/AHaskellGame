@@ -6,6 +6,13 @@ This is my final project for the course on Game Development I'm currently enroll
 
 I'm still unsure whether it will be a simple game or a more ambitious yet with a more reduced scope of a simple game engine. 
 
+
+# AHaskellGame High Level Design
+
+A humble attempt at explaining the core concept behind the implementation of this game engine. Basically, it all boils down to isolation of side effects so that the majority of the business logic (the developer's and engine's) runs on pure code.
+
+![alt text][highleveldesign]
+
 ## News
 
 Freshly baked and updated Docker support. Read all about it [here](DOCs/Docker.md)!
@@ -352,6 +359,8 @@ AHaskellGame-exe: divide by zero
 
 This is also in honor for being the first logic bug on the project, and rightfully so because I haven't done any testing whatsoever prior to this event (my bad!).
 
+
+[highleveldesign]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diagrams/HLD_AHaskellGame.jpg "AHaskellGame High Level Design 12/05/2018"
 
 [diary-01]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-13_AHaskellGame.gif "Diary 13/01/2018"
 [diary-02]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-21_AHaskellGame.gif "Diary 21/01/2018"
