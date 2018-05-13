@@ -11,12 +11,10 @@ import Control.Monad.Trans.Maybe (MaybeT)
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad (mzero)
 
-import Paths_AHaskellGame
+import Resources.StaticResourceResolver (getFontPath)
 
 loadFontT :: String -> MaybeT IO Font
-loadFontT fontName = do
-    systemFilePath <- liftIO (getDataFileName fontName)
-    fontFromFileT systemFilePath
+loadFontT = fontFromFileT . getFontPath
 
 fontFromFileT :: FilePath -> MaybeT IO Font
 fontFromFileT filePath = do

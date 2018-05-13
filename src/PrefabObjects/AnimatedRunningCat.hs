@@ -12,14 +12,13 @@ import GameObject.GameObjectTypes (GameObjectCreation, Ratio (..))
 import Component.Draw.Animation.AnimationDrawing (createAnimation)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
 import Component.Behavior.Behaviors (encloseByWrapAroundB)
-
-import Paths_AHaskellGame
+import Resources.StaticResourceResolver (getSpritePath)
 
 createAnimatedRunningCat :: Vec2f -> Vec2f -> GameObjectCreation st
 createAnimatedRunningCat pos vel = do
     liftIO $ putStrLn "Creating an animated running cat"
 
-    spriteSheetName <- liftIO $ getDataFileName "resources/sprites/running-cat/runningcat-20.png"
+    let spriteSheetName = getSpritePath "running-cat/runningcat-20.png"
     ss <- loadSpriteSheet spriteSheetName (Ratio 2 4)
     liftIO $ putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ ss)
 
