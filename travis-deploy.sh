@@ -8,8 +8,14 @@ echo "Logging to DockerHub"
 
 echo "$DOCKER_HUB_PASSWORD" | docker login --username "$DOCKER_HUB_LOGIN" --password-stdin
 
-currentVersion="$(cat src/version.ver)"
-imageName="lhcopetti/haskell-game:lts-${currentVersion}"
+baseImageName="lhcopetti/haskell-game:lts"
 
-echo "Pushing image with name: $imageName"
-docker push $imageName
+currentVersion="$(cat src/version.ver)"
+versionedImageName="${baseImageName}-${currentVersion}"
+
+echo "Pushing image with name: $versionedImageName"
+docker push $versionedImageName
+
+echo "Pushing image with name: $baseImageName"
+docker tag "$versionedImageName" "$baseImageName"
+docker push "$baseImageName"
