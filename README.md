@@ -6,6 +6,17 @@ This is my final project for the course on Game Development I'm currently enroll
 
 I'm still unsure whether it will be a simple game or a more ambitious yet with a more reduced scope of a simple game engine. 
 
+
+# AHaskellGame High Level Design
+
+A humble attempt at explaining the core concept behind the implementation of this game engine. Basically, it all boils down to isolation of side effects so that the majority of the business logic (the developer's and engine's) runs on pure code.
+
+![alt text][highleveldesign]
+
+## News
+
+Freshly baked and updated Docker support. Read all about it [here](DOCs/Docker.md)!
+
 ## Diary
 
 ### 13/01/2018 - Some abstractions are starting to show up
@@ -212,8 +223,6 @@ Now, take a glimpse at the second executable (Conway's Game of Life) that I deve
 
 ![alt text][diary-06]
 
-## Development
-
 ### Docker Support (YAY!!!!) - 08/04/2018
 
 I decided to invest some time on learning Docker and what amazed me the most was that GUI apps could also be put inside containers, amazing isn't it?
@@ -256,9 +265,11 @@ to see the different demos available. Any problems or suggestions, please let me
 
 #### For the future:
 
-* I am aware that this is more of a development image as it carries all of the infrastructure (including the whole source code) to build the binaries.
-* Set up another image for local development using volume mappings (An interesting trick I learned from [here](https://medium.com/travis-on-docker/why-and-how-to-use-docker-for-development-a156c1de3b24))
-* Set up Travis so that the CI itself can push newly baked images into my DockerHub repository, promptly updating the hosted images.
+* DONE! I am aware that this is more of a development image as it carries all of the infrastructure (including the whole source code) to build the binaries.
+* DONE! Set up another image for local development using volume mappings (An interesting trick I learned from [here](https://medium.com/travis-on-docker/why-and-how-to-use-docker-for-development-a156c1de3b24))
+* DONE! Set up Travis so that the CI itself can push newly baked images into my DockerHub repository, promptly updating the hosted images.
+
+## Development
 
 ### Setting up dependencies
 
@@ -348,6 +359,8 @@ AHaskellGame-exe: divide by zero
 
 This is also in honor for being the first logic bug on the project, and rightfully so because I haven't done any testing whatsoever prior to this event (my bad!).
 
+
+[highleveldesign]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diagrams/HLD_AHaskellGame.jpg "AHaskellGame High Level Design 12/05/2018"
 
 [diary-01]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-13_AHaskellGame.gif "Diary 13/01/2018"
 [diary-02]: https://github.com/lhcopetti/AHaskellGame/raw/develop/DOCs/Diary/2018-01-21_AHaskellGame.gif "Diary 21/01/2018"

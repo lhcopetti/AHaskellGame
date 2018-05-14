@@ -9,7 +9,6 @@ import Control.Monad.Trans.Reader
 import Control.Monad.Trans.State
 import Control.Monad.Trans.Class
 import Control.Monad (liftM, when)
-import Control.Monad.IO.Class (liftIO)
 
 import System.Random (StdGen)
 import Component.Draw.Animation.SpriteSheet (SpriteSheet (..), loadSpriteSheet)
@@ -39,8 +38,7 @@ import System.GameWorld (GameWorld (..), GameScene (..))
 import System.Messaging.PhysicsInbox
 import Random.Random
 import Data.Time
-
-import Paths_AHaskellGame
+import Resources.StaticResourceResolver (getSpritePath)
 
 #define USE_RANDOM_GENERATOR
 
@@ -76,7 +74,7 @@ main = do
     gen <- newGeneratorFromString "1458194910 1"
 #endif
 
-    spriteSheetName <- getDataFileName "resources/sprites/blue-bird/blue-bird-10%-resized.png"
+    let spriteSheetName = getSpritePath "blue-bird/blue-bird-10%-resized.png"
     spriteSheet <- runMaybeT $ loadSpriteSheet spriteSheetName (Ratio 2 4)
     case spriteSheet of
         (Just s) -> putStrLn $ "The number of sprites is: " ++ (show . length . sprites $ s)
@@ -184,7 +182,7 @@ createPhysicsBalls physicsWorld =
 
 createSprites :: MaybeT IO [GameObject st]
 createSprites = do
-    blueBird <- createSpriteFromFile "resources/sprites/blue-bird/blue-bird-0-resized.png" (Vec2f 400 100) (Vec2f 1.0 0)
+    blueBird <- createSpriteFromFile "blue-bird/blue-bird-0-resized.png" (Vec2f 400 100) (Vec2f 1.0 0)
     bird <- createAnimatedBlueBird (Vec2f 400 150) (Vec2f 1.0 0)
     cat <- createAnimatedRunningCat (Vec2f 400 200) (Vec2f 2.0 0)
     coin <- createSpinningCoin (Vec2f 36 300) (Vec2f 0 0)
@@ -192,7 +190,7 @@ createSprites = do
 
 createSpriteFromFile :: FilePath -> Vec2f -> Vec2f -> GameObjectCreation st
 createSpriteFromFile path pos vel = do
-    systemPath <- liftIO $ getDataFileName path
+    let systemPath = getSpritePath path
     createSprite systemPath pos vel
 
 createRandomMiniBalls :: BallCreation [GameObject st]

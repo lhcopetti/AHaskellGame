@@ -56,4 +56,6 @@ COPY --from=builder /root/.local/bin/AHaskellGame-exe .
 COPY --from=builder /root/.local/bin/FallingBalls .
 COPY --from=builder /root/.local/bin/ConwaysGameOfLife .
 
+COPY --from=builder /app/resources /app/resources
+
 CMD ["./AHaskellGame-exe"]

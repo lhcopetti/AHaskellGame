@@ -53,8 +53,6 @@ executables:
     - -Werror
     dependencies:
     - AHaskellGame
-    other-modules:
-    - Paths_AHaskellGame
 
   ConwaysGameOfLife:
     main:                Main.hs
