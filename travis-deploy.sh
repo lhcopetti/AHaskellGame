@@ -14,6 +14,6 @@ versionedImage="lhcopetti/haskell-game:lts-${currentVersion}"
 echo "Pushing versioned image: $versionedImage"
 docker push $versionedImage
 
-unversionedImage="${imageName%-*}"
+unversionedImage="${versionedImage%-*}"
 echo "Pushing unversioned image: $unversionedImage"
 docker push "$unversionedImage"
