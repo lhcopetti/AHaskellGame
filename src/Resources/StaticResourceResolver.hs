@@ -1,14 +1,17 @@
+{-# LANGUAGE TemplateHaskell #-}
 module Resources.StaticResourceResolver
-    ( getFontPath
-    , getSpritePath
+    ( getResourceAsString
+    , staticResourceMap
     ) where
 
+import Resources.StaticResourceEmbed (resourceDirEmbedded)
 
-getFontPath :: String -> String
-getFontPath = (++) (rootResourcePath ++ "fonts/")
+import qualified Data.Map as M
+import Data.Map (Map)
+import qualified Data.ByteString.Char8 as BSC
 
-getSpritePath :: String -> String
-getSpritePath = (++) (rootResourcePath ++ "sprites/")
+getResourceAsString :: FilePath -> Maybe String
+getResourceAsString = (M.!?) staticResourceMap
 
-rootResourcePath :: String
-rootResourcePath = "/app/resources/"
+staticResourceMap :: Map FilePath String
+staticResourceMap = M.map BSC.unpack (M.fromList $(resourceDirEmbedded))

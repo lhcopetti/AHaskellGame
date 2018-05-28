@@ -31,6 +31,9 @@ dependencies:
 - monadplus
 - hspec
 - time
+- file-embed
+- template-haskell
+- bytestring
 
 library:
   source-dirs: src
