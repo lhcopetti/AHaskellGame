@@ -17,9 +17,9 @@ before_install:
 - travis_retry curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
 - distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 - travis_retry curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-- apt-get update
+- sudo apt-get update
 
-- apt-get install nvidia-docker2
+- sudo apt-get install nvidia-docker2
 
 # Download and unpack the stack executable
 - mkdir -p ~/.local/bin
