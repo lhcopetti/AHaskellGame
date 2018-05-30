@@ -17,6 +17,23 @@
 #  location: "./custom-snapshot.yaml"
 resolver: snapshot.yaml
 
+docker:
+  enable: true
+  repo: lhcopetti/haskell-game:dev
+
+  mount:
+    - "/tmp/.X11-unix:/tmp/.X11-unix:rw"
+
+  env:
+    # Should be set to the system $DISPLAY variable. If you have something
+    # different for you environment, you should replace the value below:
+    - "DISPLAY=:0"
+    - "QT_X11_NO_MITSHM=1"
+
+    # To run this image, you must have nvidia-docker2 installed in your system
+    # More information here: https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
+  run-args: ["--runtime=nvidia"]
+
 # User packages to be built.
 # Various formats can be used as shown in the example below.
 #
