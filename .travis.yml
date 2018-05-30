@@ -10,11 +10,13 @@ cache:
   - $HOME/.stack
 
 before_install:
-  - docker pull lhcopetti/haskell-game:dev
+# Download and unpack the stack executable
+- mkdir -p ~/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 
-script:
-# Build the package, its tests, and its docs and run the tests
-- docker run --rm -v "$(pwd):/app/" -w "/app/" lhcopetti/haskell-game:dev stack --no-terminal test --haddock --no-haddock-deps --allow-different-user
+install:
+- stack --no-terminal --install-ghc test --only-dependencies -v
 
 deploy:
   skip_cleanup: true
