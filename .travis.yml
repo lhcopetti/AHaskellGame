@@ -10,6 +10,9 @@ cache:
   - $HOME/.stack
 
 before_install:
+# Pull dev image
+- docker pull lhcopetti/haskell-game:dev
+
 # Download and unpack the stack executable
 - mkdir -p ~/.local/bin
 - export PATH=$HOME/.local/bin:$PATH
