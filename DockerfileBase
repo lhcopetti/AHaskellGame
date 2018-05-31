@@ -1,0 +1,8 @@
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04
+
+RUN apt-get update && apt-get -y upgrade
+
+# Necessary at runtime
+RUN apt-get install -y libcsfml-dev
+RUN apt-get install -y libsfml-dev
+RUN apt-get install -y libgmp10

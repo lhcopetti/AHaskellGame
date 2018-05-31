@@ -1,19 +1,20 @@
-#!/bin/bash -e
-
-echo "Building the Docker Image | Release Version"
-
-./buildDockerImage-prod.sh
+#!/bin/bash
+echo "Pushing built images to DockerHub"
 
 echo "Logging to DockerHub"
-
 echo "$DOCKER_HUB_PASSWORD" | docker login --username "$DOCKER_HUB_LOGIN" --password-stdin
 
-currentVersion="$(cat src/version.ver)"
+while true; do
 
-versionedImage="lhcopetti/haskell-game:lts-${currentVersion}"
-echo "Pushing versioned image: $versionedImage"
-docker push $versionedImage
+    read imageName
+    if [ $? -ne 0 ]; then
+        break;
+    fi
 
-unversionedImage="${imageName%-*}"
-echo "Pushing unversioned image: $unversionedImage"
-docker push "$unversionedImage"
+    echo "Pushing >>>$imageName<<< to DockerHub"
+    docker push $imageName
+
+done;
+
+echo "Done pushing images"
+exit 0;
