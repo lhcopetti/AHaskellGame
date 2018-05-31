@@ -34,6 +34,14 @@ docker:
     # More information here: https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
   run-args: ["--runtime=nvidia"]
 
+image:
+  containers:
+    -
+      base: "lhcopetti/haskell-game:base"
+      name: "lhcopetti/haskell-game:base-lts"
+      entrypoints:
+        - AHaskellGame-exe
+
 # User packages to be built.
 # Various formats can be used as shown in the example below.
 #
