@@ -1,5 +1,7 @@
 FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04
 
+LABEL maintainer="lhcopetti@gmail.com"
+
 RUN apt-get update && apt-get -y upgrade
 
 # Necessary at runtime
