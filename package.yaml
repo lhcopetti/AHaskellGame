@@ -41,9 +41,6 @@ library:
   - -W
   - -Werror
 
-data-files:
-- resources/**/*
-
 executables:
   AHaskellGame-exe:
     main:                Main.hs
