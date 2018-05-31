@@ -15,7 +15,7 @@
 # resolver:
 #  name: custom-snapshot
 #  location: "./custom-snapshot.yaml"
-resolver: snapshot.yaml
+resolver: lts-11.10
 
 docker:
   enable: true
@@ -65,7 +65,8 @@ packages:
 - conway-pkg
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
-extra-deps: [
+extra-deps: [ Hipmunk-5.2.0.17
+            , SFML-2.3.2.4
             ]
 
 # Override default flag values for local packages and extra-deps
