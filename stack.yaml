@@ -32,7 +32,7 @@ docker:
 
     # To run this image, you must have nvidia-docker2 installed in your system
     # More information here: https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
-  #run-args: ["--runtime=nvidia"]
+  run-args: ["--runtime=nvidia"]
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
