@@ -52,4 +52,4 @@ deploy:
   provider: script
   script: sh ./travis-deploy.sh
   on:
-    branch: feature/FixTravisDeployment
+    branch: master
