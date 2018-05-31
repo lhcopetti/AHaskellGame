@@ -10,11 +10,42 @@ cache:
   - $HOME/.stack
 
 before_install:
-  - docker pull lhcopetti/haskell-game:dev
+# Error on travis:
+# The following packages have unmet dependencies:
+#  nvidia-docker2 : Depends: docker-ce (= 18.03.1~ce-0~ubuntu) but 18.05.0~ce~3-0~ubuntu is to be installed or
+#                           docker-ee (= 18.03.1~ee-0~ubuntu) but it is not installable
 
-script:
-# Build the package, its tests, and its docs and run the tests
-- docker run --rm -v "$(pwd):/app/" -w "/app/" lhcopetti/haskell-game:dev stack --no-terminal test --haddock --no-haddock-deps --allow-different-user
+# This removes the dependency on the nvidia runtime, something we can't guarantee that a integration
+# platform such as travis will have available. Furthermore, this option would only come into play when 
+# the application is executed meaning that it doesn't make a difference after all.
+# Only compilation and test execution is exercised in this integration routine.
+
+# Update docker version for the nvidia-docker2
+#- sudo apt-get install -y docker-ce=18.05.0~ce~3-0~ubuntu
+
+# Pull dev image
+- docker pull lhcopetti/haskell-game:dev
+# Pull base image
+- docker pull lhcopetti/haskell-game:base
+
+# List Docker images
+- docker image ls -a
+# Install nvidia-docker2 (required to have the runtime specified in the stack.yaml)
+#- travis_retry curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+#- distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+#- travis_retry curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+#- sudo apt-get -y update
+# - sudo apt-get install -y nvidia-docker2
+
+# Download and unpack the stack executable
+- mkdir -p ~/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+install:
+- ./normalize-stack.sh
+- stack --no-terminal --install-ghc test --only-dependencies -v
+- stack image container -v
 
 deploy:
   skip_cleanup: true
