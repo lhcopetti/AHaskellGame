@@ -30,7 +30,7 @@ docker:
     - "DISPLAY=:0"
     - "QT_X11_NO_MITSHM=1"
 
-    # To run this image, you must have nvidia-docker2 installed in your system
+    # To run the application, aka exec, you must have nvidia-docker2 installed in your system
     # More information here: https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
   run-args: ["--runtime=nvidia"]
 
