@@ -50,6 +50,6 @@ install:
 deploy:
   skip_cleanup: true
   provider: script
-  script: sh './renameAndPrepareBuiltImages.sh | ./travis-deploy.sh'
+  script: sh ./travis-deploy.sh
   on:
     branch: feature/FixTravisDeployment
