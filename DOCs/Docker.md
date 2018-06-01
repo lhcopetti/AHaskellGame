@@ -1,4 +1,4 @@
-### This Project run on Docker
+### This Project runs on Docker
 
 #### Docker Development
 
