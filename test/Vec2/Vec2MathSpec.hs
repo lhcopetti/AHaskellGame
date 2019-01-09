@@ -21,7 +21,7 @@ spec = describe "testVec2fMath" $ do
         it "should return the size of the vectors" $
             map (sizeVec2f . uncurry Vec2f . fst) testCases `shouldBe` map snd testCases
         it "should perform vector subtraction axis-wise" $
-            map (uncurry subtractVec2f . fst) subtractTestCases `shouldBe` map snd subtractTestCases
+            map (uncurry (|-|) . fst) subtractTestCases `shouldBe` map snd subtractTestCases
         it "should perform vector division axis-wise" $
             map (uncurry divideVec2f . fst) divideTestCases `shouldBe` map snd divideTestCases
         it "should return the angle in relation to the x axis" $

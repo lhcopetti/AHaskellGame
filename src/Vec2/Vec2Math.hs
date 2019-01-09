@@ -1,6 +1,6 @@
 module Vec2.Vec2Math ( zero
                      , (|+|)
-                     , subtractVec2f
+                     , (|-|)
                      , multiplyScalarVec2f
                      , divideVec2f
                      , sizeVec2f
@@ -27,8 +27,9 @@ infixl 6 |+|
 (|+|) :: Vec2f -> Vec2f -> Vec2f
 (Vec2f x y) |+| (Vec2f x' y') = Vec2f (x + x') (y + y')
 
-subtractVec2f :: Vec2f -> Vec2f -> Vec2f
-subtractVec2f (Vec2f x y) (Vec2f x' y') = Vec2f (x - x') (y - y')
+infixl 6 |-|
+(|-|) :: Vec2f -> Vec2f -> Vec2f
+(Vec2f x y) |-| (Vec2f x' y') = Vec2f (x - x') (y - y')
 
 divideVec2f :: Vec2f -> Vec2f -> Vec2f
 divideVec2f (Vec2f x y) (Vec2f x' y') = Vec2f (x / x') (y / y')
@@ -69,9 +70,9 @@ getOrthoVec2f :: Vec2f -> (Vec2f, Vec2f)
 getOrthoVec2f (Vec2f x y) = (Vec2f y (-x), Vec2f (-y) x)
 
 midPoint :: (Vec2f, Vec2f) -> Vec2f
-midPoint (p1, p2) = let target       = subtractVec2f p2 p1
+midPoint (p1, p2) = let target       = p2 |-| p1
                         unit         = unitVec2f target
-                        distance     = sizeVec2f (subtractVec2f p2 p1) / 2
+                        distance     = sizeVec2f (p2 |-| p1) / 2
                         localMPoint  = multiplyScalarVec2f unit distance
                     in  p1 |+| localMPoint
 
