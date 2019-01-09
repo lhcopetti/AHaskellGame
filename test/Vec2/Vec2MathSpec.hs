@@ -23,7 +23,7 @@ spec = describe "testVec2fMath" $ do
         it "should perform vector subtraction axis-wise" $
             map (uncurry (|-|) . fst) subtractTestCases `shouldBe` map snd subtractTestCases
         it "should perform vector division axis-wise" $
-            map (uncurry divideVec2f . fst) divideTestCases `shouldBe` map snd divideTestCases
+            map (uncurry (|/|) . fst) divideTestCases `shouldBe` map snd divideTestCases
         it "should return the angle in relation to the x axis" $
             map (angleVec2f . fst) angleTestCases `shouldBe` map snd angleTestCases
         it "should return both perpendicular vectors to the one supplied" $

@@ -2,7 +2,7 @@ module Vec2.Vec2Math ( zero
                      , (|+|)
                      , (|-|)
                      , multiplyScalarVec2f
-                     , divideVec2f
+                     , (|/|)
                      , sizeVec2f
                      , unitVec2f
                      , v2fToTuple
@@ -31,8 +31,9 @@ infixl 6 |-|
 (|-|) :: Vec2f -> Vec2f -> Vec2f
 (Vec2f x y) |-| (Vec2f x' y') = Vec2f (x - x') (y - y')
 
-divideVec2f :: Vec2f -> Vec2f -> Vec2f
-divideVec2f (Vec2f x y) (Vec2f x' y') = Vec2f (x / x') (y / y')
+infixl 7 |/|
+(|/|) :: Vec2f -> Vec2f -> Vec2f
+(Vec2f x y) |/| (Vec2f x' y') = Vec2f (x / x') (y / y')
 
 divideScalarVec2f :: Vec2f -> Float -> Vec2f
 divideScalarVec2f (Vec2f x y) value = Vec2f (x / value) (y / value)
