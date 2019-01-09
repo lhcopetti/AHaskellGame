@@ -1,5 +1,5 @@
 module Vec2.Vec2Math ( zero
-                     , addVec2f
+                     , (|+|)
                      , subtractVec2f
                      , multiplyScalarVec2f
                      , divideVec2f
@@ -23,8 +23,9 @@ import Math.Angle (toDegree)
 zero :: Vec2f 
 zero = Vec2f 0.0 0.0
 
-addVec2f :: Vec2f -> Vec2f -> Vec2f 
-addVec2f (Vec2f x y) (Vec2f x' y') = Vec2f (x + x') (y + y')
+infixl 6 |+|
+(|+|) :: Vec2f -> Vec2f -> Vec2f
+(Vec2f x y) |+| (Vec2f x' y') = Vec2f (x + x') (y + y')
 
 subtractVec2f :: Vec2f -> Vec2f -> Vec2f
 subtractVec2f (Vec2f x y) (Vec2f x' y') = Vec2f (x - x') (y - y')
@@ -72,7 +73,7 @@ midPoint (p1, p2) = let target       = subtractVec2f p2 p1
                         unit         = unitVec2f target
                         distance     = sizeVec2f (subtractVec2f p2 p1) / 2
                         localMPoint  = multiplyScalarVec2f unit distance
-                    in  addVec2f p1 localMPoint
+                    in  p1 |+| localMPoint
 
 onX :: (Float -> Float) -> Vec2f -> Vec2f
 onX f (Vec2f x y) = Vec2f (f x) y
