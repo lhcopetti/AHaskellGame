@@ -37,7 +37,7 @@ import Data.Time (getCurrentTime)
 defaultGravity :: Float
 defaultGravity = 30
 
-data SceneState = SceneState ConwayWorld Bool
+data GameState = GameState ConwayWorld Bool
 
 main :: IO ()
 main = do
@@ -68,13 +68,13 @@ main = do
     case objs of 
         Nothing -> putStrLn "Error creating game objects"
         Just (b, objects) -> do
-                            let n = SceneState (initialBoard b) False
+                            let n = GameState (initialBoard b) False
                                 world = GameWorld wnd
                                 scene = GameScene physicsWorld objects n
                             startGame world scene gameEnv 
                             putStrLn "This is the End!"
 
-createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO (ConwayWorld, [GameObject SceneState])
+createObjects :: GameEnvironment -> PhysicsWorld -> MaybeT IO (ConwayWorld, [GameObject GameState])
 createObjects _ _ = do
     let gridSize = (15, 15)
     board <- newConwayWorld gridSize
@@ -97,7 +97,7 @@ initialBoard = setLives [ (2, 3), (3, 3), (4, 3), (6,3), (7, 3), (8, 3)
                         , (3, 6), (4, 6), (6, 6), (7, 6)
                         , (2, 7), (8, 7) ]
 
-mkConwayCell :: Position -> MaybeT IO (GameObject SceneState)
+mkConwayCell :: Position -> MaybeT IO (GameObject GameState)
 mkConwayCell gpos@(x, y) = liftM (setBehavior behaviors) createObject
     where
         fx = fromIntegral x
@@ -120,7 +120,7 @@ mkCellRect (x, y) side (Vec2f ox oy) padding = let
     in 
         FloatRect left top side side
 
-toggleCellBehavior :: Position -> FloatRect -> BehaviorType SceneState
+toggleCellBehavior :: Position -> FloatRect -> BehaviorType GameState
 toggleCellBehavior pos rect obj = do
     press <- isJustPressed M.MLeft
     (Vec2f mx my) <- mousePosition
@@ -128,62 +128,62 @@ toggleCellBehavior pos rect obj = do
     when shouldToggle (modify $ toggleBoard pos)
     return obj
 
-stepConway :: Int -> Behavior SceneState
+stepConway :: Int -> Behavior GameState
 stepConway interval' = behaveEveryB interval' $ \go -> do
-    (SceneState _ shouldUpdate) <- get
+    (GameState _ shouldUpdate) <- get
     behave (chooseBehaviorB shouldUpdate should shouldNot) go
         where
             should      = Behavior $ \go -> modify tickState >> return go
             shouldNot   = noopB
 
-resetConwayB :: KeyCode -> Behavior SceneState
+resetConwayB :: KeyCode -> Behavior GameState
 resetConwayB key = behaveOnKeyJustPressedB key $ \go -> do
     modify resetState
     return go
 
-tickState :: SceneState -> SceneState
-tickState (SceneState b autoUpdate) = SceneState (tick b) autoUpdate
+tickState :: GameState -> GameState
+tickState (GameState b autoUpdate) = GameState (tick b) autoUpdate
 
-toggleBoard :: Position -> SceneState -> SceneState
-toggleBoard pos (SceneState b a) = SceneState (toggleAt pos b) a
+toggleBoard :: Position -> GameState -> GameState
+toggleBoard pos (GameState b a) = GameState (toggleAt pos b) a
 
-resetState :: SceneState -> SceneState
-resetState (SceneState b autoUpdate) = SceneState (initialBoard . reset $ b) autoUpdate
+resetState :: GameState -> GameState
+resetState (GameState b autoUpdate) = GameState (initialBoard . reset $ b) autoUpdate
 
-setConwayColorBehavior :: Position -> BehaviorType SceneState
+setConwayColorBehavior :: Position -> BehaviorType GameState
 setConwayColorBehavior pos go = do
     isLive <- gets (isLiveCellAt pos)
     let color = if isLive then white else red
     pushMessage (setFillColorMsg color) go
 
-singleStepB :: KeyCode -> Behavior SceneState
+singleStepB :: KeyCode -> Behavior GameState
 singleStepB key = behaveOnKeyJustPressedB key $ \go -> do
     modify tickState
     return go
 
-isLiveCellAt :: Position -> SceneState -> Bool
-isLiveCellAt pos (SceneState s _) = isLive pos s
+isLiveCellAt :: Position -> GameState -> Bool
+isLiveCellAt pos (GameState s _) = isLive pos s
 
-turnOnAutoUpdateB :: KeyCode -> Behavior SceneState
+turnOnAutoUpdateB :: KeyCode -> Behavior GameState
 turnOnAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
-    (SceneState b _) <- get
-    put (SceneState b True)
+    (GameState b _) <- get
+    put (GameState b True)
     return go
 
-turnOffAutoUpdateB :: KeyCode -> Behavior SceneState
+turnOffAutoUpdateB :: KeyCode -> Behavior GameState
 turnOffAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
-    (SceneState b _) <- get
-    put (SceneState b False)
+    (GameState b _) <- get
+    put (GameState b False)
     return go
 
 
-createInstructions :: MaybeT IO [GameObject SceneState]
+createInstructions :: MaybeT IO [GameObject GameState]
 createInstructions = do
     let pos = genPositions (Vec2f 420 30) (onY (+30))
     objs <- createLabels
     return (zipWith Pos.setPosition objs pos)
 
-createLabels :: MaybeT IO [GameObject SceneState]
+createLabels :: MaybeT IO [GameObject GameState]
 createLabels = do
     autoOn      <- newText "Auto ON: 'A'"
     autoOff     <- newText "Auto OFF: 'Z'"
