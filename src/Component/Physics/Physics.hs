@@ -8,7 +8,7 @@ import SFML.System.Vector2 (Vec2f (..))
 
 import GameObject.GameObjectTypes
 import GameObject.GameObject ()
-import Vec2.Vec2Math (minVec2f, addVec2f)
+import Vec2.Vec2Math (minVec2f, (|+|))
 import Component.Physics.PhysicsClass
 import Physics.PhysicsObject (updateObjectPhysics)
 import Component.Position
@@ -31,7 +31,7 @@ updatePosition :: (Position a, PhysicsClass a) => a -> a
 updatePosition obj = let
     pos = getPosition obj
     vel = getVelocity obj
-    newPos = addVec2f pos vel
+    newPos = pos |+| vel
     in setPosition obj newPos
 
 updatePhysicsComponent :: GameObject a -> IO (GameObject a)

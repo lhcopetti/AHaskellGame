@@ -19,7 +19,7 @@ import Component.Physics.PhysicsClass (setVelocity)
 import Component.Physics.Physics ()
 import Input.Mouse (MouseInput (..))
 import Vec2.Vec2Behavior (direction, orientation)
-import Vec2.Vec2Math (subtractVec2f, distanceVec2f)
+import Vec2.Vec2Math ((|-|), distanceVec2f)
 
 mousePositionCopier :: BehaviorType st
 mousePositionCopier obj = do
@@ -36,7 +36,7 @@ mousePointer :: BehaviorType st
 mousePointer obj = do
     mousePosition <- asks (mousePos . input)
     let objPos = getPosition obj
-    let angle = orientation (subtractVec2f mousePosition objPos)
+    let angle = orientation (mousePosition |-| objPos)
     return (setRotation angle obj)
 
 followPointingMouse :: BehaviorType st

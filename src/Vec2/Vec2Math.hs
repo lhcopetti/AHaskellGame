@@ -1,8 +1,8 @@
 module Vec2.Vec2Math ( zero
-                     , addVec2f
-                     , subtractVec2f
+                     , (|+|)
+                     , (|-|)
                      , multiplyScalarVec2f
-                     , divideVec2f
+                     , (|/|)
                      , sizeVec2f
                      , unitVec2f
                      , v2fToTuple
@@ -23,14 +23,17 @@ import Math.Angle (toDegree)
 zero :: Vec2f 
 zero = Vec2f 0.0 0.0
 
-addVec2f :: Vec2f -> Vec2f -> Vec2f 
-addVec2f (Vec2f x y) (Vec2f x' y') = Vec2f (x + x') (y + y')
+infixl 6 |+|
+(|+|) :: Vec2f -> Vec2f -> Vec2f
+(Vec2f x y) |+| (Vec2f x' y') = Vec2f (x + x') (y + y')
 
-subtractVec2f :: Vec2f -> Vec2f -> Vec2f
-subtractVec2f (Vec2f x y) (Vec2f x' y') = Vec2f (x - x') (y - y')
+infixl 6 |-|
+(|-|) :: Vec2f -> Vec2f -> Vec2f
+(Vec2f x y) |-| (Vec2f x' y') = Vec2f (x - x') (y - y')
 
-divideVec2f :: Vec2f -> Vec2f -> Vec2f
-divideVec2f (Vec2f x y) (Vec2f x' y') = Vec2f (x / x') (y / y')
+infixl 7 |/|
+(|/|) :: Vec2f -> Vec2f -> Vec2f
+(Vec2f x y) |/| (Vec2f x' y') = Vec2f (x / x') (y / y')
 
 divideScalarVec2f :: Vec2f -> Float -> Vec2f
 divideScalarVec2f (Vec2f x y) value = Vec2f (x / value) (y / value)
@@ -68,11 +71,11 @@ getOrthoVec2f :: Vec2f -> (Vec2f, Vec2f)
 getOrthoVec2f (Vec2f x y) = (Vec2f y (-x), Vec2f (-y) x)
 
 midPoint :: (Vec2f, Vec2f) -> Vec2f
-midPoint (p1, p2) = let target       = subtractVec2f p2 p1
+midPoint (p1, p2) = let target       = p2 |-| p1
                         unit         = unitVec2f target
-                        distance     = sizeVec2f (subtractVec2f p2 p1) / 2
+                        distance     = sizeVec2f (p2 |-| p1) / 2
                         localMPoint  = multiplyScalarVec2f unit distance
-                    in  addVec2f p1 localMPoint
+                    in  p1 |+| localMPoint
 
 onX :: (Float -> Float) -> Vec2f -> Vec2f
 onX f (Vec2f x y) = Vec2f (f x) y

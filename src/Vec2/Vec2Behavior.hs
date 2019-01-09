@@ -5,10 +5,10 @@ module Vec2.Vec2Behavior
 
 import SFML.System.Vector2 (Vec2f (..))
 
-import Vec2.Vec2Math (subtractVec2f, unitVec2f, angleVec2f)
+import Vec2.Vec2Math ((|-|), unitVec2f, angleVec2f)
 
 direction :: Vec2f -> Vec2f -> Vec2f
-direction target origin = unitVec2f (subtractVec2f target origin)
+direction target origin = unitVec2f (target |-| origin)
 
 -- | Returns the positive angle in degrees between the vector and x-axis.
 orientation :: Vec2f -> Float
