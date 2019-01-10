@@ -34,7 +34,7 @@ import SFML.System.Vector2 (Vec2f)
 import Control.Monad.Trans.Maybe (MaybeT)
 import qualified Data.List.NonEmpty as LNE
 
-import Updatable (UpdateType)
+import Updatable (UpdateType, SceneState)
 
 data GameObject st = GameObject { drawComp     :: ZDrawing
                                 , behavior     :: Behavior st
@@ -119,5 +119,5 @@ data PhysicsMessage = PMSG PhysicsMessageType
 
 data GameScene a = GameScene    { physicsWorld :: PhysicsWorld
                                 , gameObjects  :: [GameObject a]
-                                , gameState    :: a
+                                , gameState    :: SceneState a
                                 }

@@ -1,7 +1,9 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 module Updatable
-    ( Updatable
+    ( InternalSceneState (..)
+    , SceneState (..)
+    , Updatable
     , update
     , UpdateType
     , UpdateMStack
@@ -12,11 +14,18 @@ import GameEnv (GameEnvironment)
 import Control.Monad.Reader (Reader, runReader)
 import Control.Monad.Trans.State (StateT, runStateT)
 
-type UpdateMStack obj st = StateT st (Reader GameEnvironment) obj
+data InternalSceneState = InternalSceneState { paused :: Bool
+                                             }
+
+data SceneState st = SceneState { sceneState :: InternalSceneState
+                                , userState :: st
+                                }
+
+type UpdateMStack obj st = StateT (SceneState st) (Reader GameEnvironment) obj
 type UpdateType obj st = obj -> UpdateMStack obj st
 
 class Updatable obj st where
     update :: UpdateType obj st
 
-runMStack :: Updatable obj st => GameEnvironment -> st -> [obj] -> ([obj], st)
+runMStack :: Updatable obj st => GameEnvironment -> SceneState st -> [obj] -> ([obj], SceneState st)
 runMStack env state = (`runReader` env) . (`runStateT` state) . mapM update

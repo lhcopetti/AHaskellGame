@@ -35,6 +35,7 @@ import ObjectsFactory
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
+import System.GameScene (newSceneState)
 import System.Messaging.PhysicsInbox
 import Random.Random
 import Data.Time
@@ -83,7 +84,8 @@ main = do
         Nothing -> putStrLn "Error creating game objects"
         Just balls -> do
                         let world = GameWorld wnd
-                            scene = GameScene physicsWorld balls ()
+                            sceneState = newSceneState ()
+                            scene = GameScene physicsWorld balls sceneState
                         startGame world scene gameEnv
                         putStrLn "This is the End!"
 

@@ -36,6 +36,7 @@ import ChildBearer
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
+import System.GameScene (newSceneState)
 import System.Messaging.PhysicsInbox
 import System.Input.MouseSnapshot (MButton (..))
 import Random.Random
@@ -79,7 +80,8 @@ main = do
         Nothing -> putStrLn "Error creating game objects"
         Just balls -> do
                         let world = GameWorld wnd
-                            scene = GameScene physicsWorld balls (GS 3)
+                            sceneState = newSceneState (GS 3)
+                            scene = GameScene physicsWorld balls sceneState
                         startGame world scene gameEnv
                         putStrLn "This is the End!"
 
@@ -109,7 +111,7 @@ mkScoreCounter pos fontSize = do
 
 updateScoreBehavior :: BehaviorType GameState
 updateScoreBehavior obj = do
-    currentScore <- gets score
+    currentScore <- gets (score . userState)
     let msg = setTextMsg ("Score counter: " ++ show currentScore)
     pushMessage msg obj
 
@@ -132,8 +134,10 @@ enemyEscapedBehavior = Behavior $ \obj -> do
     modify decrementScore
     return obj
 
-decrementScore :: GameState -> GameState
-decrementScore (GS currentScore) = GS (currentScore - 1)
+decrementScore :: SceneState GameState -> SceneState GameState
+decrementScore state = state { userState = GS newScore }
+    where
+        newScore = (score . userState $ state) - 1
 
 mouseXBehavior :: BehaviorType st
 mouseXBehavior obj = do

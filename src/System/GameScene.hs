@@ -1,12 +1,14 @@
 {-# LANGUAGE RecordWildCards #-}
 module System.GameScene
-    ( updateGameScene
+    ( newSceneState
+    , updateGameScene
     ) where
 
 import Control.Monad (forM_)
 
 import System.GameStepper (stepPhysics, stepGameObjects)
 import Physics.PhysicsWorld (getCollisionData)
+import Updatable
 import Drawable
 import Synchronizable
 import NativeResource
@@ -25,6 +27,10 @@ instance Synchronizable (GameScene a) where
 instance NativeResource (GameScene a) where
     free GameScene {..} = mapM_ free gameObjects >> free physicsWorld
 
+newSceneState :: a -> SceneState a
+newSceneState arg = SceneState { sceneState = initialState, userState = arg }
+    where
+        initialState = InternalSceneState { paused = False }
 
 updateGameScene :: GameScene a -> GameEnvironment -> IO (GameScene a, [GameObject a])
 updateGameScene GameScene {..} env = do

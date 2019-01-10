@@ -10,6 +10,7 @@ import Control.Monad (liftM, when)
 import Control.Monad.Trans.Maybe (MaybeT (..))
 import Control.Monad.Trans.State
 
+import Updatable (SceneState (..))
 import Physics.PhysicsWorld (createWorld, initPhysicsLibrary)
 import Physics.PhysicsTypes (PhysicsWorld)
 import System.Messaging.Messages.ShapeMessage
@@ -27,6 +28,7 @@ import Component.Draw.ZOrderable
 import qualified Component.Position as Pos
 import System.GameSystem (startGame)
 import System.GameWorld (GameWorld (..), GameScene (..))
+import System.GameScene (newSceneState)
 import qualified System.Input.MouseSnapshot as M (MButton (..))
 import Vec2.Vec2Math
 import PrefabObjects.MousePositionPrinter (mkMousePrinter)
@@ -38,6 +40,13 @@ defaultGravity :: Float
 defaultGravity = 30
 
 data GameState = GameState ConwayWorld Bool
+
+updateAutoUpdate :: GameState -> Bool -> GameState
+updateAutoUpdate (GameState world _) autoUpdate = GameState world autoUpdate
+
+getAutoUpdate :: GameState -> Bool
+getAutoUpdate (GameState _ auto) = auto
+
 
 main :: IO ()
 main = do
@@ -69,8 +78,9 @@ main = do
         Nothing -> putStrLn "Error creating game objects"
         Just (b, objects) -> do
                             let n = GameState (initialBoard b) False
+                                sceneState = newSceneState n
                                 world = GameWorld wnd
-                                scene = GameScene physicsWorld objects n
+                                scene = GameScene physicsWorld objects sceneState
                             startGame world scene gameEnv 
                             putStrLn "This is the End!"
 
@@ -125,21 +135,27 @@ toggleCellBehavior pos rect obj = do
     press <- isJustPressed M.MLeft
     (Vec2f mx my) <- mousePosition
     let shouldToggle = press && floatRectContains mx my rect
-    when shouldToggle (modify $ toggleBoard pos)
+    when shouldToggle (modify $ modifySS $ toggleBoard pos)
     return obj
 
 stepConway :: Int -> Behavior GameState
 stepConway interval' = behaveEveryB interval' $ \go -> do
-    (GameState _ shouldUpdate) <- get
+    sceneState <- get
+    let shouldUpdate = getAutoUpdate (userState sceneState)
     behave (chooseBehaviorB shouldUpdate should shouldNot) go
         where
-            should      = Behavior $ \go -> modify tickState >> return go
+            should      = Behavior $ \go -> modify (modifySS tickState) >> return go
             shouldNot   = noopB
 
 resetConwayB :: KeyCode -> Behavior GameState
 resetConwayB key = behaveOnKeyJustPressedB key $ \go -> do
-    modify resetState
+    modify (modifySS resetState)
     return go
+
+modifySS :: (GameState -> GameState) -> SceneState GameState -> SceneState GameState
+modifySS f sceneState = sceneState { userState = newState }
+    where
+        newState = f (userState sceneState)
 
 tickState :: GameState -> GameState
 tickState (GameState b autoUpdate) = GameState (tick b) autoUpdate
@@ -152,13 +168,13 @@ resetState (GameState b autoUpdate) = GameState (initialBoard . reset $ b) autoU
 
 setConwayColorBehavior :: Position -> BehaviorType GameState
 setConwayColorBehavior pos go = do
-    isLive <- gets (isLiveCellAt pos)
+    isLive <- gets (isLiveCellAt pos . userState)
     let color = if isLive then white else red
     pushMessage (setFillColorMsg color) go
 
 singleStepB :: KeyCode -> Behavior GameState
 singleStepB key = behaveOnKeyJustPressedB key $ \go -> do
-    modify tickState
+    modify (modifySS tickState)
     return go
 
 isLiveCellAt :: Position -> GameState -> Bool
@@ -166,16 +182,19 @@ isLiveCellAt pos (GameState s _) = isLive pos s
 
 turnOnAutoUpdateB :: KeyCode -> Behavior GameState
 turnOnAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
-    (GameState b _) <- get
-    put (GameState b True)
+    sceneState <- get
+    let gameState = userState sceneState
+        newGameState = updateAutoUpdate gameState True 
+    put (sceneState { userState = newGameState })
     return go
 
 turnOffAutoUpdateB :: KeyCode -> Behavior GameState
 turnOffAutoUpdateB key = behaveOnKeyPressB key $ \go -> do
-    (GameState b _) <- get
-    put (GameState b False)
+    sceneState <- get
+    let gameState = userState sceneState
+        newGameState = updateAutoUpdate gameState False 
+    put (sceneState { userState = newGameState })
     return go
-
 
 createInstructions :: MaybeT IO [GameObject GameState]
 createInstructions = do
